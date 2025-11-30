@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח בקרה | משרד עו"ד GH</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            transition: all var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-lg);
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--color-text);
+            line-height: 1;
+            margin-bottom: var(--space-1);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-medium);
+        }
+
+        .tasks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tasks-table thead {
+            background-color: rgba(0, 73, 219, 0.02);
+        }
+
+        .tasks-table th {
+            padding: var(--space-4);
+            text-align: right;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--color-text-medium);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .tasks-table td {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-divider);
+        }
+
+        .tasks-table tbody tr:hover {
+            background-color: rgba(0, 73, 219, 0.02);
+        }
+
+        .task-id {
+            font-family: 'Courier New', monospace;
+            font-size: var(--font-size-xs);
+            color: var(--color-text-subtle);
+            background-color: rgba(0, 73, 219, 0.05);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .badge-status.status-new {
+            background: rgba(0, 188, 212, 0.1);
+            color: var(--color-info);
+        }
+
+        .badge-status.status-in-progress {
+            background: rgba(249, 168, 37, 0.1);
+            color: var(--color-warning);
+        }
+
+        .badge-status.status-completed {
+            background: rgba(0, 208, 108, 0.1);
+            color: var(--color-success);
+        }
+
+        .badge-status.status-cancelled {
+            background: rgba(255, 60, 95, 0.1);
+            color: var(--color-danger);
+        }
+
+        .badge-priority.priority-urgent,
+        .badge-priority.priority-high {
+            background: rgba(255, 60, 95, 0.1);
+            color: var(--color-danger);
+        }
+
+        .badge-priority.priority-medium,
+        .badge-priority.priority-normal {
+            background: rgba(249, 168, 37, 0.1);
+            color: var(--color-warning);
+        }
+
+        .badge-priority.priority-low {
+            background: rgba(0, 208, 108, 0.1);
+            color: var(--color-success);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn-small {
+            padding: var(--space-1) var(--space-2);
+            font-size: var(--font-size-xs);
+            min-height: 32px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+        }
+
+        .btn-view {
+            color: var(--color-info);
+        }
+
+        .btn-view:hover {
+            background-color: rgba(0, 188, 212, 0.1);
+        }
+
+        .btn-edit {
+            color: var(--color-primary);
+        }
+
+        .btn-edit:hover {
+            background-color: rgba(0, 73, 219, 0.1);
+        }
+
+        .btn-delete {
+            color: var(--color-danger);
+        }
+
+        .btn-delete:hover {
+            background-color: rgba(255, 60, 95, 0.1);
+        }
+
+        .badge-category {
+            background-color: rgba(0, 73, 219, 0.1);
+            color: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- ניווט עליון -->
+    <header class="app-header">
+        <div class="app-logo">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIiBmaWxsPSJub25lIj48cGF0aCBkPSJNMjAgMEM4Ljk1IDAgMCA4Ljk1IDAgMjBDMCAzMS4wNSA4Ljk1IDQwIDIwIDQwQzMxLjA1IDQwIDQwIDMxLjA1IDQwIDIwQzQwIDguOTUgMzEuMDUgMCAyMCAwWiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzEzNF8xNzIpIi8+PHBhdGggZD0iTTExIDE1TDIwIDI0TDI5IDE1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTExIDI0TDIwIDMzTDI5IDI0IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzEzNF8xNzIiIHgxPSI0MCIgeTE9IjIwIiB4Mj0iMCIgeTI9IjIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iIzI5NzlGRiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNDlEQiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjwvc3ZnPg==" alt="Logo">
+            <span>משרד עו"ד GH</span>
+        </div>
+
+        <div class="user-menu" id="userMenu">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <div class="user-info">
+                <div class="user-name" id="currentUserName">משתמש</div>
+                <div class="user-role">עורך דין</div>
+            </div>
+            <div class="user-menu-dropdown" id="userMenuDropdown">
+                <div class="dropdown-item" id="switchUserBtn">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>החלף משתמש</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item">
+                    <a href="index.html" style="display: flex; align-items: center; gap: var(--space-2); text-decoration: none; color: inherit;">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>משימה חדשה</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- כרטיס ראשי -->
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">לוח בקרה - מזכירת משרד</h1>
+                <p class="card-subtitle">מערכת ניהול משימות - משרד עו"ד GH</p>
+            </div>
+
+            <div class="card-body">
+                <!-- סטטיסטיקות -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(0, 73, 219, 0.1); color: var(--color-primary);">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-tasks">-</div>
+                            <div class="stat-label">סה"כ משימות</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(0, 208, 108, 0.1); color: var(--color-success);">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="new-tasks">-</div>
+                            <div class="stat-label">משימות חדשות</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(249, 168, 37, 0.1); color: var(--color-warning);">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="in-progress-tasks">-</div>
+                            <div class="stat-label">בטיפול</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(0, 208, 108, 0.1); color: var(--color-success);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="completed-tasks">-</div>
+                            <div class="stat-label">הושלמו</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- כלים -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="form-icon fas fa-search"></i> חיפוש וסינון
+                    </label>
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                        <input type="text" id="search" class="form-control" placeholder="חיפוש משימות..." style="flex: 1; min-width: 200px;">
+                        <select id="status-filter" class="form-control" style="min-width: 150px;">
+                            <option value="all">כל הסטטוסים</option>
+                            <option value="חדשה">חדשה</option>
+                            <option value="בטיפול">בטיפול</option>
+                            <option value="הושלמה">הושלמה</option>
+                            <option value="בוטלה">בוטלה</option>
+                        </select>
+                        <button id="refresh-btn" class="btn">
+                            <i class="fas fa-sync-alt"></i> רענן
+                        </button>
+                    </div>
+                </div>
+
+                <!-- תוצאות -->
+                <div style="margin-bottom: var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-medium);">
+                    <i class="fas fa-list"></i> <span id="result-count">טוען...</span>
+                </div>
+
+                <!-- טבלת משימות -->
+                <div style="overflow-x: auto;">
+                    <table class="tasks-table">
+                        <thead>
+                            <tr>
+                                <th>מזהה</th>
+                                <th>כותרת</th>
+                                <th>קטגוריה</th>
+                                <th>מוקצה ל</th>
+                                <th>עדיפות</th>
+                                <th>סטטוס</th>
+                                <th>פעולות</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasks-tbody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    <i class="fas fa-spinner fa-spin"></i> טוען משימות...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- מודל החלפת משתמש -->
+    <div class="modal-overlay" id="userSwitchModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">בחירת משתמש</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">בחר את המשתמש שלך</label>
+                    <div class="name-chips" id="userSwitchChips">
+                        <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
+                        <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
+                        <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
+                        <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
+                        <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
+                        <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
+                        <button type="button" class="name-chip" data-name="קרן" data-email="office@ghlawoffice.co.il">קרן</button>
+                        <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
+                        <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
+                        <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
+                        <button type="button" class="name-chip" data-name="עוז" data-email="Oz@brosh-finance.com">עוז</button>
+                        <button type="button" class="name-chip" data-name="לירז" data-email="Liraz@siboni-law.com">לירז</button>
+                    </div>
+                </div>
+                <button class="btn btn-block" id="confirmUserBtn">
+                    אישור
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- התראה -->
+    <div class="notification" id="notification" style="display: none;">
+        <div class="notification-icon info" id="notificationIcon">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-title" id="notificationTitle">הודעה</div>
+            <div class="notification-message" id="notificationMessage"></div>
+        </div>
+        <button class="notification-close" id="notificationClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: var(--color-primary);"></i>
+    </div>
+
+    <!-- Status message -->
+    <div id="status-message" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 12px 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 9999;"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // ⚙️ Script inline for backward compatibility
+
+        let allTasks = [];
+
+        // 🚀 טעינה ראשונית
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasks();
+            setupFilters();
+        });
+
+        // 📥 טעינת משימות מה-API
+        async function loadTasks() {
+            try {
+                showLoading(true);
+
+                const response = await fetch(${API_URL}/api/tasks);
+                const data = await response.json();
+
+                allTasks = data.tasks;
+                updateStatistics(data.tasks);
+                renderTasks(data.tasks);
+
+                showLoading(false);
+                console.log(✅ נטענו  משימות ב-ms);
+
+            } catch (error) {
+                console.error('❌ שגיאה בטעינת משימות:', error);
+                document.getElementById('loading').textContent = '❌ שגיאה בטעינת משימות';
+            }
+        }
+
+        // 📊 עדכון סטטיסטיקות
+        function updateStatistics(tasks) {
+            const stats = {
+                total: tasks.length,
+                new: tasks.filter(t => t.status === 'חדשה').length,
+                progress: tasks.filter(t => t.status === 'בטיפול').length,
+                done: tasks.filter(t => t.status === 'הושלמה').length
+            };
+
+            document.getElementById('total-tasks').textContent = stats.total;
+            document.getElementById('new-tasks').textContent = stats.new;
+            document.getElementById('progress-tasks').textContent = stats.progress;
+            document.getElementById('done-tasks').textContent = stats.done;
+        }
+
+        // 🎨 רינדור משימות
+        function renderTasks(tasks) {
+            const tbody = document.getElementById('tasks-body');
+            tbody.innerHTML = '';
+
+            if (tasks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">אין משימות להצגה</td></tr>';
+                return;
+            }
+
+            tasks.forEach(task => {
+                const row = document.createElement('tr');
+                row.innerHTML = 
+                    <td><strong></strong></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="status-badge status-"></span></td>
+                    <td><span class="priority-badge priority-"></span></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editTask('')">✏️ ערוך</button>
+                    </td>
+                ;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 🔍 סינון משימות
+        function setupFilters() {
+            const filters = ['filter-status', 'filter-user', 'filter-priority'];
+            filters.forEach(id => {
+                document.getElementById(id).addEventListener('change', applyFilters);
+            });
+        }
+
+        function applyFilters() {
+            const status = document.getElementById('filter-status').value;
+            const user = document.getElementById('filter-user').value;
+            const priority = document.getElementById('filter-priority').value;
+
+            let filtered = allTasks;
+
+            if (status) {
+                filtered = filtered.filter(t => t.status === status);
+            }
+            if (user) {
+                filtered = filtered.filter(t => t.assigned_to === user);
+            }
+            if (priority) {
+                filtered = filtered.filter(t => t.priority === priority);
+            }
+
+            renderTasks(filtered);
+        }
+
+        // ✏️ עריכת משימה
+        function editTask(taskId) {
+            // TODO: פתיחת modal לעריכה
+            alert(עריכת משימה: );
+        }
+
+        // 🔄 רענון
+        function refreshTasks() {
+            loadTasks();
+        }
+
+        // 🛠️ פונקציות עזר
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('tasks-table').style.display = show ? 'none' : 'table';
+        }
+
+        function getStatusClass(status) {
+            const map = {
+                'חדשה': 'new',
+                'בטיפול': 'progress',
+                'הושלמה': 'done',
+                'בוטלה': 'cancelled'
+            };
+            return map[status] || 'new';
+        }
+
+        function getPriorityClass(priority) {
+            const map = {
+                'נמוכה': 'low',
+                'רגילה': 'normal',
+                'גבוהה': 'high',
+                'דחופה': 'urgent'
+            };
+            return map[priority] || 'normal';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('he-IL');
+        }
+
+        function formatDateTime(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleString('he-IL');
+        }
+    </script>
+</body>
+</html>

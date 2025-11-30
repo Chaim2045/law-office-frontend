@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מערכת משימות - משרד עו"ד</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* איפוס והגדרות בסיס */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      /* צבעים עיקריים */
+      --color-primary: #0049db;
+      --color-primary-light: #2979ff;
+      --color-secondary: #00d2ca;
+      --color-success: #00d06c;
+      --color-warning: #f9a825;
+      --color-danger: #ff3c5f;
+      --color-info: #00bcd4;
+      
+      /* צבעי ממשק */
+      --color-surface: #ffffff;
+      --color-background: #f3f6ff;
+      --color-border: rgba(0, 73, 219, 0.08);
+      --color-divider: rgba(0, 0, 0, 0.08);
+      
+      /* צבעי טקסט */
+      --color-text: #1a1c23;
+      --color-text-medium: #4a4e61;
+      --color-text-light: #757b95;
+      --color-text-subtle: #9ea4bd;
+      
+      /* צללים */
+      --shadow-sm: 0 2px 6px rgba(0, 73, 219, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 73, 219, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 73, 219, 0.12);
+      
+      /* עיגולים */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
+      /* גופנים */
+      --font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-md: 1.125rem;
+      --font-size-lg: 1.25rem;
+      --font-size-xl: 1.5rem;
+      --font-size-2xl: 2rem;
+      
+      /* רווחים */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      
+      /* כללי */
+      --transition: 150ms ease-out;
+      --nav-height: 64px;
+      --page-width: 1200px;
+    }
+    
+    /* גוף המסמך */
+    html, body {
+      font-family: var(--font-family);
+      font-size: 16px;
+      line-height: 1.5;
+      background: var(--color-background);
+      color: var(--color-text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* מיכל */
+    .container {
+      width: 100%;
+      max-width: var(--page-width);
+      margin: 0 auto;
+      padding: 0 var(--space-2);
+    }
+    
+    @media (min-width: 768px) {
+      .container { padding: 0 var(--space-8); }
+    }
+    
+    /* ניווט עליון */
+    .app-header {
+      position: sticky;
+      top: 0;
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--nav-height);
+      padding: 0 var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .app-logo img { height: 32px; }
+    
+    .app-logo span {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      background: linear-gradient(45deg, #0049db, #2979ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* יוזר מניו */
+    .user-menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-full);
+      transition: all var(--transition);
+      border: 1px solid transparent;
+    }
+
+    .user-menu:hover {
+      background-color: rgba(0, 73, 219, 0.05);
+      border-color: var(--color-border);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-primary-light);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name { font-weight: 500; }
+    .user-role {
+      font-size: var(--font-size-xs);
+      opacity: 0.8;
+    }
+
+    .user-menu-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: var(--space-2);
+      background-color: white;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: var(--space-2);
+      min-width: 200px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .user-menu-dropdown.active { display: block; }
+
+    .dropdown-item {
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      transition: background-color 100ms;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background-color: rgba(0, 73, 219, 0.05);
+    }
+
+    .dropdown-item i {
+      color: var(--color-primary);
+      width: 16px;
+      text-align: center;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background-color: var(--color-divider);
+      margin: var(--space-2) 0;
+    }
+    
+    /* כרטיס ראשי */
+    .card {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+      width: 100%;
+      overflow: hidden;
+      transition: all var(--transition);
+      margin-bottom: var(--space-8);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, #0049db, #2979ff);
+      padding: var(--space-6) var(--space-4);
+      color: white;
+      text-align: center;
+    }
+    
+    .card-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin-bottom: var(--space-1);
+    }
+    
+    .card-subtitle {
+      font-size: var(--font-size-sm);
+      opacity: 0.9;
+    }
+    
+    .card-body {
+      padding: var(--space-6) var(--space-4);
+    }
+
+    /* מחוון שלבים */
+    .stepper {
+      display: flex;
+      justify-content: space-around;
+      margin: var(--space-4) 0 var(--space-6);
+      position: relative;
+    }
+    
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background-color: var(--color-divider);
+      z-index: 1;
+    }
+    
+    .stepper-progress {
+      position: absolute;
+      top: 10px;
+      left: 10%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
+      z-index: 2;
+      transition: width var(--transition);
+    }
+    
+    .stepper[data-step="1"] .stepper-progress { width: 0; }
+    .stepper[data-step="2"] .stepper-progress { width: 33%; }
+    .stepper[data-step="3"] .stepper-progress { width: 66%; }
+    .stepper[data-step="4"] .stepper-progress { width: 100%; }
+    
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 3;
+    }
+    
+    .step-indicator {
+      width: 22px;
+      height: 22px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-surface);
+      border: 2px solid var(--color-text-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-subtle);
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      transition: all var(--transition);
+      margin-bottom: var(--space-1);
+    }
+    
+    .step.active .step-indicator {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+      box-shadow: 0 0 0 4px rgba(0, 73, 219, 0.15);
+    }
+    
+    .step.completed .step-indicator {
+      background-color: var(--color-primary-light);
+      border-color: var(--color-primary-light);
+      color: white;
+    }
+    
+    .step.completed .step-indicator::after {
+      content: '✓';
+      position: absolute;
+      font-size: 10px;
+    }
+    
+    .step-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-subtle);
+      transition: all var(--transition);
+      text-align: center;
+      max-width: 80px;
+      line-height: 1.2;
+    }
+    
+    .step.active .step-label {
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+    
+    .step.completed .step-label {
+      color: var(--color-primary-light);
+    }
+    
+    /* שלבי טופס */
+    .form-step {
+      display: none;
+    }
+    
+    .form-step.active {
+      display: block;
+    }
+    
+    /* אלמנטי טופס */
+    .form-group {
+      margin-bottom: var(--space-6);
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: var(--space-2);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text-medium);
+    }
+    
+    .form-icon {
+      color: var(--color-primary);
+      margin-left: var(--space-1);
+    }
+    
+    .form-control {
+      width: 100%;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-divider);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
+      color: var(--color-text);
+      transition: all var(--transition);
+      font-family: var(--font-family);
+    }
+    
+    .form-control:focus {
+      border-color: var(--color-primary-light);
+      box-shadow: 0 0 0 3px rgba(0, 73, 219, 0.15);
+      outline: none;
+    }
+    
+    .form-control::placeholder {
+      color: var(--color-text-subtle);
+    }
+    
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    
+    .form-hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-medium);
+      margin-top: var(--space-1);
+    }
+    
+    /* כפתורי שם */
+    .name-chips {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    
+    @media (min-width: 768px) {
+      .name-chips { grid-template-columns: repeat(4, 1fr); }
+    }
+    
+    @media (min-width: 1024px) {
+      .name-chips { grid-template-columns: repeat(5, 1fr); }
+    }
+    
+    .name-chip {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text-medium);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    
+    .name-chip:hover {
+      border-color: var(--color-primary-light);
+      background-color: rgba(0, 73, 219, 0.05);
+      color: var(--color-primary);
+    }
+    
+    .name-chip.selected {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+    
+    .name-chip.selected::before {
+      content: '✓ ';
+    }
+    
+    /* אפשרויות דחיפות */
+    .priority-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    
+    @media (min-width: 768px) {
+      .priority-options {
+        flex-direction: row;
+        justify-content: center;
+        max-width: 800px;
+        margin: 0 auto var(--space-6);
+      }
+      
+      .priority-option {
+        flex: 1;
+        max-width: 250px;
+      }
+    }
+    
+    .priority-option {
+      position: relative;
+    }
+    
+    .priority-input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .priority-card {
+      display: flex;
+      align-items: center;
+      padding: var(--space-3) var(--space-4);
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    
+    @media (min-width: 768px) {
+      .priority-card {
+        flex-direction: column;
+        text-align: center;
+        padding: var(--space-6) var(--space-4);
+        height: 100%;
+      }
+    }
+    
+    .priority-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .priority-input:checked + .priority-card {
+      background-color: rgba(0, 73, 219, 0.05);
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .priority-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      margin-left: var(--space-3);
+      flex-shrink: 0;
+      transition: all var(--transition);
+    }
+    
+    @media (min-width: 768px) {
+      .priority-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 0 var(--space-4) 0;
+        font-size: var(--font-size-lg);
+      }
+    }
+    
+    .priority-normal .priority-icon {
+      background-color: rgba(0, 208, 108, 0.1);
+      color: var(--color-success);
+    }
+    
+    .priority-medium .priority-icon {
+      background-color: rgba(249, 168, 37, 0.1);
+      color: var(--color-warning);
+    }
+    
+    .priority-high .priority-icon {
+      background-color: rgba(255, 60, 95, 0.1);
+      color: var(--color-danger);
+    }
+    
+    .priority-input:checked + .priority-normal .priority-icon {
+      background-color: var(--color-success);
+      color: white;
+    }
+    
+    .priority-input:checked + .priority-medium .priority-icon {
+      background-color: var(--color-warning);
+      color: white;
+    }
+    
+    .priority-input:checked + .priority-high .priority-icon {
+      background-color: var(--color-danger);
+      color: white;
+    }
+    
+    .priority-content {
+      flex: 1;
+    }
+    
+    .priority-title {
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+      margin-bottom: 2px;
+      color: var(--color-text-medium);
+    }
+    
+    .priority-input:checked + .priority-card .priority-title {
+      color: var(--color-text);
+    }
+    
+    .priority-desc {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-light);
+    }
+    
+    /* העלאת קבצים */
+    .file-upload {
+      position: relative;
+      padding: var(--space-6);
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      background-color: rgba(0, 73, 219, 0.02);
+      margin-bottom: var(--space-4);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    
+    .file-upload:hover {
+      border-color: var(--color-primary);
+      background-color: rgba(0, 73, 219, 0.05);
+    }
+    
+    .file-upload-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background-color: rgba(0, 73, 219, 0.1);
+      color: var(--color-primary);
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--space-3);
+    }
+    
+    .file-upload-title {
+      font-weight: 600;
+      font-size: var(--font-size-base);
+      color: var(--color-text-medium);
+      margin-bottom: var(--space-2);
+    }
+    
+    .file-upload-subtitle {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-light);
+    }
+    
+    .file-upload-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-progress-container {
+      display: none;
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+      margin-top: 10px;
+      border-radius: var(--radius-full);
+    }
+
+    .upload-progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
+      border-radius: var(--radius-full);
+      transition: width 0.3s;
+    }
+    
+    .file-list {
+      margin-top: var(--space-4);
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      padding: var(--space-3) var(--space-4);
+      background-color: rgba(0, 73, 219, 0.03);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .file-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background-color: var(--color-primary);
+    }
+    
+    .file-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background-color: rgba(0, 73, 219, 0.1);
+      color: var(--color-primary);
+      margin-left: var(--space-3);
+      flex-shrink: 0;
+    }
+    
+    .file-details {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .file-name {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .file-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-light);
+    }
+    
+    .file-remove {
+      background: none;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-light);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    
+    .file-remove:hover {
+      background-color: rgba(255, 60, 95, 0.1);
+      color: var(--color-danger);
+    }
+    
+    /* סיכום */
+    .summary-section {
+      background-color: rgba(0, 73, 219, 0.02);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+      border: 1px solid var(--color-border);
+    }
+
+    .summary-title {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-4);
+      text-align: center;
+    }
+
+    .summary-grid {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .summary-item {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      border: 1px solid var(--color-border);
+    }
+
+    .summary-item.hidden { display: none; }
+
+    .summary-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-medium);
+      margin-bottom: var(--space-2);
+    }
+
+    .summary-label i {
+      color: var(--color-primary);
+      width: 16px;
+      text-align: center;
+    }
+
+    .summary-value {
+      font-size: var(--font-size-base);
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    .summary-value.priority {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+    }
+
+    .summary-value.priority.normal {
+      background: rgba(0, 208, 108, 0.1);
+      color: var(--color-success);
+    }
+
+    .summary-value.priority.medium {
+      background: rgba(249, 168, 37, 0.1);
+      color: var(--color-warning);
+    }
+
+    .summary-value.priority.high {
+      background: rgba(255, 60, 95, 0.1);
+      color: var(--color-danger);
+    }
+
+    .summary-value.files {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+    
+    /* כפתורים */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: var(--font-family);
+      min-height: 44px;
+    }
+    
+    .btn:hover {
+      background-color: var(--color-primary-light);
+      transform: translateY(-1px);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-lg {
+      padding: var(--space-4) var(--space-8);
+      font-size: var(--font-size-base);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary-light);
+    }
+    
+    .btn-secondary:hover {
+      background-color: rgba(0, 73, 219, 0.05);
+    }
+    
+    .btn-danger {
+      background: var(--color-danger);
+    }
+    
+    .btn-danger:hover {
+      background-color: #ff5577;
+    }
+    
+    .btn-block {
+      display: flex;
+      width: 100%;
+    }
+    
+    .btn[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-6);
+    }
+    
+    /* התראה */
+    .notification {
+      position: fixed;
+      top: var(--space-8);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: var(--space-3) var(--space-4);
+      background-color: white;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      z-index: 1000;
+    }
+    
+    .notification-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    
+    .notification-icon.info {
+      background-color: rgba(0, 188, 212, 0.1);
+      color: var(--color-info);
+    }
+    
+    .notification-icon.warning {
+      background-color: rgba(249, 168, 37, 0.1);
+      color: var(--color-warning);
+    }
+    
+    .notification-content {
+      flex: 1;
+    }
+    
+    .notification-title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .notification-message {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-medium);
+    }
+    
+    .notification-close {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: var(--color-text-light);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    
+    .notification-close:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--color-text);
+    }
+    
+    /* מודל */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      padding: var(--space-4);
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      padding: var(--space-4) var(--space-6);
+      background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
+      color: white;
+    }
+    
+    .modal-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+    }
+    
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-6);
+      text-align: center;
+    }
+    
+    .success-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-full);
+      background: var(--color-success);
+      color: white;
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--space-4);
+    }
+    
+    .modal-heading {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      color: var(--color-success);
+    }
+    
+    .modal-message {
+      color: var(--color-text-medium);
+      margin-bottom: var(--space-6);
+      font-size: var(--font-size-base);
+    }
+    
+    /* חלון אישור דחיפות */
+    .priority-confirm-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      padding: var(--space-4);
+    }
+    
+    .priority-confirm-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .priority-confirm-dialog {
+      width: 100%;
+      max-width: 420px;
+      background-color: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    
+    .priority-confirm-modal.active .priority-confirm-dialog {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    .priority-confirm-header {
+      padding: var(--space-4) var(--space-6);
+      background: var(--color-danger);
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .priority-confirm-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .priority-confirm-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+    }
+    
+    .priority-confirm-body {
+      padding: var(--space-6);
+    }
+    
+    .priority-confirm-message {
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+      color: var(--color-text-medium);
+      margin-bottom: var(--space-6);
+    }
+    
+    .priority-confirm-actions {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: flex-end;
+    }
+    
+    @media (max-width: 480px) {
+      .priority-confirm-actions {
+        flex-direction: column;
+      }
+      
+      .priority-confirm-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ניווט עליון -->
+  <header class="app-header">
+    <div class="app-logo">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIiBmaWxsPSJub25lIj48cGF0aCBkPSJNMjAgMEM4Ljk1IDAgMCA4Ljk1IDAgMjBDMCAzMS4wNSA4Ljk1IDQwIDIwIDQwQzMxLjA1IDQwIDQwIDMxLjA1IDQwIDIwQzQwIDguOTUgMzEuMDUgMCAyMCAwWiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzEzNF8xNzIpIi8+PHBhdGggZD0iTTExIDE1TDIwIDI0TDI5IDE1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTExIDI0TDIwIDMzTDI5IDI0IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzEzNF8xNzIiIHgxPSI0MCIgeTE9IjIwIiB4Mj0iMCIgeTI9IjIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iIzI5NzlGRiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNDlEQiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjwvc3ZnPg==" alt="Logo">
+      <span>משרד עו"ד</span>
+    </div>
+
+    <div class="user-menu" id="userMenu">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="currentUserName">משתמש</div>
+        <div class="user-role">עורך דין</div>
+      </div>
+      <div class="user-menu-dropdown" id="userMenuDropdown">
+        <div class="dropdown-item" id="switchUserBtn">
+          <i class="fas fa-exchange-alt"></i>
+          <span>החלף משתמש</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" id="settingsBtn">
+          <i class="fas fa-cog"></i>
+          <span>הגדרות</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- כרטיס המשימות -->
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">הוספת משימה חדשה</h1>
+        <p class="card-subtitle">מערכת ניהול משימות - משרד עו"ד</p>
+      </div>
+      
+      <div class="card-body">        
+        <!-- מחוון צעדים -->
+        <div class="stepper" data-step="1">
+          <div class="stepper-progress"></div>
+          
+          <div class="step active" data-step="1">
+            <div class="step-indicator">1</div>
+            <div class="step-label">פרטי המבקש</div>
+          </div>
+          
+          <div class="step" data-step="2">
+            <div class="step-indicator">2</div>
+            <div class="step-label">תיאור משימה</div>
+          </div>
+          
+          <div class="step" data-step="3">
+            <div class="step-indicator">3</div>
+            <div class="step-label">דחיפות</div>
+          </div>
+          
+          <div class="step" data-step="4">
+            <div class="step-indicator">4</div>
+            <div class="step-label">אישור ושליחה</div>
+          </div>
+        </div>
+
+        <form id="taskForm" enctype="multipart/form-data" method="POST">
+          <input type="hidden" name="numFiles" id="numFilesInput" value="0">
+          
+          <!-- שלב 1: פרטי המבקש -->
+          <div class="form-step active" data-step="1">            
+            <div class="form-group">
+              <label class="form-label" for="requesterName">
+                <i class="form-icon fas fa-user"></i> שם המבקש/ת
+              </label>
+              
+              <div class="name-chips">
+                <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
+                <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
+                <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
+                <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
+                <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
+                <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
+                <button type="button" class="name-chip" data-name="קרן" data-email="office@ghlawoffice.co.il">קרן</button>
+                <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
+                <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
+                <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
+                <button type="button" class="name-chip" data-name="עוז" data-email="Oz@brosh-finance.com">עוז</button>
+                <button type="button" class="name-chip" data-name="לירז" data-email="Liraz@siboni-law.com">לירז</button>
+              </div>
+              
+              <input type="text" id="requesterName" name="requesterName" class="form-control" placeholder="או הקלד שם ידנית">
+              <input type="hidden" id="requesterEmail" name="requesterEmail">
+              
+              <p class="form-hint">נא לבחור או להקליד את שם המבקש</p>
+            </div>
+            
+            <div class="form-group" id="customEmailGroup" style="display: none;">
+              <label class="form-label" for="customEmail">
+                <i class="form-icon fas fa-envelope"></i> אימייל המבקש
+              </label>
+              <input type="email" id="customEmail" name="customEmail" class="form-control" placeholder="הזן אימייל לקבלת עדכונים">
+              <p class="form-hint">יש להזין אימייל עבור בקשות משתמשים חדשים</p>
+            </div>
+            
+            <div class="nav-buttons">
+              <div></div>
+              <button type="button" class="btn btn-lg" id="nextToStep2">
+                המשך <i class="fas fa-arrow-left"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- שלב 2: תיאור משימה -->
+          <div class="form-step" data-step="2">
+            <div class="form-group">
+              <label class="form-label" for="taskDescription">
+                <i class="form-icon fas fa-tasks"></i> תיאור המשימה
+              </label>
+              <textarea id="taskDescription" name="taskDescription" class="form-control" placeholder="תאר את המשימה בפירוט" required></textarea>
+              <p class="form-hint">פרט ככל האפשר את דרישות המשימה והמטרות הנדרשות</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="taskCategory">
+                <i class="form-icon fas fa-tag"></i> סיווג משימה
+              </label>
+              <select id="taskCategory" name="taskCategory" class="form-control" required>
+                <option value="">-- בחר סיווג --</option>
+                <option value="משפטית">משפטית</option>
+                <option value="טכנית">טכנית</option>
+                <option value="גבייה">גבייה</option>
+                <option value="פגישה">פגישה</option>
+                <option value="אדמיניסטרטיבית">אדמיניסטרטיבית</option>
+                <option value="אחר">אחר</option>
+              </select>
+              <p class="form-hint">בחר את הסיווג המתאים למשימה</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="dueDate">
+                <i class="form-icon fas fa-calendar-alt"></i> תאריך יעד
+              </label>
+              <input type="date" id="dueDate" name="dueDate" class="form-control" required>
+              <p class="form-hint">מתי המשימה צריכה להסתיים?</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-paperclip"></i> צירוף קבצים
+              </label>
+              
+              <div class="file-upload" id="fileUploadArea">
+                <div class="file-upload-icon">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="file-upload-title">גרור קבצים לכאן</div>
+                <div class="file-upload-subtitle">או לחץ כדי לבחור קבצים מהמחשב (עד 5MB לקובץ)</div>
+                <input type="file" id="fileUpload" name="fileUpload" class="file-upload-input" multiple>
+              </div>
+
+              <div class="upload-progress-container">
+                <div class="upload-progress-bar"></div>
+              </div>
+              
+              <div class="file-list" id="fileList"></div>
+            </div>
+            
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="backToStep1">
+                <i class="fas fa-arrow-right"></i> חזרה
+              </button>
+              <button type="button" class="btn" id="nextToStep3">
+                המשך <i class="fas fa-arrow-left"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- שלב 3: דחיפות -->
+          <div class="form-step" data-step="3">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-flag"></i> דחיפות המשימה
+              </label>
+              <p class="form-hint">בחר את רמת הדחיפות המתאימה למשימה</p>
+              
+              <div class="priority-options">
+                <div class="priority-option">
+                  <input type="radio" id="priority1" name="priority" value="רגילה" class="priority-input" checked>
+                  <label for="priority1" class="priority-card priority-normal">
+                    <div class="priority-icon">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="priority-content">
+                      <div class="priority-title">רגילה</div>
+                      <div class="priority-desc">טיפול סטנדרטי</div>
+                    </div>
+                  </label>
+                </div>
+                
+                <div class="priority-option">
+                  <input type="radio" id="priority2" name="priority" value="דחופה" class="priority-input">
+                  <label for="priority2" class="priority-card priority-medium">
+                    <div class="priority-icon">
+                      <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="priority-content">
+                      <div class="priority-title">דחופה</div>
+                      <div class="priority-desc">טיפול מהיר</div>
+                    </div>
+                  </label>
+                </div>
+                
+                <div class="priority-option">
+                  <input type="radio" id="priority3" name="priority" value="דחופה מאוד" class="priority-input">
+                  <label for="priority3" class="priority-card priority-high">
+                    <div class="priority-icon">
+                      <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="priority-content">
+                      <div class="priority-title">דחופה מאוד</div>
+                      <div class="priority-desc">טיפול מיידי</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="backToStep2">
+                <i class="fas fa-arrow-right"></i> חזרה
+              </button>
+              <button type="button" class="btn" id="nextToStep4">
+                סיום ואישור <i class="fas fa-check"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- שלב 4: אישור -->
+          <div class="form-step" data-step="4">
+            <div class="summary-section">
+              <h3 class="summary-title">סיכום פרטי המשימה</h3>
+              
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-user"></i>
+                    <span>שם המבקש</span>
+                  </div>
+                  <div class="summary-value" id="previewName"></div>
+                </div>
+
+                <div class="summary-item hidden" id="previewEmailItem">
+                  <div class="summary-label">
+                    <i class="fas fa-envelope"></i>
+                    <span>אימייל</span>
+                  </div>
+                  <div class="summary-value" id="previewEmail"></div>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-tag"></i>
+                    <span>סיווג משימה</span>
+                  </div>
+                  <div class="summary-value" id="previewCategory"></div>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>תאריך יעד</span>
+                  </div>
+                  <div class="summary-value" id="previewDueDate"></div>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-flag"></i>
+                    <span>דחיפות</span>
+                  </div>
+                  <div class="summary-value priority" id="previewPriority"></div>
+                </div>
+
+                <div class="summary-item hidden" id="previewFilesItem">
+                  <div class="summary-label">
+                    <i class="fas fa-paperclip"></i>
+                    <span>קבצים מצורפים</span>
+                  </div>
+                  <div class="summary-value files" id="previewFiles">
+                    <i class="fas fa-file"></i>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="summary-item" style="margin-top: var(--space-4);">
+                <div class="summary-label">
+                  <i class="fas fa-tasks"></i>
+                  <span>תיאור המשימה</span>
+                </div>
+                <div class="summary-value" id="previewDescription"></div>
+              </div>
+            </div>
+            
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="backToStep3">
+                <i class="fas fa-arrow-right"></i> חזרה לעריכה
+              </button>
+              <button type="submit" class="btn btn-lg">
+                שלח משימה <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- התראה -->
+  <div class="notification" id="notification" style="display: none;">
+    <div class="notification-icon info" id="notificationIcon">
+      <i class="fas fa-info-circle"></i>
+    </div>
+    <div class="notification-content">
+      <div class="notification-title" id="notificationTitle">הודעה</div>
+      <div class="notification-message" id="notificationMessage"></div>
+    </div>
+    <button class="notification-close" id="notificationClose">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- חלון הצלחה -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">השלמת משימה</h3>
+      </div>
+      <div class="modal-body">
+        <div class="success-icon">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 class="modal-heading">המשימה נשלחה בהצלחה</h3>
+        <p class="modal-message">המשימה נקלטה במערכת ותטופל בהקדם בהתאם לרמת הדחיפות שנבחרה.</p>
+        <button class="btn btn-block" id="successCloseBtn">
+          סגור
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- חלון אישור דחיפות גבוהה -->
+  <div class="priority-confirm-modal" id="priorityConfirmModal">
+    <div class="priority-confirm-dialog">
+      <div class="priority-confirm-header">
+        <div class="priority-confirm-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="priority-confirm-title">אישור דחיפות גבוהה</div>
+      </div>
+      <div class="priority-confirm-body">
+        <div class="priority-confirm-message">
+          האם אתה בטוח שהמשימה היא <strong>קריטית ודחופה מאוד</strong>?<br><br>
+          אנא אשר רק אם המשימה באמת דורשת טיפול מיידי.
+        </div>
+        <div class="priority-confirm-actions">
+          <button type="button" class="btn btn-secondary" id="priorityConfirmCancel">
+            <i class="fas fa-times"></i> לא, שנה לדחיפות רגילה
+          </button>
+          <button type="button" class="btn btn-danger" id="priorityConfirmOk">
+            <i class="fas fa-check"></i> כן, זו משימה קריטית
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודל החלפת משתמש -->
+  <div class="modal-overlay" id="userSwitchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">בחירת משתמש</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">בחר את המשתמש שלך</label>
+          <div class="name-chips" id="userSwitchChips">
+            <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
+            <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
+            <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
+            <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
+            <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
+            <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
+            <button type="button" class="name-chip" data-name="קרן" data-email="office@ghlawoffice.co.il">קרן</button>
+            <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
+            <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
+            <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
+            <button type="button" class="name-chip" data-name="עוז" data-email="Oz@brosh-finance.com">עוז</button>
+            <button type="button" class="name-chip" data-name="לירז" data-email="Liraz@siboni-law.com">לירז</button>
+          </div>
+        </div>
+        <button class="btn btn-block" id="confirmUserBtn">
+          אישור
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // הגדרת כתובת URL
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbw4_TYPbCtA8KPKdANLBCFLDWyIIiBQMTzq6c02SyI9ZT7Xg2nMFUF3fV3msBecr8cI/exec';
+      
+      // משתנים גלובליים
+      let uploadedFiles = [];
+      
+      // קבלת רכיבים
+      const taskForm = document.getElementById('taskForm');
+      const stepper = document.querySelector('.stepper');
+      const steps = document.querySelectorAll('.step');
+      const formSteps = document.querySelectorAll('.form-step');
+      const notification = document.getElementById('notification');
+      const notificationIcon = document.getElementById('notificationIcon');
+      const notificationTitle = document.getElementById('notificationTitle');
+      const notificationMessage = document.getElementById('notificationMessage');
+      const notificationClose = document.getElementById('notificationClose');
+      const successModal = document.getElementById('successModal');
+      const successCloseBtn = document.getElementById('successCloseBtn');
+      const fileUploadArea = document.getElementById('fileUploadArea');
+      const fileUpload = document.getElementById('fileUpload');
+      const fileList = document.getElementById('fileList');
+      const nameChips = document.querySelectorAll('.name-chip');
+      const requesterName = document.getElementById('requesterName');
+      const requesterEmail = document.getElementById('requesterEmail');
+      const customEmailGroup = document.getElementById('customEmailGroup');
+      const customEmail = document.getElementById('customEmail');
+      const numFilesInput = document.getElementById('numFilesInput');
+      const priorityConfirmModal = document.getElementById('priorityConfirmModal');
+      const priorityConfirmCancel = document.getElementById('priorityConfirmCancel');
+      const priorityConfirmOk = document.getElementById('priorityConfirmOk');
+      const priorityHighOption = document.getElementById('priority3');
+      const uploadProgressContainer = document.querySelector('.upload-progress-container');
+      const uploadProgressBar = document.querySelector('.upload-progress-bar');
+
+      // ניהול משתמש
+      const userMenu = document.getElementById('userMenu');
+      const userMenuDropdown = document.getElementById('userMenuDropdown');
+      const userAvatar = document.getElementById('userAvatar');
+      const currentUserName = document.getElementById('currentUserName');
+      const switchUserBtn = document.getElementById('switchUserBtn');
+      const userSwitchModal = document.getElementById('userSwitchModal');
+      const userSwitchChips = document.getElementById('userSwitchChips');
+      const confirmUserBtn = document.getElementById('confirmUserBtn');
+      
+      // פונקציות ניהול משתמשים
+      function initUserSystem() {
+        const savedUser = localStorage.getItem('currentUser');
+        
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+          setCurrentUser(user.name, user.email);
+        } else {
+          userSwitchModal.classList.add('active');
+        }
+
+        userMenu.addEventListener('click', function(e) {
+          e.stopPropagation();
+          userMenuDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function() {
+          userMenuDropdown.classList.remove('active');
+        });
+
+        switchUserBtn.addEventListener('click', function() {
+          userSwitchModal.classList.add('active');
+        });
+
+        userSwitchChips.querySelectorAll('.name-chip').forEach(chip => {
+          chip.addEventListener('click', function() {
+            userSwitchChips.querySelectorAll('.name-chip').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+          });
+        });
+
+        confirmUserBtn.addEventListener('click', function() {
+          const selectedChip = userSwitchChips.querySelector('.name-chip.selected');
+          if (selectedChip) {
+            const userName = selectedChip.getAttribute('data-name');
+            const userEmail = selectedChip.getAttribute('data-email');
+            
+            setCurrentUser(userName, userEmail);
+            userSwitchModal.classList.remove('active');
+
+            nameChips.forEach(chip => {
+              if (chip.getAttribute('data-name') === userName) {
+                chip.click();
+              }
+            });
+
+            showNotification('המשתמש הוחלף ל-' + userName, 'info');
+          } else {
+            showNotification('נא לבחור משתמש', 'warning');
+          }
+        });
+      }
+
+      function setCurrentUser(name, email) {
+        currentUserName.textContent = name;
+        const firstChar = name.trim().charAt(0);
+        userAvatar.textContent = firstChar || '?';
+        
+        localStorage.setItem('currentUser', JSON.stringify({
+          name: name,
+          email: email
+        }));
+      }
+      
+      notificationClose.addEventListener('click', function() {
+        notification.style.display = 'none';
+      });
+      
+      // פונקציה להצגת התראות
+      function showNotification(message, type = 'info') {
+        notificationIcon.className = `notification-icon ${type}`;
+        notificationIcon.innerHTML = type === 'warning' ? 
+          '<i class="fas fa-exclamation-triangle"></i>' : 
+          '<i class="fas fa-info-circle"></i>';
+        
+        notificationTitle.textContent = type === 'warning' ? 'שגיאה' : 'הודעה';
+        notificationMessage.textContent = message;
+        
+        notification.style.display = 'flex';
+        
+        setTimeout(() => {
+          notification.style.display = 'none';
+        }, 5000);
+      }
+      
+      // ניווט בשלבים
+      document.getElementById('nextToStep2').addEventListener('click', function() {
+        if (validateStep1()) {
+          goToStep(2);
+        }
+      });
+      
+      document.getElementById('backToStep1').addEventListener('click', function() {
+        goToStep(1);
+      });
+      
+      document.getElementById('nextToStep3').addEventListener('click', function() {
+        if (validateStep2()) {
+          goToStep(3);
+        }
+      });
+      
+      document.getElementById('backToStep2').addEventListener('click', function() {
+        goToStep(2);
+      });
+      
+      document.getElementById('nextToStep4').addEventListener('click', function() {
+        updatePreview();
+        goToStep(4);
+      });
+      
+      document.getElementById('backToStep3').addEventListener('click', function() {
+        goToStep(3);
+      });
+
+      // התקדמות אוטומטית
+      requesterName.addEventListener('blur', function() {
+        if (this.value.trim() !== '' && customEmailGroup.style.display === 'none') {
+          setTimeout(() => {
+            document.getElementById('nextToStep2').click();
+          }, 300);
+        }
+      });
+      
+      // פונקציה למעבר בין שלבים
+      function goToStep(stepNumber) {
+        stepper.setAttribute('data-step', stepNumber);
+        
+        steps.forEach(step => {
+          const stepNum = parseInt(step.getAttribute('data-step'));
+          step.classList.remove('active', 'completed');
+          
+          if (stepNum < stepNumber) {
+            step.classList.add('completed');
+          } else if (stepNum === stepNumber) {
+            step.classList.add('active');
+          }
+        });
+        
+        formSteps.forEach(formStep => {
+          formStep.classList.remove('active');
+        });
+        
+        document.querySelector(`.form-step[data-step="${stepNumber}"]`).classList.add('active');
+      }
+      
+      // וולידציות
+      function validateStep1() {
+        if (!requesterName.value.trim()) {
+          showNotification('יש להזין שם מבקש', 'warning');
+          requesterName.focus();
+          return false;
+        }
+        
+        if (customEmailGroup.style.display !== 'none' && !customEmail.value) {
+          showNotification('יש להזין אימייל עבור משתמש חדש', 'warning');
+          customEmail.focus();
+          return false;
+        }
+        
+        return true;
+      }
+      
+      function validateStep2() {
+        if (!document.getElementById('taskDescription').value.trim()) {
+          showNotification('יש להזין תיאור משימה', 'warning');
+          document.getElementById('taskDescription').focus();
+          return false;
+        }
+        
+        if (!document.getElementById('taskCategory').value) {
+          showNotification('יש לבחור סיווג משימה', 'warning');
+          document.getElementById('taskCategory').focus();
+          return false;
+        }
+        
+        if (!document.getElementById('dueDate').value) {
+          showNotification('יש לבחור תאריך יעד', 'warning');
+          document.getElementById('dueDate').focus();
+          return false;
+        }
+        
+        return true;
+      }
+      
+      function validateAllFields() {
+        if (!validateStep1()) return false;
+        if (!validateStep2()) return false;
+        return true;
+      }
+      
+      // עדכון תצוגת אישור
+      function updatePreview() {
+        document.getElementById('previewName').textContent = requesterName.value;
+        
+        if (requesterEmail.value) {
+          document.getElementById('previewEmail').textContent = requesterEmail.value;
+          document.getElementById('previewEmailItem').classList.remove('hidden');
+        } else {
+          document.getElementById('previewEmailItem').classList.add('hidden');
+        }
+        
+        document.getElementById('previewDescription').textContent = document.getElementById('taskDescription').value;
+        document.getElementById('previewCategory').textContent = document.getElementById('taskCategory').value;
+        
+        const dueDate = new Date(document.getElementById('dueDate').value);
+        const formattedDate = dueDate.toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('previewDueDate').textContent = formattedDate;
+        
+        const priority = document.querySelector('input[name="priority"]:checked').value;
+        const priorityElement = document.getElementById('previewPriority');
+        priorityElement.textContent = priority;
+        
+        priorityElement.className = 'summary-value priority';
+        if (priority === 'רגילה') {
+          priorityElement.classList.add('normal');
+        } else if (priority === 'דחופה') {
+          priorityElement.classList.add('medium');
+        } else if (priority === 'דחופה מאוד') {
+          priorityElement.classList.add('high');
+        }
+        
+        const filesCount = fileList.querySelectorAll('.file-item').length;
+        if (filesCount > 0) {
+          document.getElementById('previewFiles').querySelector('span').textContent = `${filesCount} קבצים מצורפים`;
+          document.getElementById('previewFilesItem').classList.remove('hidden');
+        } else {
+          document.getElementById('previewFilesItem').classList.add('hidden');
+        }
+      }
+      
+      // טיפול בכפתורי שמות
+      nameChips.forEach(button => {
+        button.addEventListener('click', function() {
+          nameChips.forEach(btn => btn.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          requesterName.value = this.getAttribute('data-name');
+          requesterEmail.value = this.getAttribute('data-email');
+          customEmailGroup.style.display = 'none';
+          customEmail.value = '';
+        });
+      });
+      
+      // בדיקת שם בקלט
+      requesterName.addEventListener('input', function() {
+        const inputValue = this.value.toLowerCase();
+        let matchFound = false;
+        
+        nameChips.forEach(btn => {
+          const chipName = btn.getAttribute('data-name').toLowerCase();
+          if (chipName === inputValue) {
+            btn.classList.add('selected');
+            requesterEmail.value = btn.getAttribute('data-email');
+            matchFound = true;
+          } else {
+            btn.classList.remove('selected');
+          }
+        });
+        
+        if (!matchFound) {
+          customEmailGroup.style.display = 'block';
+          requesterEmail.value = customEmail.value;
+        } else {
+          customEmailGroup.style.display = 'none';
+        }
+      });
+      
+      // טיפול באימייל מותאם
+      customEmail.addEventListener('input', function() {
+        requesterEmail.value = this.value;
+      });
+      
+      // בדיקת דחיפות גבוהה
+      priorityHighOption.addEventListener('change', function() {
+        if (this.checked) {
+          priorityConfirmModal.classList.add('active');
+        }
+      });
+      
+      priorityConfirmCancel.addEventListener('click', function() {
+        document.getElementById('priority1').checked = true;
+        priorityConfirmModal.classList.remove('active');
+      });
+      
+      priorityConfirmOk.addEventListener('click', function() {
+        priorityConfirmModal.classList.remove('active');
+      });
+      
+      // העלאת קבצים
+      fileUpload.addEventListener('change', function() {
+        simulateFileUploadProgress(this.files);
+      });
+      
+      fileUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'var(--color-primary)';
+        this.style.backgroundColor = 'rgba(0, 73, 219, 0.03)';
+      });
+      
+      fileUploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '';
+        this.style.backgroundColor = '';
+      });
+      
+      fileUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '';
+        this.style.backgroundColor = '';
+        simulateFileUploadProgress(e.dataTransfer.files);
+      });
+      
+      // סימולציה של התקדמות העלאה
+      function simulateFileUploadProgress(files) {
+        if (files.length === 0) return;
+        
+        uploadProgressContainer.style.display = 'block';
+        uploadProgressBar.style.width = '0%';
+        
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 5;
+          uploadProgressBar.style.width = progress + '%';
+          
+          if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+              uploadProgressContainer.style.display = 'none';
+              handleFiles(files);
+            }, 500);
+          }
+        }, 50);
+      }
+      
+      function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          
+          if (file.size > 5 * 1024 * 1024) {
+            showNotification(`הקובץ ${file.name} גדול מדי (מקסימום 5MB)`, 'warning');
+            continue;
+          }
+          
+          uploadedFiles.push(file);
+          
+          const fileItem = document.createElement('div');
+          fileItem.className = 'file-item';
+          
+          const extension = file.name.split('.').pop().toLowerCase();
+          let iconClass = 'fa-file';
+          
+          if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
+            iconClass = 'fa-file-image';
+          } else if (['doc', 'docx'].includes(extension)) {
+            iconClass = 'fa-file-word';
+          } else if (['xls', 'xlsx'].includes(extension)) {
+            iconClass = 'fa-file-excel';
+          } else if (['pdf'].includes(extension)) {
+            iconClass = 'fa-file-pdf';
+          } else if (['zip', 'rar'].includes(extension)) {
+            iconClass = 'fa-file-archive';
+          }
+          
+          fileItem.innerHTML = `
+            <div class="file-icon">
+              <i class="fas ${iconClass}"></i>
+            </div>
+            <div class="file-details">
+              <div class="file-name">${file.name}</div>
+              <div class="file-meta">
+                <div class="file-size">${formatFileSize(file.size)}</div>
+                <div class="file-type">${extension.toUpperCase()}</div>
+              </div>
+            </div>
+            <button type="button" class="file-remove" data-index="${uploadedFiles.length - 1}">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          fileList.appendChild(fileItem);
+        }
+        
+        numFilesInput.value = uploadedFiles.length;
+        
+        document.querySelectorAll('.file-remove').forEach(button => {
+          button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            uploadedFiles.splice(index, 1);
+            this.closest('.file-item').remove();
+            
+            numFilesInput.value = uploadedFiles.length;
+            
+            document.querySelectorAll('.file-remove').forEach((btn, idx) => {
+              btn.setAttribute('data-index', idx);
+            });
+          });
+        });
+      }
+      
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        else return (bytes / 1048576).toFixed(1) + ' MB';
+      }
+      
+      // טיפול בטופס
+      taskForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!validateAllFields()) {
+          return;
+        }
+        
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
+        submitButton.disabled = true;
+        
+        const formData = new FormData();
+        
+        formData.append('requesterName', requesterName.value);
+        formData.append('requesterEmail', requesterEmail.value);
+        formData.append('taskDescription', document.getElementById('taskDescription').value);
+        formData.append('taskCategory', document.getElementById('taskCategory').value);
+        formData.append('dueDate', document.getElementById('dueDate').value);
+        formData.append('priority', document.querySelector('input[name="priority"]:checked').value);
+        formData.append('numFiles', uploadedFiles.length);
+        
+        // המרת קבצים ל-Base64
+        const filePromises = [];
+        
+        for (let i = 0; i < uploadedFiles.length; i++) {
+          const file = uploadedFiles[i];
+          
+          const filePromise = new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const base64Content = e.target.result.split(',')[1];
+              
+              formData.append(`fileName${i}`, file.name);
+              formData.append(`fileType${i}`, file.type);
+              formData.append(`fileContent${i}`, base64Content);
+              resolve();
+            };
+            reader.readAsDataURL(file);
+          });
+          
+          filePromises.push(filePromise);
+        }
+        
+        // שליחת הטופס
+        Promise.all(filePromises)
+          .then(() => {
+            return fetch(scriptUrl, {
+              method: 'POST',
+              body: formData
+            });
+          })
+          .then(response => response.text())
+          .then(responseText => {
+            try {
+              const data = JSON.parse(responseText);
+              if (data.result === 'success') {
+                successModal.classList.add('active');
+                
+                taskForm.reset();
+                nameChips.forEach(btn => btn.classList.remove('selected'));
+                fileList.innerHTML = '';
+                uploadedFiles = [];
+                numFilesInput.value = '0';
+                customEmailGroup.style.display = 'none';
+                
+                goToStep(1);
+              } else {
+                throw new Error(data.message || 'שגיאה לא ידועה');
+              }
+            } catch (error) {
+              successModal.classList.add('active');
+            }
+            
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+          })
+          .catch(error => {
+            showNotification('אירעה שגיאה בשליחת המשימה. נסה שוב מאוחר יותר.', 'warning');
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+          });
+      });
+      
+      successCloseBtn.addEventListener('click', function() {
+        successModal.classList.remove('active');
+        
+        taskForm.reset();
+        nameChips.forEach(btn => btn.classList.remove('selected'));
+        fileList.innerHTML = '';
+        uploadedFiles = [];
+        numFilesInput.value = '0';
+        customEmailGroup.style.display = 'none';
+        goToStep(1);
+      });
+      
+      // תאריך היום כברירת מחדל
+      const today = new Date();
+      const formattedToday = today.toISOString().split('T')[0];
+      document.getElementById('dueDate').value = formattedToday;
+      document.getElementById('dueDate').min = formattedToday;
+
+      // אתחול מערכת משתמשים
+      initUserSystem();
+    });
+  </script>
+</body>
+</html>

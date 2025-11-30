@@ -1,0 +1,9 @@
+target/
+Secrets*.toml
+.env
+.git/
+.gitignore
+README.md
+.vscode/
+.idea/
+*.log

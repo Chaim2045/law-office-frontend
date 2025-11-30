@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מערכת משימות - משרד עו"ד GH</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/modern-style.css">
+</head>
+<body>
+  <!-- ניווט עליון -->
+  <header class="app-header">
+    <div class="app-logo">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIiBmaWxsPSJub25lIj48cGF0aCBkPSJNMjAgMEM4Ljk1IDAgMCA4Ljk1IDAgMjBDMCAzMS4wNSA4Ljk1IDQwIDIwIDQwQzMxLjA1IDQwIDQwIDMxLjA1IDQwIDIwQzQwIDguOTUgMzEuMDUgMCAyMCAwWiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzEzNF8xNzIpIi8+PHBhdGggZD0iTTExIDE1TDIwIDI0TDI5IDE1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTExIDI0TDIwIDMzTDI5IDI0IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzEzNF8xNzIiIHgxPSI0MCIgeTE9IjIwIiB4Mj0iMCIgeTI9IjIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iIzI5NzlGRiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNDlEQiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjwvc3ZnPg==" alt="Logo">
+      <span>משרד עו"ד GH</span>
+    </div>
+
+    <div class="user-menu" id="userMenu">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="currentUserName">משתמש</div>
+        <div class="user-role">עורך דין</div>
+      </div>
+      <div class="user-menu-dropdown" id="userMenuDropdown">
+        <div class="dropdown-item" id="switchUserBtn">
+          <i class="fas fa-exchange-alt"></i>
+          <span>החלף משתמש</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item">
+          <a href="dashboard.html" style="display: flex; align-items: center; gap: var(--space-2); text-decoration: none; color: inherit;">
+            <i class="fas fa-chart-line"></i>
+            <span>לוח בקרה</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- כרטיס המשימות -->
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">הוספת משימה חדשה</h1>
+        <p class="card-subtitle">מערכת ניהול משימות - משרד עו"ד GH</p>
+      </div>
+
+      <div class="card-body">
+        <!-- מחוון צעדים -->
+        <div class="stepper" data-step="1">
+          <div class="stepper-progress"></div>
+
+          <div class="step active" data-step="1">
+            <div class="step-indicator">1</div>
+            <div class="step-label">פרטי המבקש</div>
+          </div>
+
+          <div class="step" data-step="2">
+            <div class="step-indicator">2</div>
+            <div class="step-label">תיאור משימה</div>
+          </div>
+
+          <div class="step" data-step="3">
+            <div class="step-indicator">3</div>
+            <div class="step-label">דחיפות</div>
+          </div>
+
+          <div class="step" data-step="4">
+            <div class="step-indicator">4</div>
+            <div class="step-label">אישור ושליחה</div>
+          </div>
+        </div>
+
+        <form id="taskForm">
+          <!-- שלב 1: פרטי המבקש -->
+          <div class="form-step active" data-step="1">
+            <div class="form-group">
+              <label class="form-label" for="requesterName">
+                <i class="form-icon fas fa-user"></i> שם המבקש/ת
+              </label>
+
+              <div class="name-chips">
+                <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
+                <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
+                <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
+                <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
+                <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
+                <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
+                <button type="button" class="name-chip" data-name="קרן" data-email="office@ghlawoffice.co.il">קרן</button>
+                <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
+                <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
+                <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
+                <button type="button" class="name-chip" data-name="עוז" data-email="Oz@brosh-finance.com">עוז</button>
+                <button type="button" class="name-chip" data-name="לירז" data-email="Liraz@siboni-law.com">לירז</button>
+              </div>
+
+              <input type="text" id="requesterName" name="requesterName" class="form-control" placeholder="או הקלד שם ידנית">
+              <input type="hidden" id="requesterEmail" name="requesterEmail">
+
+              <p class="form-hint">נא לבחור או להקליד את שם המבקש</p>
+            </div>
+
+            <div class="form-group" id="customEmailGroup" style="display: none;">
+              <label class="form-label" for="customEmail">
+                <i class="form-icon fas fa-envelope"></i> אימייל המבקש
+              </label>
+              <input type="email" id="customEmail" name="customEmail" class="form-control" placeholder="הזן אימייל לקבלת עדכונים">
+              <p class="form-hint">יש להזין אימייל עבור בקשות משתמשים חדשים</p>
+            </div>
+
+            <div class="nav-buttons">
+              <div></div>
+              <button type="button" class="btn btn-lg" id="nextToStep2">
+                המשך <i class="fas fa-arrow-left"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- שלב 2: תיאור משימה -->
+          <div class="form-step" data-step="2">
+            <div class="form-group">
+              <label class="form-label" for="taskDescription">
+                <i class="form-icon fas fa-tasks"></i> תיאור המשימה
+              </label>
+              <textarea id="taskDescription" name="taskDescription" class="form-control" placeholder="תאר את המשימה בפירוט" required></textarea>
+              <p class="form-hint">פרט ככל האפשר את דרישות המשימה והמטרות הנדרשות</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskCategory">
+                <i class="form-icon fas fa-tag"></i> סיווג משימה
+              </label>
+              <select id="taskCategory" name="taskCategory" class="form-control" required>
+                <option value="">-- בחר סיווג --</option>
+                <option value="משפטית">משפטית</option>
+                <option value="טכנית">טכנית</option>
+                <option value="מינהלית">מינהלית</option>
+                <option value="פיננסית">פיננסית</option>
+              </select>
+              <p class="form-hint">בחר את הסיווג המתאים למשימה</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="dueDate">
+                <i class="form-icon fas fa-calendar-alt"></i> תאריך יעד
+              </label>
+              <input type="date" id="dueDate" name="dueDate" class="form-control" required>
+              <p class="form-hint">מתי המשימה צריכה להסתיים?</p>
+            </div>
+
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="backToStep1">
+                <i class="fas fa-arrow-right"></i> חזרה
+              </button>
+              <button type="button" class="btn" id="nextToStep3">
+                המשך <i class="fas fa-arrow-left"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- שלב 3: דחיפות -->
+          <div class="form-step" data-step="3">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-flag"></i> דחיפות המשימה
+              </label>
+              <p class="form-hint">בחר את רמת הדחיפות המתאימה למשימה</p>
+
+              <div class="priority-options">
+                <div class="priority-option">
+                  <input type="radio" id="priority1" name="priority" value="רגילה" class="priority-input" checked>
+                  <label for="priority1" class="priority-card priority-normal">
+                    <div class="priority-icon">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="priority-content">
+                      <div class="priority-title">רגילה</div>
+                      <div class="priority-desc">טיפול סטנדרטי</div>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="priority-option">
+                  <input type="radio" id="priority2" name="priority" value="גבוהה" class="priority-input">
+                  <label for="priority2" class="priority-card priority-medium">
+                    <div class="priority-icon">
+                      <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="priority-content">
+                      <div class="priority-title">גבוהה</div>
+                      <div class="priority-desc">טיפול מהיר</div>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="priority-option">
+                  <input type="radio" id="priority3" name="priority" value="דחופה" class="priority-input">
+                  <label for="priority3" class="priority-card priority-high">
+                    <div class="priority-icon">
+                      <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="priority-content">
+                      <div class="priority-title">דחופה</div>
+                      <div class="priority-desc">טיפול מיידי</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="backToStep2">
+                <i class="fas fa-arrow-right"></i> חזרה
+              </button>
+              <button type="button" class="btn" id="nextToStep4">
+                סיום ואישור <i class="fas fa-check"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- שלב 4: אישור -->
+          <div class="form-step" data-step="4">
+            <div class="summary-section">
+              <h3 class="summary-title">סיכום פרטי המשימה</h3>
+
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-user"></i>
+                    <span>שם המבקש</span>
+                  </div>
+                  <div class="summary-value" id="previewName"></div>
+                </div>
+
+                <div class="summary-item hidden" id="previewEmailItem">
+                  <div class="summary-label">
+                    <i class="fas fa-envelope"></i>
+                    <span>אימייל</span>
+                  </div>
+                  <div class="summary-value" id="previewEmail"></div>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-tag"></i>
+                    <span>סיווג משימה</span>
+                  </div>
+                  <div class="summary-value" id="previewCategory"></div>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>תאריך יעד</span>
+                  </div>
+                  <div class="summary-value" id="previewDueDate"></div>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-label">
+                    <i class="fas fa-flag"></i>
+                    <span>דחיפות</span>
+                  </div>
+                  <div class="summary-value priority" id="previewPriority"></div>
+                </div>
+              </div>
+
+              <div class="summary-item" style="margin-top: var(--space-4);">
+                <div class="summary-label">
+                  <i class="fas fa-tasks"></i>
+                  <span>תיאור המשימה</span>
+                </div>
+                <div class="summary-value" id="previewDescription"></div>
+              </div>
+            </div>
+
+            <div class="nav-buttons">
+              <button type="button" class="btn btn-secondary" id="backToStep3">
+                <i class="fas fa-arrow-right"></i> חזרה לעריכה
+              </button>
+              <button type="submit" class="btn btn-lg">
+                שלח משימה <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- התראה -->
+  <div class="notification" id="notification" style="display: none;">
+    <div class="notification-icon info" id="notificationIcon">
+      <i class="fas fa-info-circle"></i>
+    </div>
+    <div class="notification-content">
+      <div class="notification-title" id="notificationTitle">הודעה</div>
+      <div class="notification-message" id="notificationMessage"></div>
+    </div>
+    <button class="notification-close" id="notificationClose">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- חלון הצלחה -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">השלמת משימה</h3>
+      </div>
+      <div class="modal-body">
+        <div class="success-icon">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 class="modal-heading">המשימה נשלחה בהצלחה</h3>
+        <p class="modal-message">המשימה נקלטה במערכת ותטופל בהקדם בהתאם לרמת הדחיפות שנבחרה.</p>
+        <p class="modal-message" id="taskIdDisplay"></p>
+        <button class="btn btn-block" id="successCloseBtn">
+          סגור
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- חלון אישור דחיפות גבוהה -->
+  <div class="priority-confirm-modal" id="priorityConfirmModal">
+    <div class="priority-confirm-dialog">
+      <div class="priority-confirm-header">
+        <div class="priority-confirm-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="priority-confirm-title">אישור דחיפות גבוהה</div>
+      </div>
+      <div class="priority-confirm-body">
+        <div class="priority-confirm-message">
+          האם אתה בטוח שהמשימה היא <strong>קריטית ודחופה מאוד</strong>?<br><br>
+          אנא אשר רק אם המשימה באמת דורשת טיפול מיידי.
+        </div>
+        <div class="priority-confirm-actions">
+          <button type="button" class="btn btn-secondary" id="priorityConfirmCancel">
+            <i class="fas fa-times"></i> לא, שנה לדחיפות רגילה
+          </button>
+          <button type="button" class="btn btn-danger" id="priorityConfirmOk">
+            <i class="fas fa-check"></i> כן, זו משימה קריטית
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודל החלפת משתמש -->
+  <div class="modal-overlay" id="userSwitchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">בחירת משתמש</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">בחר את המשתמש שלך</label>
+          <div class="name-chips" id="userSwitchChips">
+            <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
+            <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
+            <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
+            <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
+            <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
+            <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
+            <button type="button" class="name-chip" data-name="קרן" data-email="office@ghlawoffice.co.il">קרן</button>
+            <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
+            <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
+            <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
+            <button type="button" class="name-chip" data-name="עוז" data-email="Oz@brosh-finance.com">עוז</button>
+            <button type="button" class="name-chip" data-name="לירז" data-email="Liraz@siboni-law.com">לירז</button>
+          </div>
+        </div>
+        <button class="btn btn-block" id="confirmUserBtn">
+          אישור
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/modern-form.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# Rust
+/backend/target/
+/target/
+**/*.rs.bk
+/backend/Cargo.lock
+*.pdb
+
+# Shuttle & Secrets - NEVER commit these!
+.shuttle/
+Secrets.toml
+Secrets.dev.toml
+backend/Secrets.toml
+backend/Secrets.dev.toml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
