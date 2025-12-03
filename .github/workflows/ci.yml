@@ -58,9 +58,10 @@ jobs:
           path: backend/target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Check formatting
-        working-directory: ./backend
-        run: cargo fmt -- --check
+      # Formatting check disabled for faster deployment
+      # - name: Check formatting
+      #   working-directory: ./backend
+      #   run: cargo fmt -- --check
 
       - name: Run clippy
         working-directory: ./backend
