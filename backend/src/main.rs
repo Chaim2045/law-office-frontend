@@ -1,4 +1,4 @@
-// Law Office Task Management API - Production Ready
+// Law Office Task Management API - Production Ready v1.0
 mod db;
 mod handlers;
 mod models;
