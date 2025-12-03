@@ -52,12 +52,19 @@ jobs:
     - name: Install Shuttle CLI
       run: cargo install cargo-shuttle
 
+    - name: Initialize Shuttle Project
+      working-directory: ./backend
+      env:
+        SHUTTLE_API_KEY: ${{ secrets.SHUTTLE_API_KEY }}
+      run: |
+        cargo shuttle project start --name law-office-api || echo "Project already exists"
+
     - name: Deploy to Shuttle
       working-directory: ./backend
       env:
         SHUTTLE_API_KEY: ${{ secrets.SHUTTLE_API_KEY }}
       run: |
-        cargo shuttle deploy --allow-dirty
+        cargo shuttle deploy --allow-dirty --name law-office-api
 
     - name: Deployment Summary
       run: |
