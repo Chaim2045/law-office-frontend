@@ -1,0 +1,15 @@
+{
+  "name": "law-office-api",
+  "version": "1.0.0",
+  "description": "Law Office Task Management API - Netlify Functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

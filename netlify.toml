@@ -1,18 +1,29 @@
-# Netlify Configuration for Law Office Frontend
+# Netlify Configuration for Law Office Frontend + Backend
 [build]
   # הספרייה עם הקבצים לפרסום
   publish = "frontend"
 
-  # אין צורך בפקודת build כי זה HTML סטטי
-  command = "echo 'No build needed - static HTML'"
+  # Install dependencies for Netlify Functions
+  command = "npm install"
 
-# Redirects for SPA-like behavior
+  # Netlify Functions directory
+  functions = "netlify/functions"
+
+# Redirects API calls to Netlify Functions
 [[redirects]]
-  from = "/api/*"
-  to = "https://law-office-api.shuttleapp.rs/api/:splat"
+  from = "/api/tasks/*"
+  to = "/.netlify/functions/tasks/:splat"
   status = 200
-  force = true
-  headers = {X-From = "Netlify"}
+
+[[redirects]]
+  from = "/api/tasks"
+  to = "/.netlify/functions/tasks"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
 
 # Custom headers for security
 [[headers]]
