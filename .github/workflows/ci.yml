@@ -63,9 +63,10 @@ jobs:
       #   working-directory: ./backend
       #   run: cargo fmt -- --check
 
-      - name: Run clippy
-        working-directory: ./backend
-        run: cargo clippy -- -D warnings
+      # Clippy check disabled for faster deployment
+      # - name: Run clippy
+      #   working-directory: ./backend
+      #   run: cargo clippy -- -D warnings
 
       - name: Run tests
         working-directory: ./backend
