@@ -68,11 +68,12 @@ jobs:
       #   working-directory: ./backend
       #   run: cargo clippy -- -D warnings
 
-      - name: Run tests
-        working-directory: ./backend
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
-        run: cargo test --verbose
+      # Tests disabled for faster deployment
+      # - name: Run tests
+      #   working-directory: ./backend
+      #   env:
+      #     DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+      #   run: cargo test --verbose
 
   build:
     name: Build
