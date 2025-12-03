@@ -1,0 +1,5 @@
+[build]
+# Shuttle.rs deployment configuration
+
+[project]
+name = "law-office-api"
