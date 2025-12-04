@@ -404,7 +404,10 @@
 
             } catch (error) {
                 console.error('❌ שגיאה בטעינת משימות:', error);
-                document.getElementById('loading').textContent = '❌ שגיאה בטעינת משימות';
+                const tbody = document.getElementById('tasks-tbody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: red;">❌ שגיאה בטעינת משימות</td></tr>';
+                }
             }
         }
 
@@ -425,11 +428,13 @@
 
         // 🎨 רינדור משימות
         function renderTasks(tasks) {
-            const tbody = document.getElementById('tasks-body');
+            const tbody = document.getElementById('tasks-tbody');
+            if (!tbody) return;
+
             tbody.innerHTML = '';
 
             if (tasks.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">אין משימות להצגה</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">אין משימות להצגה</td></tr>';
                 return;
             }
 
@@ -454,27 +459,21 @@
 
         // 🔍 סינון משימות
         function setupFilters() {
-            const filters = ['filter-status', 'filter-user', 'filter-priority'];
-            filters.forEach(id => {
-                document.getElementById(id).addEventListener('change', applyFilters);
-            });
+            // Only setup filters that exist in the HTML
+            const statusFilter = document.getElementById('status-filter');
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilters);
+            }
         }
 
         function applyFilters() {
-            const status = document.getElementById('filter-status').value;
-            const user = document.getElementById('filter-user').value;
-            const priority = document.getElementById('filter-priority').value;
+            const statusFilter = document.getElementById('status-filter');
+            const status = statusFilter ? statusFilter.value : 'all';
 
             let filtered = allTasks;
 
-            if (status) {
+            if (status && status !== 'all') {
                 filtered = filtered.filter(t => t.status === status);
-            }
-            if (user) {
-                filtered = filtered.filter(t => t.assigned_to === user);
-            }
-            if (priority) {
-                filtered = filtered.filter(t => t.priority === priority);
             }
 
             renderTasks(filtered);
@@ -508,8 +507,11 @@
 
         // 🛠️ פונקציות עזר
         function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            document.getElementById('tasks-table').style.display = show ? 'none' : 'table';
+            // Simply show/hide the tbody loading message
+            const tbody = document.getElementById('tasks-tbody');
+            if (tbody && show) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> טוען משימות...</td></tr>';
+            }
         }
 
         function getStatusClass(status) {
