@@ -1,6 +1,8 @@
 // Netlify Function for Task Management API
 // Using Supabase REST API directly with fetch
 
+const fetch = require('node-fetch');
+
 // CORS headers
 const headers = {
   'Access-Control-Allow-Origin': '*',
