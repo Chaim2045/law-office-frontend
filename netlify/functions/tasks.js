@@ -36,10 +36,11 @@ exports.handler = async (event, context) => {
 
   try {
     const supabase = getSupabaseClient();
-    const path = event.path.replace('/.netlify/functions/tasks', '');
+
+    console.log('Request:', event.httpMethod, event.path);
 
     // GET /api/tasks - List all tasks
-    if (event.httpMethod === 'GET' && path === '') {
+    if (event.httpMethod === 'GET') {
       const { data, error } = await supabase
         .from('tasks')
         .select('*')
@@ -55,7 +56,7 @@ exports.handler = async (event, context) => {
     }
 
     // POST /api/tasks - Create new task
-    if (event.httpMethod === 'POST' && path === '') {
+    if (event.httpMethod === 'POST') {
       const taskData = JSON.parse(event.body);
 
       const { data, error } = await supabase
@@ -80,64 +81,6 @@ exports.handler = async (event, context) => {
         statusCode: 201,
         headers,
         body: JSON.stringify(data)
-      };
-    }
-
-    // GET /api/tasks/:id - Get single task
-    if (event.httpMethod === 'GET' && path.startsWith('/')) {
-      const id = path.substring(1);
-
-      const { data, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (error) throw error;
-
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify(data)
-      };
-    }
-
-    // PUT /api/tasks/:id - Update task
-    if (event.httpMethod === 'PUT' && path.startsWith('/')) {
-      const id = path.substring(1);
-      const updates = JSON.parse(event.body);
-
-      const { data, error } = await supabase
-        .from('tasks')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify(data)
-      };
-    }
-
-    // DELETE /api/tasks/:id - Delete task
-    if (event.httpMethod === 'DELETE' && path.startsWith('/')) {
-      const id = path.substring(1);
-
-      const { error } = await supabase
-        .from('tasks')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      return {
-        statusCode: 204,
-        headers,
-        body: ''
       };
     }
 
