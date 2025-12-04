@@ -377,10 +377,8 @@
     <div id="status-message" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 12px 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 9999;"></div>
 
     <script src="js/config.js"></script>
-    <script src="js/dashboard.js"></script>
+    <!-- Using inline script instead of external dashboard.js to avoid conflicts -->
     <script>
-        // ⚙️ Script inline for backward compatibility
-
         let allTasks = [];
 
         // 🚀 טעינה ראשונית
@@ -394,15 +392,15 @@
             try {
                 showLoading(true);
 
-                const response = await fetch(${API_URL}/api/tasks);
+                const response = await fetch(`${window.API_URL}/api/tasks`);
                 const data = await response.json();
 
-                allTasks = data.tasks;
-                updateStatistics(data.tasks);
-                renderTasks(data.tasks);
+                allTasks = data;
+                updateStatistics(data);
+                renderTasks(data);
 
                 showLoading(false);
-                console.log(✅ נטענו  משימות ב-ms);
+                console.log(`✅ נטענו ${data.length} משימות`);
 
             } catch (error) {
                 console.error('❌ שגיאה בטעינת משימות:', error);
@@ -437,19 +435,19 @@
 
             tasks.forEach(task => {
                 const row = document.createElement('tr');
-                row.innerHTML = 
-                    <td><strong></strong></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><span class="status-badge status-"></span></td>
-                    <td><span class="priority-badge priority-"></span></td>
-                    <td></td>
-                    <td></td>
+                row.innerHTML = `
+                    <td><strong>${task.task_id || task.id}</strong></td>
+                    <td>${task.title}</td>
+                    <td>${task.assigned_to}</td>
+                    <td>${task.category}</td>
+                    <td><span class="status-badge status-${task.status}">${task.status}</span></td>
+                    <td><span class="priority-badge priority-${task.priority}">${task.priority}</span></td>
+                    <td>${task.due_date || task.deadline || '-'}</td>
+                    <td>${new Date(task.created_at).toLocaleDateString('he-IL')}</td>
                     <td>
-                        <button class="btn btn-edit" onclick="editTask('')">✏️ ערוך</button>
+                        <button class="btn btn-edit" onclick="viewTask('${task.id}')">👁️ צפה</button>
                     </td>
-                ;
+                `;
                 tbody.appendChild(row);
             });
         }
@@ -482,10 +480,25 @@
             renderTasks(filtered);
         }
 
+        // 👁️ צפייה במשימה
+        function viewTask(taskId) {
+            const task = allTasks.find(t => t.id === taskId);
+            if (task) {
+                alert(`📋 משימה: ${task.title}\n\n` +
+                      `📌 סטטוס: ${task.status}\n` +
+                      `👤 מוטל על: ${task.assigned_to}\n` +
+                      `📧 אימייל: ${task.assigned_to_email || task.assigned_email}\n` +
+                      `⚡ עדיפות: ${task.priority}\n` +
+                      `📁 קטגוריה: ${task.category}\n` +
+                      `📅 תאריך יעד: ${task.due_date || task.deadline || 'לא הוגדר'}\n` +
+                      `📝 תיאור: ${task.description || 'אין תיאור'}`);
+            }
+        }
+
         // ✏️ עריכת משימה
         function editTask(taskId) {
             // TODO: פתיחת modal לעריכה
-            alert(עריכת משימה: );
+            alert(`עריכת משימה: ${taskId}`);
         }
 
         // 🔄 רענון
