@@ -1,25 +1,5 @@
 // Netlify Function for Task Management API
-// Handles CRUD operations for tasks
-
-const { createClient } = require('@supabase/supabase-js');
-
-// Initialize Supabase client
-const getSupabaseClient = () => {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-  console.log('Env check:', {
-    hasUrl: !!supabaseUrl,
-    hasKey: !!supabaseKey,
-    url: supabaseUrl ? supabaseUrl.substring(0, 20) + '...' : 'missing'
-  });
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error(`Missing Supabase credentials - URL: ${!!supabaseUrl}, Key: ${!!supabaseKey}`);
-  }
-
-  return createClient(supabaseUrl, supabaseKey);
-};
+// Using Supabase REST API directly with fetch
 
 // CORS headers
 const headers = {
@@ -29,7 +9,6 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
-// Main handler
 exports.handler = async (event, context) => {
   // Handle preflight requests
   if (event.httpMethod === 'OPTIONS') {
@@ -40,19 +19,44 @@ exports.handler = async (event, context) => {
     };
   }
 
-  try {
-    const supabase = getSupabaseClient();
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
+  console.log('Environment check:', {
+    hasUrl: !!supabaseUrl,
+    hasKey: !!supabaseKey
+  });
+
+  if (!supabaseUrl || !supabaseKey) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        error: 'Missing Supabase credentials',
+        hasUrl: !!supabaseUrl,
+        hasKey: !!supabaseKey
+      })
+    };
+  }
+
+  try {
     console.log('Request:', event.httpMethod, event.path);
 
     // GET /api/tasks - List all tasks
     if (event.httpMethod === 'GET') {
-      const { data, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const response = await fetch(`${supabaseUrl}/rest/v1/tasks?select=*&order=created_at.desc`, {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(JSON.stringify(data));
+      }
 
       return {
         statusCode: 200,
@@ -65,28 +69,39 @@ exports.handler = async (event, context) => {
     if (event.httpMethod === 'POST') {
       const taskData = JSON.parse(event.body);
 
-      const { data, error } = await supabase
-        .from('tasks')
-        .insert([{
-          title: taskData.title,
-          description: taskData.description,
-          assigned_to: taskData.assigned_to,
-          assigned_email: taskData.assigned_email,
-          priority: taskData.priority,
-          category: taskData.category,
-          status: taskData.status || 'חדשה',
-          deadline: taskData.deadline,
-          created_by: taskData.created_by
-        }])
-        .select()
-        .single();
+      const newTask = {
+        title: taskData.title,
+        description: taskData.description,
+        assigned_to: taskData.assigned_to,
+        assigned_email: taskData.assigned_email,
+        priority: taskData.priority,
+        category: taskData.category,
+        status: taskData.status || 'חדשה',
+        deadline: taskData.deadline,
+        created_by: taskData.created_by
+      };
 
-      if (error) throw error;
+      const response = await fetch(`${supabaseUrl}/rest/v1/tasks`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(newTask)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(JSON.stringify(data));
+      }
 
       return {
         statusCode: 201,
         headers,
-        body: JSON.stringify(data)
+        body: JSON.stringify(data[0])
       };
     }
 
