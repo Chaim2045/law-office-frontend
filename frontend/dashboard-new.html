@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>לוח משימות - משרד עו"ד GH</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/modern-style.css">
+  <link rel="stylesheet" href="css/dashboard-style.css">
+</head>
+<body>
+  <!-- ניווט עליון -->
+  <header class="app-header">
+    <div class="app-logo">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIiBmaWxsPSJub25lIj48cGF0aCBkPSJNMjAgMEM4Ljk1IDAgMCA4Ljk1IDAgMjBDMCAzMS4wNSA4Ljk1IDQwIDIwIDQwQzMxLjA1IDQwIDQwIDMxLjA1IDQwIDIwQzQwIDguOTUgMzEuMDUgMCAyMCAwWiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzEzNF8xNzIpIi8+PHBhdGggZD0iTTExIDE1TDIwIDI0TDI5IDE1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTExIDI0TDIwIDMzTDI5IDI0IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzEzNF8xNzIiIHgxPSI0MCIgeTE9IjIwIiB4Mj0iMCIgeTI9IjIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iIzI5NzlGRiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNDlEQiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjwvc3ZnPg==" alt="Logo">
+      <span>משרד עו"ד GH</span>
+    </div>
+
+    <div class="user-menu" id="userMenu">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="currentUserName">משתמש</div>
+        <div class="user-role">עורך דין</div>
+      </div>
+      <div class="user-menu-dropdown" id="userMenuDropdown">
+        <div class="dropdown-item" id="switchUserBtn">
+          <i class="fas fa-exchange-alt"></i>
+          <span>החלף משתמש</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item">
+          <a href="index.html" style="display: flex; align-items: center; gap: var(--space-2); text-decoration: none; color: inherit;">
+            <i class="fas fa-plus-circle"></i>
+            <span>משימה חדשה</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- כרטיס לוח המשימות -->
+    <div class="card dashboard-card">
+      <div class="card-header">
+        <div>
+          <h1 class="card-title">לוח משימות</h1>
+          <p class="card-subtitle">מערכת ניהול משימות - משרד עו"ד GH</p>
+        </div>
+        <button class="btn btn-primary" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i>
+          <span>רענן</span>
+        </button>
+      </div>
+
+      <div class="card-body">
+        <!-- סטטיסטיקות -->
+        <div class="stats-grid">
+          <div class="stat-card stat-total">
+            <div class="stat-icon">
+              <i class="fas fa-tasks"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="totalTasks">0</div>
+              <div class="stat-label">סך הכל משימות</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-new">
+            <div class="stat-icon">
+              <i class="fas fa-plus-circle"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="newTasks">0</div>
+              <div class="stat-label">משימות חדשות</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-progress">
+            <div class="stat-icon">
+              <i class="fas fa-spinner"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="inProgressTasks">0</div>
+              <div class="stat-label">בטיפול</div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-completed">
+            <div class="stat-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="completedTasks">0</div>
+              <div class="stat-label">הושלמו</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- סינון וחיפוש -->
+        <div class="filters-section">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="form-icon fas fa-search"></i> חיפוש משימות
+            </label>
+            <input
+              type="text"
+              id="searchInput"
+              class="form-control"
+              placeholder="חפש לפי כותרת, שם מבצע או קטגוריה..."
+            >
+          </div>
+
+          <div class="filters-row">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-filter"></i> סטטוס
+              </label>
+              <select id="statusFilter" class="form-control">
+                <option value="all">כל הסטטוסים</option>
+                <option value="חדשה">חדשה</option>
+                <option value="בטיפול">בטיפול</option>
+                <option value="הושלמה">הושלמה</option>
+                <option value="בוטלה">בוטלה</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-flag"></i> עדיפות
+              </label>
+              <select id="priorityFilter" class="form-control">
+                <option value="all">כל העדיפויות</option>
+                <option value="דחופה">דחופה</option>
+                <option value="גבוהה">גבוהה</option>
+                <option value="רגילה">רגילה</option>
+                <option value="נמוכה">נמוכה</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-folder"></i> קטגוריה
+              </label>
+              <select id="categoryFilter" class="form-control">
+                <option value="all">כל הקטגוריות</option>
+                <option value="משפטית">משפטית</option>
+                <option value="טכנית">טכנית</option>
+                <option value="מינהלית">מינהלית</option>
+                <option value="פיננסית">פיננסית</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- תוצאות -->
+        <div class="results-info">
+          <span id="resultsCount">טוען משימות...</span>
+        </div>
+
+        <!-- רשימת משימות -->
+        <div class="tasks-container" id="tasksContainer">
+          <!-- משימות יוצגו כאן דינמית -->
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>טוען משימות...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודל צפייה במשימה -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title">פרטי משימה</h3>
+        <button class="modal-close" id="closeTaskModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="taskModalContent">
+        <!-- תוכן המשימה יוצג כאן -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודל החלפת משתמש -->
+  <div class="modal-overlay" id="userSwitchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">בחירת משתמש</h3>
+        <button class="modal-close" onclick="document.getElementById('userSwitchModal').classList.remove('active')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">בחר את המשתמש שלך</label>
+          <div class="name-chips" id="userSwitchChips">
+            <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
+            <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
+            <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
+            <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
+            <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
+            <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
+            <button type="button" class="name-chip" data-name="קרן" data-email="office@ghlawoffice.co.il">קרן</button>
+            <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
+            <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
+            <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- הודעות הצלחה/שגיאה -->
+  <div class="notification" id="notification"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/dashboard-modern.js"></script>
+</body>
+</html>
