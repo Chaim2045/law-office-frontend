@@ -22,6 +22,12 @@ const headers = {
 
 /**
  * Maps frontend task data structure to Supabase schema
+ * IMPORTANT: Only maps fields that exist in Supabase table!
+ * Current Supabase schema fields:
+ * - id, title, description, assigned_to, assigned_email
+ * - priority, category, status, deadline, created_by
+ * - created_at, updated_at
+ *
  * @param {Object} frontendTask - Task data from frontend
  * @returns {Object} Supabase-compatible task object
  */
@@ -36,19 +42,18 @@ function mapFrontendToSupabase(frontendTask) {
     assigned_to: frontendTask.assigned_to,
     assigned_email: frontendTask.assigned_to_email || frontendTask.assigned_email,
 
-    // Creator fields - NEW: now mapped properly
+    // Creator field (no email field in DB!)
     created_by: frontendTask.created_by,
-    created_by_email: frontendTask.created_by_email || null,
+    // NOTE: created_by_email is not stored in Supabase (field doesn't exist)
 
     // Date fields - MAP: due_date -> deadline
     deadline: frontendTask.due_date || frontendTask.deadline || null,
 
     // Status and priority
     priority: frontendTask.priority || 'רגילה',
-    status: frontendTask.status || 'חדשה',
+    status: frontendTask.status || 'חדשה'
 
-    // Additional fields
-    notes: frontendTask.notes || null
+    // NOTE: 'notes' field doesn't exist in current Supabase schema
   };
 }
 
@@ -190,8 +195,10 @@ exports.handler = async (event) => {
       console.log('📋 Received task data:', {
         title: frontendTaskData.title,
         assigned_to: frontendTaskData.assigned_to,
-        has_assigned_email: !!frontendTaskData.assigned_to_email,
-        has_created_by_email: !!frontendTaskData.created_by_email
+        has_assigned_to_email: !!frontendTaskData.assigned_to_email,
+        has_created_by_email: !!frontendTaskData.created_by_email,
+        has_due_date: !!frontendTaskData.due_date,
+        priority: frontendTaskData.priority
       });
 
       // Validate incoming data
@@ -212,11 +219,12 @@ exports.handler = async (event) => {
       // Transform frontend data to Supabase schema
       const supabaseTask = mapFrontendToSupabase(frontendTaskData);
 
-      console.log('🔄 Transformed to Supabase format:', {
+      console.log('🔄 Mapped to Supabase schema:', {
         assigned_email: supabaseTask.assigned_email,
-        created_by_email: supabaseTask.created_by_email,
+        created_by: supabaseTask.created_by,
         deadline: supabaseTask.deadline,
-        notes: supabaseTask.notes
+        status: supabaseTask.status,
+        priority: supabaseTask.priority
       });
 
       // Send to Supabase
