@@ -6,8 +6,8 @@ const API_CONFIG = {
     // Local development
     LOCAL: 'http://localhost:8000',
 
-    // Production
-    PRODUCTION: 'https://law-office-api.shuttleapp.rs',
+    // Production - Netlify Functions
+    PRODUCTION: 'https://famous-truffle-5a1846.netlify.app',
 
     // Current environment
     get BASE_URL() {
