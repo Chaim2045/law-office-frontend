@@ -100,7 +100,7 @@ function initializeUser() {
       const pageSubtitle = document.querySelector('.card-subtitle-clean');
 
       if (pageTitle && pageSubtitle) {
-        if (isSecretary()) {
+        if (isOfficeManager()) {
           pageTitle.textContent = 'דשבורד מזכירה';
           pageSubtitle.textContent = 'ניהול כל המשימות במשרד';
         } else {
@@ -184,7 +184,7 @@ async function loadTasks(silent = false) {
     let tasks = Array.isArray(data) ? data : [];
 
     // Filter tasks based on user role
-    if (isSecretary()) {
+    if (isOfficeManager()) {
       // Secretary sees ALL tasks
       allTasks = tasks;
       console.log(`👑 מזכירה - מציג את כל ${tasks.length} המשימות`);
@@ -244,6 +244,11 @@ function updateStatistics() {
   animateValue('newTasks', newTasks);
   animateValue('inProgressTasks', inProgress);
   animateValue('completedTasks', completed);
+
+  // Update tab badges
+  if (typeof updateTabBadges === 'function') {
+    updateTabBadges();
+  }
 }
 
 function animateValue(elementId, value) {
@@ -268,6 +273,16 @@ function applyFilters() {
   const categoryFilter = document.getElementById('categoryFilter').value;
 
   filteredTasks = allTasks.filter(task => {
+    // Tab filter - Active or Completed
+    let tabMatch = true;
+    if (currentTab === 'active') {
+      // Active tasks: all except הושלמה and בוטלה
+      tabMatch = task.status !== 'הושלמה' && task.status !== 'בוטלה';
+    } else if (currentTab === 'completed') {
+      // Completed tasks: הושלמה or בוטלה
+      tabMatch = task.status === 'הושלמה' || task.status === 'בוטלה';
+    }
+
     // Search filter
     const searchMatch = !searchTerm ||
       task.title.toLowerCase().includes(searchTerm) ||
@@ -284,7 +299,7 @@ function applyFilters() {
     // Category filter
     const categoryMatch = categoryFilter === 'all' || task.category === categoryFilter;
 
-    return searchMatch && statusMatch && priorityMatch && categoryMatch;
+    return tabMatch && searchMatch && statusMatch && priorityMatch && categoryMatch;
   });
 
   renderTasks();
@@ -385,7 +400,7 @@ function createTaskCard(task) {
         </div>
       </div>
 
-      ${isSecretary() ? `
+      ${isOfficeManager() ? `
         <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid #e5e7eb;">
           <button class="btn-update-task" onclick="openUpdateModal('${task.id}', event)">
             <i class="fas fa-edit"></i>
