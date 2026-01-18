@@ -65,7 +65,7 @@
   /* כללי */
   --transition: 150ms ease-out;
   --nav-height: 64px;
-  --page-width: 1200px;
+  --page-width: 100%;
 }
 
 /* גוף המסמך - רקע לבן תמיד */
@@ -82,13 +82,16 @@ html, body {
 /* מיכל */
 .container {
   width: 100%;
-  max-width: var(--page-width);
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-4);
 }
 
 @media (min-width: 768px) {
-  .container { padding: 0 var(--space-8); }
+  .container {
+    padding: 0 var(--space-8);
+    max-width: 100%;
+  }
 }
 
 /* ניווט עליון - רקע לבן נקי */
