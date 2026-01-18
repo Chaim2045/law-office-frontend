@@ -1,11 +1,89 @@
 /* ================================================
-   Dashboard Styles - Modern Design
+   Dashboard Styles - Clean Design for Secretary
    ================================================ */
 
 /* Dashboard Card */
 .dashboard-card {
   margin-top: var(--space-6);
   margin-bottom: var(--space-6);
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Clean Header - No gradients, white background */
+.card-header-clean {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6);
+  background: #ffffff;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.card-title-clean {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1c23;
+  margin-bottom: var(--space-1);
+}
+
+.card-subtitle-clean {
+  font-size: var(--font-size-sm);
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.btn-clean {
+  background: #ffffff;
+  color: #4a4e61;
+  border: 1px solid #e5e7eb;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.btn-clean:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn-primary-clean {
+  background: #0049db;
+  color: #ffffff;
+  border: 1px solid #0049db;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+}
+
+.btn-primary-clean:hover {
+  background: #003bb5;
+  border-color: #003bb5;
 }
 
 .card-header {
@@ -16,7 +94,7 @@
   gap: var(--space-4);
 }
 
-/* Stats Grid */
+/* Stats Grid - Clean white background */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -25,26 +103,27 @@
 }
 
 .stat-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   padding: var(--space-5);
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  transition: all var(--transition);
+  transition: all 0.15s;
   cursor: default;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
 }
 
 .stat-icon {
   width: 56px;
   height: 56px;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,24 +131,25 @@
   flex-shrink: 0;
 }
 
+/* Clean minimal colors for stat icons */
 .stat-total .stat-icon {
-  background: rgba(41, 121, 255, 0.1);
-  color: var(--color-primary-light);
+  background: #f3f4f6;
+  color: #4b5563;
 }
 
 .stat-new .stat-icon {
-  background: rgba(0, 210, 202, 0.1);
-  color: var(--color-secondary);
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .stat-progress .stat-icon {
-  background: rgba(249, 168, 37, 0.1);
-  color: var(--color-warning);
+  background: #fef3c7;
+  color: #d97706;
 }
 
 .stat-completed .stat-icon {
-  background: rgba(0, 208, 108, 0.1);
-  color: var(--color-success);
+  background: #d1fae5;
+  color: #059669;
 }
 
 .stat-content {
@@ -90,11 +170,11 @@
   font-weight: 500;
 }
 
-/* Filters Section */
+/* Filters Section - Clean white design */
 .filters-section {
-  background: rgba(0, 73, 219, 0.02);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   padding: var(--space-5);
   margin-bottom: var(--space-5);
 }
@@ -106,17 +186,18 @@
   margin-top: var(--space-4);
 }
 
-/* Results Info */
+/* Results Info - Clean minimal */
 .results-info {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--font-size-sm);
-  color: var(--color-text-medium);
+  color: #6b7280;
   margin-bottom: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  background: rgba(0, 73, 219, 0.02);
-  border-radius: var(--radius-sm);
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 /* Tasks Container */
@@ -144,13 +225,13 @@
   margin-bottom: var(--space-3);
 }
 
-/* Task Card */
+/* Task Card - Clean minimal design */
 .task-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   padding: var(--space-5);
-  transition: all var(--transition);
+  transition: all 0.15s;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -163,29 +244,30 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  transition: all var(--transition);
+  transition: all 0.15s;
 }
 
 .task-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-primary-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #0049db;
 }
 
+/* Clean priority indicators */
 .task-card.priority-דחופה::before {
-  background: var(--color-danger);
+  background: #dc2626;
 }
 
 .task-card.priority-גבוהה::before {
-  background: var(--color-warning);
+  background: #f59e0b;
 }
 
 .task-card.priority-רגילה::before {
-  background: var(--color-info);
+  background: #3b82f6;
 }
 
 .task-card.priority-נמוכה::before {
-  background: var(--color-text-subtle);
+  background: #9ca3af;
 }
 
 .task-header {
@@ -245,13 +327,13 @@
   opacity: 0.7;
 }
 
-/* Badges */
+/* Badges - Clean minimal design */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  border-radius: 6px;
   font-size: var(--font-size-xs);
   font-weight: 500;
   white-space: nowrap;
@@ -261,61 +343,65 @@
   border: 1px solid;
 }
 
+/* Status badges - clean colors */
 .badge-status.status-חדשה {
-  background: rgba(0, 210, 202, 0.1);
-  color: var(--color-secondary);
-  border-color: var(--color-secondary);
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
 }
 
 .badge-status.status-בטיפול {
-  background: rgba(249, 168, 37, 0.1);
-  color: var(--color-warning);
-  border-color: var(--color-warning);
+  background: #fef3c7;
+  color: #d97706;
+  border-color: #fcd34d;
 }
 
 .badge-status.status-הושלמה {
-  background: rgba(0, 208, 108, 0.1);
-  color: var(--color-success);
-  border-color: var(--color-success);
+  background: #d1fae5;
+  color: #059669;
+  border-color: #6ee7b7;
 }
 
 .badge-status.status-בוטלה {
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--color-text-medium);
-  border-color: var(--color-text-subtle);
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: #d1d5db;
 }
 
 .badge-priority {
   border: 1px solid;
 }
 
+/* Priority badges - clear visual hierarchy */
 .badge-priority.priority-דחופה {
-  background: rgba(255, 60, 95, 0.1);
-  color: var(--color-danger);
-  border-color: var(--color-danger);
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+  font-weight: 600;
 }
 
 .badge-priority.priority-גבוהה {
-  background: rgba(249, 168, 37, 0.1);
-  color: var(--color-warning);
-  border-color: var(--color-warning);
+  background: #fed7aa;
+  color: #ea580c;
+  border-color: #fdba74;
 }
 
 .badge-priority.priority-רגילה {
-  background: rgba(0, 188, 212, 0.1);
-  color: var(--color-info);
-  border-color: var(--color-info);
+  background: #dbeafe;
+  color: #2563eb;
+  border-color: #93c5fd;
 }
 
 .badge-priority.priority-נמוכה {
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--color-text-medium);
-  border-color: var(--color-text-subtle);
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: #d1d5db;
 }
 
 .badge-category {
-  background: rgba(0, 73, 219, 0.05);
-  color: var(--color-primary);
+  background: #ede9fe;
+  color: #7c3aed;
+  border: 1px solid #c4b5fd;
 }
 
 /* Modal Large */
@@ -397,4 +483,89 @@
   .stat-value {
     font-size: 1.5rem;
   }
+}
+
+/* ================================================
+   Update Task Button (Secretary Only)
+   ================================================ */
+
+.btn-update-task {
+  width: 100%;
+  background: #0049db;
+  color: #ffffff;
+  border: none;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.btn-update-task:hover {
+  background: #003bb5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 73, 219, 0.2);
+}
+
+.btn-update-task:active {
+  transform: translateY(0);
+}
+
+/* ================================================
+   Notification - Clean Design
+   ================================================ */
+
+.notification {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: var(--space-3) var(--space-4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+  min-width: 300px;
+}
+
+.notification.active {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: all;
+}
+
+.notification i {
+  font-size: 20px;
+}
+
+.notification.success {
+  border-color: #6ee7b7;
+  background: #d1fae5;
+  color: #059669;
+}
+
+.notification.error {
+  border-color: #fca5a5;
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.notification.info {
+  border-color: #93c5fd;
+  background: #dbeafe;
+  color: #1e40af;
 }

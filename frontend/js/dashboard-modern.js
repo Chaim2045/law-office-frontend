@@ -1,21 +1,38 @@
 // ================================================
-// Modern Dashboard Handler
+// Modern Dashboard Handler - Secretary Interface
 // ================================================
 
 let allTasks = [];
 let filteredTasks = [];
+let lastRefreshTime = null;
+
+// Secretary email addresses - these users see ALL tasks
+const SECRETARY_EMAILS = [
+  'office@ghlawoffice.co.il',
+  'shani@ghlawoffice.co.il',
+  'miri@ghlawoffice.co.il'
+];
+
+// Check if current user is secretary
+function isSecretary() {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{"email":"guest@ghlawoffice.co.il"}');
+  return SECRETARY_EMAILS.includes(currentUser.email.toLowerCase());
+}
 
 // ================================================
 // Initialization
 // ================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 דשבורד מזכירה - טוען...');
   initializeUser();
   setupEventListeners();
   loadTasks();
 
-  // Auto-refresh every 30 seconds
-  setInterval(loadTasks, 30000);
+  // Auto-refresh every 60 seconds (reduced from 30)
+  setInterval(() => {
+    loadTasks(true); // Silent refresh
+  }, 60000);
 });
 
 // ================================================
@@ -27,6 +44,20 @@ function initializeUser() {
 
   document.getElementById('currentUserName').textContent = currentUser.name;
   document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+
+  // Update page title based on user role
+  const pageTitle = document.querySelector('.card-title-clean');
+  const pageSubtitle = document.querySelector('.card-subtitle-clean');
+
+  if (pageTitle && pageSubtitle) {
+    if (isSecretary()) {
+      pageTitle.textContent = 'דשבורד מזכירה';
+      pageSubtitle.textContent = 'ניהול כל המשימות במשרד';
+    } else {
+      pageTitle.textContent = `דשבורד - ${currentUser.name}`;
+      pageSubtitle.textContent = 'המשימות שלי';
+    }
+  }
 
   // User menu toggle
   const userMenu = document.getElementById('userMenu');
@@ -59,6 +90,23 @@ function initializeUser() {
       document.getElementById('userAvatar').textContent = name.charAt(0);
 
       document.getElementById('userSwitchModal').classList.remove('active');
+
+      // Update page title and reload tasks
+      const pageTitle = document.querySelector('.card-title-clean');
+      const pageSubtitle = document.querySelector('.card-subtitle-clean');
+
+      if (pageTitle && pageSubtitle) {
+        if (isSecretary()) {
+          pageTitle.textContent = 'דשבורד מזכירה';
+          pageSubtitle.textContent = 'ניהול כל המשימות במשרד';
+        } else {
+          pageTitle.textContent = `דשבורד - ${name}`;
+          pageSubtitle.textContent = 'המשימות שלי';
+        }
+      }
+
+      // Reload tasks for new user
+      loadTasks();
 
       showNotification(`התחבר כ-${name}`, 'success');
     });
@@ -107,35 +155,74 @@ function setupEventListeners() {
 // Load Tasks
 // ================================================
 
-async function loadTasks() {
+async function loadTasks(silent = false) {
   const container = document.getElementById('tasksContainer');
-  container.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>טוען משימות...</p></div>';
+
+  if (!silent) {
+    container.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>טוען משימות...</p></div>';
+  }
 
   try {
-    const response = await fetch(`${window.API_URL}/api/tasks`);
+    console.log(`📥 טוען משימות מ-API: ${window.API_URL}/api/tasks`);
+
+    const response = await fetch(`${window.API_URL}/api/tasks`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    allTasks = await response.json();
+    const data = await response.json();
+    let tasks = Array.isArray(data) ? data : [];
+
+    // Filter tasks based on user role
+    if (isSecretary()) {
+      // Secretary sees ALL tasks
+      allTasks = tasks;
+      console.log(`👑 מזכירה - מציג את כל ${tasks.length} המשימות`);
+    } else {
+      // Regular user sees only their own tasks
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      allTasks = tasks.filter(task =>
+        task.created_by === currentUser.name ||
+        task.created_by_email === currentUser.email
+      );
+      console.log(`👤 משתמש רגיל - מציג ${allTasks.length} מתוך ${tasks.length} משימות`);
+    }
+
     filteredTasks = [...allTasks];
 
+    lastRefreshTime = new Date();
     updateStatistics();
     applyFilters();
 
-    console.log(`✅ Loaded ${allTasks.length} tasks`);
+    console.log(`✅ נטענו ${allTasks.length} משימות בהצלחה`);
+
+    if (!silent) {
+      showNotification(`נטענו ${allTasks.length} משימות`, 'success');
+    }
 
   } catch (error) {
-    console.error('Error loading tasks:', error);
+    console.error('❌ שגיאה בטעינת המשימות:', error);
     container.innerHTML = `
       <div class="empty-state">
-        <i class="fas fa-exclamation-triangle"></i>
-        <p>שגיאה בטעינת המשימות</p>
-        <button class="btn btn-primary" onclick="loadTasks()">נסה שוב</button>
+        <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
+        <p style="color: #6b7280; margin: var(--space-3) 0;">שגיאה בטעינת המשימות</p>
+        <p style="font-size: var(--font-size-sm); color: #9ca3af; margin-bottom: var(--space-4);">${error.message}</p>
+        <button class="btn btn-primary-clean" onclick="loadTasks()">
+          <i class="fas fa-sync-alt"></i>
+          נסה שוב
+        </button>
       </div>
     `;
-    showNotification('שגיאה בטעינת המשימות', 'error');
+
+    if (!silent) {
+      showNotification('שגיאה בטעינת המשימות', 'error');
+    }
   }
 }
 
@@ -293,6 +380,15 @@ function createTaskCard(task) {
           <span>נוצר ${createdDate}</span>
         </div>
       </div>
+
+      ${isSecretary() ? `
+        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid #e5e7eb;">
+          <button class="btn-update-task" onclick="openUpdateModal('${task.id}', event)">
+            <i class="fas fa-edit"></i>
+            <span>עדכן משימה</span>
+          </button>
+        </div>
+      ` : ''}
     </div>
   `;
 }
@@ -399,19 +495,221 @@ function showTaskModal(task) {
 }
 
 // ================================================
-// Notification
+// Notification - Clean & Simple
 // ================================================
 
 function showNotification(message, type = 'success') {
   const notification = document.getElementById('notification');
 
-  notification.textContent = message;
+  // Icon based on type
+  const icons = {
+    success: '<i class="fas fa-check-circle"></i>',
+    error: '<i class="fas fa-exclamation-circle"></i>',
+    info: '<i class="fas fa-info-circle"></i>'
+  };
+
+  notification.innerHTML = `
+    ${icons[type] || icons.info}
+    <span>${message}</span>
+  `;
+
   notification.className = `notification ${type} active`;
 
   setTimeout(() => {
     notification.classList.remove('active');
   }, 3000);
 }
+
+// ================================================
+// Update Task Modal (Secretary Only)
+// ================================================
+
+let currentTaskBeingUpdated = null;
+
+function openUpdateModal(taskId, event) {
+  // Prevent card click event from firing
+  if (event) {
+    event.stopPropagation();
+  }
+
+  // Find the task
+  const task = allTasks.find(t => t.id === taskId);
+  if (!task) {
+    showNotification('משימה לא נמצאה', 'error');
+    return;
+  }
+
+  currentTaskBeingUpdated = task;
+
+  // Populate form
+  document.getElementById('updateTaskId').value = taskId;
+  document.getElementById('updateStatus').value = mapStatusToOldFormat(task.status);
+  document.getElementById('updatePriority').value = task.priority || '';
+  document.getElementById('updateNotes').value = task.secretary_notes || '';
+  document.getElementById('updateCompletionDetails').value = task.completion_details || '';
+
+  // Set current date and time for completion fields
+  const now = new Date();
+  document.getElementById('updateCompletionDate').value = now.toISOString().split('T')[0];
+  document.getElementById('updateCompletionTime').value = now.toTimeString().slice(0, 5);
+
+  // Show/hide completion fields based on status
+  setupStatusChangeListener();
+
+  // Show modal
+  document.getElementById('updateTaskModal').classList.add('active');
+}
+
+function mapStatusToOldFormat(newStatus) {
+  const statusMap = {
+    'חדשה': 'ממתינה',
+    'בטיפול': 'בביצוע',
+    'הושלמה': 'בוצע',
+    'בוטלה': 'בוטל'
+  };
+  return statusMap[newStatus] || newStatus;
+}
+
+function setupStatusChangeListener() {
+  const statusSelect = document.getElementById('updateStatus');
+  const completionDetailsGroup = document.getElementById('completionDetailsGroup');
+  const completionDateTimeGroup = document.getElementById('completionDateTimeGroup');
+
+  // Initial state
+  toggleCompletionFields(statusSelect.value);
+
+  // Listen for changes
+  statusSelect.addEventListener('change', (e) => {
+    toggleCompletionFields(e.target.value);
+  });
+}
+
+function toggleCompletionFields(status) {
+  const completionDetailsGroup = document.getElementById('completionDetailsGroup');
+  const completionDateTimeGroup = document.getElementById('completionDateTimeGroup');
+
+  if (status === 'בוצע') {
+    completionDetailsGroup.style.display = 'block';
+    completionDateTimeGroup.style.display = 'grid';
+  } else {
+    completionDetailsGroup.style.display = 'none';
+    completionDateTimeGroup.style.display = 'none';
+  }
+}
+
+// Close update modal
+document.addEventListener('DOMContentLoaded', () => {
+  const closeUpdateModal = () => {
+    document.getElementById('updateTaskModal').classList.remove('active');
+    currentTaskBeingUpdated = null;
+  };
+
+  document.getElementById('closeUpdateModal')?.addEventListener('click', closeUpdateModal);
+  document.getElementById('cancelUpdateBtn')?.addEventListener('click', closeUpdateModal);
+
+  // Close on overlay click
+  document.getElementById('updateTaskModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'updateTaskModal') {
+      closeUpdateModal();
+    }
+  });
+
+  // Save update button
+  document.getElementById('saveUpdateBtn')?.addEventListener('click', saveTaskUpdate);
+});
+
+async function saveTaskUpdate() {
+  const taskId = document.getElementById('updateTaskId').value;
+  const status = document.getElementById('updateStatus').value;
+  const priority = document.getElementById('updatePriority').value;
+  const notes = document.getElementById('updateNotes').value;
+  const completionDetails = document.getElementById('updateCompletionDetails').value;
+  const completionDate = document.getElementById('updateCompletionDate').value;
+  const completionTime = document.getElementById('updateCompletionTime').value;
+
+  if (!status) {
+    showNotification('יש לבחור סטטוס', 'error');
+    return;
+  }
+
+  // Show loading state
+  const saveBtn = document.getElementById('saveUpdateBtn');
+  const originalText = saveBtn.innerHTML;
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שומר...';
+  saveBtn.disabled = true;
+
+  try {
+    // Prepare update data - only fields that were changed
+    const updateData = {
+      id: taskId,
+      'סטטוס': status
+    };
+
+    // Add priority if changed
+    if (priority) {
+      updateData['דחיפות'] = priority;
+    }
+
+    // Add notes if provided
+    if (notes.trim()) {
+      updateData['הערות מזכירה'] = notes.trim();
+    }
+
+    // Add completion details if status is בוצע
+    if (status === 'בוצע') {
+      if (completionDetails.trim()) {
+        updateData['פרטי ביצוע'] = completionDetails.trim();
+      }
+      if (completionDate) {
+        updateData['תאריך השלמה'] = completionDate;
+      }
+      if (completionTime) {
+        updateData['שעת השלמה'] = completionTime;
+      }
+    }
+
+    console.log('📤 שולח עדכון למשימה:', updateData);
+
+    // Send to API
+    const response = await fetch(`${window.API_URL}/api/tasks/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updateData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ משימה עודכנה בהצלחה:', result);
+
+    // Close modal
+    document.getElementById('updateTaskModal').classList.remove('active');
+    currentTaskBeingUpdated = null;
+
+    // Show success message
+    showNotification('המשימה עודכנה בהצלחה', 'success');
+
+    // Reload tasks to show updated data
+    setTimeout(() => {
+      loadTasks(true);
+    }, 500);
+
+  } catch (error) {
+    console.error('❌ שגיאה בעדכון המשימה:', error);
+    showNotification(`שגיאה בעדכון המשימה: ${error.message}`, 'error');
+  } finally {
+    // Restore button state
+    saveBtn.innerHTML = originalText;
+    saveBtn.disabled = false;
+  }
+}
+
+// Make openUpdateModal available globally
+window.openUpdateModal = openUpdateModal;
 
 // ================================================
 // Console Info

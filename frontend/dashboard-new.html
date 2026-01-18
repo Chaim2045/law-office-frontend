@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>לוח משימות - משרד עו"ד GH</title>
+  <title>דשבורד מזכירה - משרד עו"ד GH</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/modern-style.css">
   <link rel="stylesheet" href="css/dashboard-style.css">
 </head>
-<body>
+<body style="background: #ffffff;">
   <!-- ניווט עליון -->
   <header class="app-header">
     <div class="app-logo">
@@ -44,15 +44,21 @@
   <div class="container">
     <!-- כרטיס לוח המשימות -->
     <div class="card dashboard-card">
-      <div class="card-header">
-        <div>
-          <h1 class="card-title">לוח משימות</h1>
-          <p class="card-subtitle">מערכת ניהול משימות - משרד עו"ד GH</p>
+      <div class="card-header-clean">
+        <div class="header-content">
+          <h1 class="card-title-clean">דשבורד מזכירה</h1>
+          <p class="card-subtitle-clean">ניהול משימות יומיומי</p>
         </div>
-        <button class="btn btn-primary" id="refreshBtn">
-          <i class="fas fa-sync-alt"></i>
-          <span>רענן</span>
-        </button>
+        <div class="header-actions">
+          <button class="btn btn-clean" id="refreshBtn">
+            <i class="fas fa-sync-alt"></i>
+            <span>רענן</span>
+          </button>
+          <a href="index.html" class="btn btn-primary-clean">
+            <i class="fas fa-plus"></i>
+            <span>משימה חדשה</span>
+          </a>
+        </div>
       </div>
 
       <div class="card-body">
@@ -209,12 +215,112 @@
             <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
             <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
             <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
-            <button type="button" class="name-chip" data-name="קרן" data-email="office@ghlawoffice.co.il">קרן</button>
+            <button type="button" class="name-chip" data-name="שני" data-email="shani@ghlawoffice.co.il">שני</button>
             <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
             <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
             <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודל עדכון משימה (למזכירה בלבד) -->
+  <div class="modal-overlay" id="updateTaskModal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title">עדכון משימה</h3>
+        <button class="modal-close" id="closeUpdateModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="updateTaskForm">
+          <input type="hidden" id="updateTaskId">
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="form-icon fas fa-info-circle"></i> סטטוס
+            </label>
+            <select id="updateStatus" class="form-control" required>
+              <option value="">בחר סטטוס</option>
+              <option value="ממתינה">ממתינה</option>
+              <option value="בביצוע">בביצוע</option>
+              <option value="בוצע">בוצע</option>
+              <option value="הוחזר להשלמה">הוחזר להשלמה</option>
+              <option value="בוטל">בוטל</option>
+              <option value="פג תוקף - לא רלוונטי">פג תוקף - לא רלוונטי</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="form-icon fas fa-flag"></i> דחיפות
+            </label>
+            <select id="updatePriority" class="form-control">
+              <option value="">ללא שינוי</option>
+              <option value="דחופה">דחופה</option>
+              <option value="גבוהה">גבוהה</option>
+              <option value="רגילה">רגילה</option>
+              <option value="נמוכה">נמוכה</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="form-icon fas fa-sticky-note"></i> הערות מזכירה
+            </label>
+            <textarea
+              id="updateNotes"
+              class="form-control"
+              rows="3"
+              placeholder="הערות כלליות למבצע..."
+            ></textarea>
+          </div>
+
+          <div class="form-group" id="completionDetailsGroup" style="display: none;">
+            <label class="form-label">
+              <i class="form-icon fas fa-check-circle"></i> פרטי ביצוע
+            </label>
+            <textarea
+              id="updateCompletionDetails"
+              class="form-control"
+              rows="3"
+              placeholder="פרטי ביצוע המשימה..."
+            ></textarea>
+          </div>
+
+          <div id="completionDateTimeGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-calendar"></i> תאריך השלמה
+              </label>
+              <input
+                type="date"
+                id="updateCompletionDate"
+                class="form-control"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-clock"></i> שעת השלמה
+              </label>
+              <input
+                type="time"
+                id="updateCompletionTime"
+                class="form-control"
+              >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelUpdateBtn">ביטול</button>
+        <button type="button" class="btn btn-primary-clean" id="saveUpdateBtn">
+          <i class="fas fa-save"></i>
+          שמור עדכון
+        </button>
       </div>
     </div>
   </div>

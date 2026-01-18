@@ -20,11 +20,11 @@
   --color-danger: #ff3c5f;
   --color-info: #00bcd4;
 
-  /* צבעי ממשק */
+  /* צבעי ממשק - רקע תמיד לבן */
   --color-surface: #ffffff;
-  --color-background: #f3f6ff;
-  --color-border: rgba(0, 73, 219, 0.08);
-  --color-divider: rgba(0, 0, 0, 0.08);
+  --color-background: #ffffff;
+  --color-border: #e5e7eb;
+  --color-divider: #e5e7eb;
 
   /* צבעי טקסט */
   --color-text: #1a1c23;
@@ -68,12 +68,12 @@
   --page-width: 1200px;
 }
 
-/* גוף המסמך */
+/* גוף המסמך - רקע לבן תמיד */
 html, body {
   font-family: var(--font-family);
   font-size: 16px;
   line-height: 1.5;
-  background: var(--color-background);
+  background: #ffffff !important;
   color: var(--color-text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -91,20 +91,19 @@ html, body {
   .container { padding: 0 var(--space-8); }
 }
 
-/* ניווט עליון */
+/* ניווט עליון - רקע לבן נקי */
 .app-header {
   position: sticky;
   top: 0;
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
+  background-color: #ffffff;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: var(--nav-height);
   padding: 0 var(--space-4);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .app-logo {
