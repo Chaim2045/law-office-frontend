@@ -342,6 +342,47 @@
     </div>
   </div>
 
+  <!-- מודל תגובה למשימה שהוחזרה -->
+  <div class="modal-overlay" id="respondTaskModal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title">הוסף פרטים נוספים למשימה</h3>
+        <button class="modal-close" id="closeRespondModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning" style="margin-bottom: var(--space-4); padding: var(--space-3); background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px;">
+          <i class="fas fa-info-circle" style="color: #d97706;"></i>
+          <span style="color: #92400e;">המשימה הוחזרה אליך להשלמת פרטים. אנא הוסף את המידע החסר והמשימה תועבר חזרה למנהלת המשרד.</span>
+        </div>
+        <form id="respondTaskForm">
+          <input type="hidden" id="respondTaskId">
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="form-icon fas fa-comment"></i> פרטים נוספים *
+            </label>
+            <textarea
+              id="respondDetails"
+              class="form-control"
+              rows="6"
+              placeholder="הוסף את המידע החסר או הפרטים הנוספים שהתבקשו..."
+              required
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelRespondBtn">ביטול</button>
+        <button type="button" class="btn btn-primary-clean" id="saveRespondBtn">
+          <i class="fas fa-paper-plane"></i>
+          שלח תגובה
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- הודעות הצלחה/שגיאה -->
   <div class="notification" id="notification"></div>
 

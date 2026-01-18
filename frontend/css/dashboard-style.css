@@ -575,6 +575,46 @@ body:has(.dashboard-card) .container {
   transform: translateY(0);
 }
 
+/* Respond button for returned tasks */
+.btn-respond-task {
+  width: 100%;
+  background: #f59e0b;
+  color: #ffffff;
+  border: none;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.btn-respond-task:hover {
+  background: #d97706;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.btn-respond-task:active {
+  transform: translateY(0);
+}
+
+/* Alert warning for respond modal */
+.alert-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.alert-warning i {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
 /* ================================================
    Notification - Clean Design
    ================================================ */

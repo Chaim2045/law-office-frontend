@@ -407,6 +407,13 @@ function createTaskCard(task) {
             <span>עדכן משימה</span>
           </button>
         </div>
+      ` : task.status === 'הוחזר להשלמה' ? `
+        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid #e5e7eb;">
+          <button class="btn-respond-task" onclick="openRespondModal('${task.id}', event)" style="background: #f59e0b; border-color: #f59e0b;">
+            <i class="fas fa-reply"></i>
+            <span>הוסף פרטים נוספים</span>
+          </button>
+        </div>
       ` : ''}
     </div>
   `;
@@ -729,6 +736,123 @@ async function saveTaskUpdate() {
 
 // Make openUpdateModal available globally
 window.openUpdateModal = openUpdateModal;
+
+// ================================================
+// Respond to Returned Task
+// ================================================
+
+function openRespondModal(taskId, event) {
+  // Prevent card click event from firing
+  if (event) {
+    event.stopPropagation();
+  }
+
+  // Find the task
+  const task = allTasks.find(t => t.id === taskId);
+  if (!task) {
+    showNotification('משימה לא נמצאה', 'error');
+    return;
+  }
+
+  // Set task ID
+  document.getElementById('respondTaskId').value = taskId;
+  document.getElementById('respondDetails').value = '';
+
+  // Show modal
+  document.getElementById('respondTaskModal').classList.add('active');
+}
+
+// Close respond modal
+document.addEventListener('DOMContentLoaded', () => {
+  const closeRespondModal = () => {
+    document.getElementById('respondTaskModal').classList.remove('active');
+  };
+
+  document.getElementById('closeRespondModal')?.addEventListener('click', closeRespondModal);
+  document.getElementById('cancelRespondBtn')?.addEventListener('click', closeRespondModal);
+
+  // Close on overlay click
+  document.getElementById('respondTaskModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'respondTaskModal') {
+      closeRespondModal();
+    }
+  });
+
+  // Save respond button
+  document.getElementById('saveRespondBtn')?.addEventListener('click', saveTaskResponse);
+});
+
+async function saveTaskResponse() {
+  const taskId = document.getElementById('respondTaskId').value;
+  const details = document.getElementById('respondDetails').value;
+
+  if (!details.trim()) {
+    showNotification('יש להזין פרטים נוספים', 'error');
+    return;
+  }
+
+  // Show loading state
+  const saveBtn = document.getElementById('saveRespondBtn');
+  const originalText = saveBtn.innerHTML;
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
+  saveBtn.disabled = true;
+
+  try {
+    // Get current user
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{"email":"guest@ghlawoffice.co.il"}');
+
+    // Get the current task to append to description
+    const task = allTasks.find(t => t.id === taskId);
+    const timestamp = new Date().toLocaleString('he-IL');
+
+    // Update with new details and change status back to "חדשה" (waiting for office manager)
+    const updateData = {
+      id: taskId,
+      'סטטוס': 'ממתינה',  // Return to waiting status
+      'תיאור': task.description + `\n\n--- תגובה מ-${currentUser.name || currentUser.email} (${timestamp}) ---\n${details.trim()}`
+    };
+
+    console.log('📤 שולח תגובה למשימה:', updateData);
+
+    // Send to API
+    const response = await fetch(`${window.API_URL}/api/tasks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updateData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ תגובה נשלחה בהצלחה:', result);
+
+    // Close modal
+    document.getElementById('respondTaskModal').classList.remove('active');
+
+    // Show success message
+    showNotification('התגובה נשלחה בהצלחה והמשימה הוחזרה למנהלת המשרד', 'success');
+
+    // Reload tasks to show updated data
+    setTimeout(() => {
+      loadTasks(true);
+    }, 500);
+
+  } catch (error) {
+    console.error('❌ שגיאה בשליחת התגובה:', error);
+    showNotification(`שגיאה בשליחת התגובה: ${error.message}`, 'error');
+  } finally {
+    // Restore button state
+    saveBtn.innerHTML = originalText;
+    saveBtn.disabled = false;
+  }
+}
+
+// Make openRespondModal available globally
+window.openRespondModal = openRespondModal;
 
 // ================================================
 // Console Info
