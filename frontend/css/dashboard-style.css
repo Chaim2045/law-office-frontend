@@ -466,6 +466,18 @@ body:has(.dashboard-card) .container {
 /* Modal Large */
 .modal-large {
   max-width: 700px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-large .modal-body {
+  overflow-y: auto;
+  max-height: calc(90vh - 120px);
+}
+
+.modal-large .modal-footer {
+  margin-top: auto;
 }
 
 .task-detail-grid {

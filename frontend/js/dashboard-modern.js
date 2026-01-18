@@ -517,6 +517,32 @@ function showTaskModal(task) {
     </div>
   `;
 
+  // Update footer with action button for office manager
+  const modalFooter = modal.querySelector('.modal-footer');
+  if (isOfficeManager()) {
+    modalFooter.innerHTML = `
+      <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
+      <button class="btn btn-primary-clean" onclick="openUpdateModal('${task.id}'); document.getElementById('taskModal').classList.remove('active');">
+        <i class="fas fa-edit"></i>
+        עדכן משימה
+      </button>
+    `;
+  } else if (task.status === 'הוחזר להשלמה') {
+    // User sees respond button for returned tasks
+    modalFooter.innerHTML = `
+      <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
+      <button class="btn btn-primary-clean" onclick="openRespondModal('${task.id}'); document.getElementById('taskModal').classList.remove('active');" style="background: #f59e0b; border-color: #f59e0b;">
+        <i class="fas fa-reply"></i>
+        הוסף פרטים נוספים
+      </button>
+    `;
+  } else {
+    // Regular user, no action button
+    modalFooter.innerHTML = `
+      <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
+    `;
+  }
+
   modal.classList.add('active');
 }
 
