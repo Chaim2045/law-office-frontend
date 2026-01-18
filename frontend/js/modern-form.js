@@ -342,10 +342,10 @@ document.addEventListener('DOMContentLoaded', function() {
       title: requesterName.value + ': ' + document.getElementById('taskDescription').value.substring(0, 100),
       description: document.getElementById('taskDescription').value,
       category: document.getElementById('taskCategory').value,
-      assigned_to: requesterName.value,
-      assigned_to_email: requesterEmail.value || customEmail.value,
-      created_by: currentUser.name,
-      created_by_email: currentUser.email,
+      assigned_to: "שני",  // כל המשימות מוטלות על שני (המזכירה)
+      assigned_to_email: "office@ghlawoffice.co.il",  // אימייל של שני
+      created_by: requesterName.value,  // שם המבקש (חיים, גיא, רועי וכו')
+      created_by_email: requesterEmail.value || customEmail.value,  // אימייל המבקש
       due_date: document.getElementById('dueDate').value || null,
       priority: document.querySelector('input[name="priority"]:checked').value,
       notes: null
