@@ -344,7 +344,14 @@ function renderTasks() {
   // Add click listeners
   document.querySelectorAll('.task-card').forEach((card, index) => {
     card.addEventListener('click', () => {
-      showTaskModal(filteredTasks[index]);
+      const task = filteredTasks[index];
+      // Office manager goes directly to update modal
+      if (isOfficeManager()) {
+        openUpdateModal(task.id);
+      } else {
+        // Regular users see task details
+        showTaskModal(task);
+      }
     });
   });
 }
@@ -399,22 +406,6 @@ function createTaskCard(task) {
           <span>נוצר ${createdDate}</span>
         </div>
       </div>
-
-      ${isOfficeManager() ? `
-        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid #e5e7eb;">
-          <button class="btn-update-task" onclick="openUpdateModal('${task.id}', event)">
-            <i class="fas fa-edit"></i>
-            <span>עדכן משימה</span>
-          </button>
-        </div>
-      ` : task.status === 'הוחזר להשלמה' ? `
-        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid #e5e7eb;">
-          <button class="btn-respond-task" onclick="openRespondModal('${task.id}', event)" style="background: #f59e0b; border-color: #f59e0b;">
-            <i class="fas fa-reply"></i>
-            <span>הוסף פרטים נוספים</span>
-          </button>
-        </div>
-      ` : ''}
     </div>
   `;
 }
@@ -517,17 +508,9 @@ function showTaskModal(task) {
     </div>
   `;
 
-  // Update footer with action button for office manager
+  // Update footer with action button based on user role
   const modalFooter = modal.querySelector('.modal-footer');
-  if (isOfficeManager()) {
-    modalFooter.innerHTML = `
-      <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
-      <button class="btn btn-primary-clean" onclick="openUpdateModal('${task.id}'); document.getElementById('taskModal').classList.remove('active');">
-        <i class="fas fa-edit"></i>
-        עדכן משימה
-      </button>
-    `;
-  } else if (task.status === 'הוחזר להשלמה') {
+  if (task.status === 'הוחזר להשלמה') {
     // User sees respond button for returned tasks
     modalFooter.innerHTML = `
       <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
@@ -537,7 +520,7 @@ function showTaskModal(task) {
       </button>
     `;
   } else {
-    // Regular user, no action button
+    // Regular user, just close button
     modalFooter.innerHTML = `
       <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
     `;
