@@ -2,15 +2,28 @@
    Dashboard Styles - Clean Design for Secretary
    ================================================ */
 
-/* Dashboard Card */
+/* Dashboard Card - Full Width */
 .dashboard-card {
   margin-top: var(--space-6);
   margin-bottom: var(--space-6);
   background: #ffffff !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none !important;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Override container max-width for dashboard */
+body:has(.dashboard-card) .container {
+  max-width: 100% !important;
+  padding: 0 var(--space-8) !important;
+}
+
+@media (max-width: 768px) {
+  body:has(.dashboard-card) .container {
+    padding: 0 var(--space-4) !important;
+  }
 }
 
 .dashboard-card .card-body {
