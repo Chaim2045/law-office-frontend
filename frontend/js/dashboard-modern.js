@@ -669,8 +669,8 @@ async function saveTaskUpdate() {
 
     console.log('📤 שולח עדכון למשימה:', updateData);
 
-    // Send to API
-    const response = await fetch(`${window.API_URL}/api/tasks/update`, {
+    // Send to API (POST with id triggers update logic)
+    const response = await fetch(`${window.API_URL}/api/tasks`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

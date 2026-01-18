@@ -187,11 +187,76 @@ exports.handler = async (event) => {
     }
 
     // ============================================================
-    // POST /api/tasks - Create new task
+    // POST /api/tasks - Create new task OR Update existing task
     // ============================================================
     if (event.httpMethod === 'POST') {
       const frontendTaskData = JSON.parse(event.body);
 
+      // Check if this is an UPDATE request (has 'id' field)
+      if (frontendTaskData.id) {
+        console.log('🔄 UPDATE request for task:', frontendTaskData.id);
+
+        const taskId = frontendTaskData.id;
+        const updateData = {};
+
+        // Map old format fields to new format
+        if (frontendTaskData['סטטוס']) {
+          const statusMap = {
+            'ממתינה': 'חדשה',
+            'בביצוע': 'בטיפול',
+            'בוצע': 'הושלמה',
+            'בוטל': 'בוטלה',
+            'הוחזר להשלמה': 'בטיפול',
+            'פג תוקף - לא רלוונטי': 'בוטלה'
+          };
+          updateData.status = statusMap[frontendTaskData['סטטוס']] || frontendTaskData['סטטוס'];
+        }
+
+        if (frontendTaskData['דחיפות']) {
+          updateData.priority = frontendTaskData['דחיפות'];
+        }
+
+        // Note: Supabase schema doesn't have notes fields yet
+        // We'll need to add these fields to the database schema
+        // For now, we'll store them in a JSON field or add columns later
+
+        console.log('📝 Update data:', updateData);
+
+        // Update in Supabase
+        const response = await fetch(
+          `${supabaseUrl}/rest/v1/tasks?id=eq.${taskId}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(updateData)
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          console.error('❌ Supabase PATCH error:', data);
+          throw new Error(JSON.stringify(data));
+        }
+
+        console.log(`✅ Task updated successfully (${Date.now() - startTime}ms)`);
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            success: true,
+            task: data[0] ? mapSupabaseToFrontend(data[0]) : null
+          })
+        };
+      }
+
+      // Otherwise, it's a CREATE request
       console.log('📋 Received task data:', {
         title: frontendTaskData.title,
         assigned_to: frontendTaskData.assigned_to,
@@ -271,7 +336,7 @@ exports.handler = async (event) => {
       headers,
       body: JSON.stringify({
         error: 'Method not allowed',
-        allowed: ['GET', 'POST', 'OPTIONS']
+        allowed: ['GET', 'POST', 'PATCH', 'OPTIONS']
       })
     };
 

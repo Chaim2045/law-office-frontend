@@ -8,6 +8,19 @@
   margin-bottom: var(--space-6);
   background: #ffffff !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-card .card-body {
+  padding: var(--space-8) var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .dashboard-card .card-body {
+    padding: var(--space-6) var(--space-4);
+  }
 }
 
 /* Clean Header - No gradients, white background */
@@ -97,9 +110,15 @@
 /* Stats Grid - Clean white background */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-4);
   margin-bottom: var(--space-6);
+}
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .stat-card {
@@ -181,9 +200,21 @@
 
 .filters-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-4);
   margin-top: var(--space-4);
+}
+
+@media (max-width: 1024px) {
+  .filters-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .filters-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Results Info - Clean minimal */
