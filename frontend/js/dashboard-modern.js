@@ -9,7 +9,6 @@ let lastRefreshTime = null;
 // Secretary email addresses - these users see ALL tasks
 const SECRETARY_EMAILS = [
   'office@ghlawoffice.co.il',
-  'shani@ghlawoffice.co.il',
   'miri@ghlawoffice.co.il'
 ];
 
