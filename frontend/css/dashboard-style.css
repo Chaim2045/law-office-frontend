@@ -613,3 +613,82 @@ body:has(.dashboard-card) .container {
   background: #dbeafe;
   color: #1e40af;
 }
+
+/* ================================================
+   Tabs - Active vs Completed Tasks
+   ================================================ */
+
+.tabs-container {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-2);
+  background: #f9fafb;
+  padding: var(--space-2);
+  border-radius: 12px;
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.tab.active {
+  background: #ffffff;
+  color: #0049db;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab i {
+  font-size: 16px;
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  background: #e5e7eb;
+  color: #6b7280;
+  border-radius: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.tab.active .tab-badge {
+  background: #dbeafe;
+  color: #0049db;
+}
+
+@media (max-width: 640px) {
+  .tab span:not(.tab-badge) {
+    display: none;
+  }
+
+  .tabs {
+    gap: var(--space-1);
+  }
+}

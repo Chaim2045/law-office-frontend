@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>דשבורד מזכירה - משרד עו"ד GH</title>
+  <title>דשבורד ניהול משימות - משרד עו"ד GH</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,8 +46,8 @@
     <div class="card dashboard-card">
       <div class="card-header-clean">
         <div class="header-content">
-          <h1 class="card-title-clean">דשבורד מזכירה</h1>
-          <p class="card-subtitle-clean">ניהול משימות יומיומי</p>
+          <h1 class="card-title-clean" id="dashboardTitle">דשבורד ניהול משימות</h1>
+          <p class="card-subtitle-clean" id="dashboardSubtitle">ניהול משימות יומיומי</p>
         </div>
         <div class="header-actions">
           <button class="btn btn-clean" id="refreshBtn">
@@ -102,6 +102,22 @@
               <div class="stat-value" id="completedTasks">0</div>
               <div class="stat-label">הושלמו</div>
             </div>
+          </div>
+        </div>
+
+        <!-- טאבים: פעילות vs הושלמו -->
+        <div class="tabs-container" style="margin-bottom: var(--space-5);">
+          <div class="tabs">
+            <button class="tab active" data-tab="active" id="activeTab">
+              <i class="fas fa-tasks"></i>
+              <span>משימות פעילות</span>
+              <span class="tab-badge" id="activeCount">0</span>
+            </button>
+            <button class="tab" data-tab="completed" id="completedTab">
+              <i class="fas fa-check-circle"></i>
+              <span>הושלמו</span>
+              <span class="tab-badge" id="completedCount">0</span>
+            </button>
           </div>
         </div>
 

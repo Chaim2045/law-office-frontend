@@ -1,21 +1,22 @@
 // ================================================
-// Modern Dashboard Handler - Secretary Interface
+// Modern Dashboard Handler - Office Manager & Users
 // ================================================
 
 let allTasks = [];
 let filteredTasks = [];
 let lastRefreshTime = null;
+let currentTab = 'active'; // 'active' or 'completed'
 
-// Secretary email addresses - these users see ALL tasks
-const SECRETARY_EMAILS = [
-  'office@ghlawoffice.co.il',
-  'miri@ghlawoffice.co.il'
+// Office Manager email addresses - these users see ALL tasks and can update them
+const OFFICE_MANAGER_EMAILS = [
+  'office@ghlawoffice.co.il',  // שני
+  'miri@ghlawoffice.co.il'     // מירי
 ];
 
-// Check if current user is secretary
-function isSecretary() {
+// Check if current user is office manager
+function isOfficeManager() {
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{"email":"guest@ghlawoffice.co.il"}');
-  return SECRETARY_EMAILS.includes(currentUser.email.toLowerCase());
+  return OFFICE_MANAGER_EMAILS.includes(currentUser.email.toLowerCase());
 }
 
 // ================================================
@@ -23,12 +24,13 @@ function isSecretary() {
 // ================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 דשבורד מזכירה - טוען...');
+  console.log('🚀 דשבורד ניהול משימות - טוען...');
   initializeUser();
   setupEventListeners();
+  setupTabs();
   loadTasks();
 
-  // Auto-refresh every 60 seconds (reduced from 30)
+  // Auto-refresh every 60 seconds
   setInterval(() => {
     loadTasks(true); // Silent refresh
   }, 60000);
@@ -44,17 +46,20 @@ function initializeUser() {
   document.getElementById('currentUserName').textContent = currentUser.name;
   document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
 
-  // Update page title based on user role
-  const pageTitle = document.querySelector('.card-title-clean');
-  const pageSubtitle = document.querySelector('.card-subtitle-clean');
+  // Update page title and role based on user
+  const pageTitle = document.getElementById('dashboardTitle');
+  const pageSubtitle = document.getElementById('dashboardSubtitle');
+  const userRole = document.querySelector('.user-role');
 
   if (pageTitle && pageSubtitle) {
-    if (isSecretary()) {
-      pageTitle.textContent = 'דשבורד מזכירה';
+    if (isOfficeManager()) {
+      pageTitle.textContent = 'דשבורד מנהלת משרד';
       pageSubtitle.textContent = 'ניהול כל המשימות במשרד';
+      if (userRole) userRole.textContent = 'מנהלת משרד';
     } else {
       pageTitle.textContent = `דשבורד - ${currentUser.name}`;
       pageSubtitle.textContent = 'המשימות שלי';
+      if (userRole) userRole.textContent = 'עורך דין';
     }
   }
 
