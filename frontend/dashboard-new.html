@@ -31,11 +31,9 @@
           <span>החלף משתמש</span>
         </div>
         <div class="dropdown-divider"></div>
-        <div class="dropdown-item">
-          <a href="index.html" style="display: flex; align-items: center; gap: var(--space-2); text-decoration: none; color: inherit;">
-            <i class="fas fa-plus-circle"></i>
-            <span>משימה חדשה</span>
-          </a>
+        <div class="dropdown-item" id="newTaskMenuItem">
+          <i class="fas fa-plus-circle"></i>
+          <span>משימה חדשה</span>
         </div>
       </div>
     </div>
@@ -54,10 +52,10 @@
             <i class="fas fa-sync-alt"></i>
             <span>רענן</span>
           </button>
-          <a href="index.html" class="btn btn-primary-clean">
+          <button class="btn btn-primary-clean" id="newTaskBtn">
             <i class="fas fa-plus"></i>
             <span>משימה חדשה</span>
-          </a>
+          </button>
         </div>
       </div>
 
@@ -255,32 +253,34 @@
         <form id="updateTaskForm">
           <input type="hidden" id="updateTaskId">
 
-          <div class="form-group">
-            <label class="form-label">
-              <i class="form-icon fas fa-info-circle"></i> סטטוס
-            </label>
-            <select id="updateStatus" class="form-control" required>
-              <option value="">בחר סטטוס</option>
-              <option value="ממתינה">ממתינה</option>
-              <option value="בביצוע">בביצוע</option>
-              <option value="בוצע">בוצע</option>
-              <option value="הוחזר להשלמה">הוחזר להשלמה</option>
-              <option value="בוטל">בוטל</option>
-              <option value="פג תוקף - לא רלוונטי">פג תוקף - לא רלוונטי</option>
-            </select>
-          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-info-circle"></i> סטטוס
+              </label>
+              <select id="updateStatus" class="form-control" required>
+                <option value="">בחר סטטוס</option>
+                <option value="ממתינה">ממתינה</option>
+                <option value="בביצוע">בביצוע</option>
+                <option value="בוצע">בוצע</option>
+                <option value="הוחזר להשלמה">הוחזר להשלמה</option>
+                <option value="בוטל">בוטל</option>
+                <option value="פג תוקף - לא רלוונטי">פג תוקף - לא רלוונטי</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">
-              <i class="form-icon fas fa-flag"></i> דחיפות
-            </label>
-            <select id="updatePriority" class="form-control">
-              <option value="">ללא שינוי</option>
-              <option value="דחופה">דחופה</option>
-              <option value="גבוהה">גבוהה</option>
-              <option value="רגילה">רגילה</option>
-              <option value="נמוכה">נמוכה</option>
-            </select>
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-flag"></i> דחיפות
+              </label>
+              <select id="updatePriority" class="form-control">
+                <option value="">ללא שינוי</option>
+                <option value="דחופה">דחופה</option>
+                <option value="גבוהה">גבוהה</option>
+                <option value="רגילה">רגילה</option>
+                <option value="נמוכה">נמוכה</option>
+              </select>
+            </div>
           </div>
 
           <div class="form-group">
@@ -378,6 +378,90 @@
         <button type="button" class="btn btn-primary-clean" id="saveRespondBtn">
           <i class="fas fa-paper-plane"></i>
           שלח תגובה
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודל הוספת משימה חדשה -->
+  <div class="modal-overlay" id="createTaskModal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title">הוספת משימה חדשה</h3>
+        <button class="modal-close" id="closeCreateModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="createTaskForm">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="form-icon fas fa-tasks"></i> תיאור המשימה *
+            </label>
+            <textarea
+              id="createTaskDescription"
+              class="form-control"
+              rows="4"
+              placeholder="תאר את המשימה בפירוט..."
+              required
+            ></textarea>
+            <p class="form-hint">פרט ככל האפשר את דרישות המשימה והמטרות הנדרשות</p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-tag"></i> סיווג משימה *
+              </label>
+              <select id="createTaskCategory" class="form-control" required>
+                <option value="">-- בחר סיווג --</option>
+                <option value="משפטית">משפטית</option>
+                <option value="טכנית">טכנית</option>
+                <option value="מינהלית">מינהלית</option>
+                <option value="פיננסית">פיננסית</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-calendar-alt"></i> תאריך יעד *
+              </label>
+              <input
+                type="date"
+                id="createTaskDueDate"
+                class="form-control"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="form-icon fas fa-flag"></i> דחיפות המשימה *
+            </label>
+
+            <div class="priority-options-compact">
+              <label class="priority-radio">
+                <input type="radio" name="createPriority" value="רגילה" checked>
+                <span class="priority-label">רגילה</span>
+              </label>
+              <label class="priority-radio">
+                <input type="radio" name="createPriority" value="גבוהה">
+                <span class="priority-label">גבוהה</span>
+              </label>
+              <label class="priority-radio">
+                <input type="radio" name="createPriority" value="דחופה">
+                <span class="priority-label">דחופה</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelCreateBtn">ביטול</button>
+        <button type="button" class="btn btn-primary-clean" id="saveCreateBtn">
+          <i class="fas fa-paper-plane"></i>
+          שלח משימה
         </button>
       </div>
     </div>

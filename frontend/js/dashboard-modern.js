@@ -153,6 +153,36 @@ function setupEventListeners() {
       document.getElementById('taskModal').classList.remove('active');
     }
   });
+
+  // Create Task Modal - New Task Button
+  const newTaskBtn = document.getElementById('newTaskBtn');
+  if (newTaskBtn) {
+    newTaskBtn.addEventListener('click', openCreateTaskModal);
+  }
+
+  const newTaskMenuItem = document.getElementById('newTaskMenuItem');
+  if (newTaskMenuItem) {
+    newTaskMenuItem.addEventListener('click', openCreateTaskModal);
+  }
+
+  // Create Task Modal - Close buttons
+  document.getElementById('closeCreateModal')?.addEventListener('click', () => {
+    document.getElementById('createTaskModal').classList.remove('active');
+  });
+
+  document.getElementById('cancelCreateBtn')?.addEventListener('click', () => {
+    document.getElementById('createTaskModal').classList.remove('active');
+  });
+
+  // Create Task Modal - Save button
+  document.getElementById('saveCreateBtn')?.addEventListener('click', saveNewTask);
+
+  // Close create modal on overlay click
+  document.getElementById('createTaskModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'createTaskModal') {
+      document.getElementById('createTaskModal').classList.remove('active');
+    }
+  });
 }
 
 // ================================================
@@ -862,6 +892,122 @@ async function saveTaskResponse() {
 
 // Make openRespondModal available globally
 window.openRespondModal = openRespondModal;
+
+// ================================================
+// Create New Task
+// ================================================
+
+function openCreateTaskModal() {
+  const modal = document.getElementById('createTaskModal');
+  const form = document.getElementById('createTaskForm');
+
+  // Reset form
+  form.reset();
+
+  // Set minimum date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('createTaskDueDate').setAttribute('min', today);
+
+  // Open modal
+  modal.classList.add('active');
+
+  // Close user menu dropdown if open
+  const userMenuDropdown = document.getElementById('userMenuDropdown');
+  if (userMenuDropdown) {
+    userMenuDropdown.classList.remove('active');
+  }
+}
+
+async function saveNewTask() {
+  const saveBtn = document.getElementById('saveCreateBtn');
+  const originalText = saveBtn.innerHTML;
+
+  // Disable button and show loading
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
+
+  try {
+    // Get current user
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{"name":"אורח","email":"guest@ghlawoffice.co.il"}');
+
+    // Get form values
+    const description = document.getElementById('createTaskDescription').value.trim();
+    const category = document.getElementById('createTaskCategory').value;
+    const dueDate = document.getElementById('createTaskDueDate').value;
+    const priority = document.querySelector('input[name="createPriority"]:checked')?.value || 'רגילה';
+
+    // Validate required fields
+    if (!description) {
+      showNotification('נא למלא את תיאור המשימה', 'error');
+      saveBtn.innerHTML = originalText;
+      saveBtn.disabled = false;
+      return;
+    }
+
+    if (!category) {
+      showNotification('נא לבחור סיווג משימה', 'error');
+      saveBtn.innerHTML = originalText;
+      saveBtn.disabled = false;
+      return;
+    }
+
+    if (!dueDate) {
+      showNotification('נא לבחור תאריך יעד', 'error');
+      saveBtn.innerHTML = originalText;
+      saveBtn.disabled = false;
+      return;
+    }
+
+    // Prepare task data
+    const taskData = {
+      'תיאור': description,
+      'קטגוריה': category,
+      'תאריך יעד': dueDate,
+      'דחיפות': priority,
+      'שם מבקש': currentUser.name,
+      'אימייל מבקש': currentUser.email,
+      'סטטוס': 'חדשה',
+      'מבצע': 'שני'
+    };
+
+    console.log('📤 יוצר משימה חדשה:', taskData);
+
+    // Send to API
+    const response = await fetch(`${window.API_URL}/api/tasks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(taskData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ משימה נוצרה בהצלחה:', result);
+
+    // Close modal
+    document.getElementById('createTaskModal').classList.remove('active');
+
+    // Show success message
+    showNotification('המשימה נשלחה בהצלחה', 'success');
+
+    // Reload tasks to show new task
+    setTimeout(() => {
+      loadTasks(true);
+    }, 500);
+
+  } catch (error) {
+    console.error('❌ שגיאה ביצירת המשימה:', error);
+    showNotification(`שגיאה ביצירת המשימה: ${error.message}`, 'error');
+  } finally {
+    // Restore button state
+    saveBtn.innerHTML = originalText;
+    saveBtn.disabled = false;
+  }
+}
 
 // ================================================
 // Console Info
