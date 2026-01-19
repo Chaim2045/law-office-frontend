@@ -469,11 +469,31 @@ body:has(.dashboard-card) .container {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  direction: rtl;
 }
 
 .modal-large .modal-body {
   overflow-y: auto;
   max-height: calc(90vh - 120px);
+  text-align: right;
+}
+
+.modal-large .modal-body .form-control,
+.modal-large .modal-body select,
+.modal-large .modal-body textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+.modal-large .modal-body .form-label {
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.modal-large .modal-body .form-label i {
+  order: 2;
 }
 
 .modal-large .modal-footer {
