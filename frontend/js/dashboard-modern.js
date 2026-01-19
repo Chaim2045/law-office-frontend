@@ -112,7 +112,7 @@ function initializeUser() {
       // Reload tasks for new user
       loadTasks();
 
-      showNotification(`התחבר כ-${name}`, 'success');
+      Utils.showToast(`התחבר כ-${name}`, 'success');
     });
   });
 }
@@ -125,7 +125,7 @@ function setupEventListeners() {
   // Refresh button
   document.getElementById('refreshBtn').addEventListener('click', () => {
     loadTasks();
-    showNotification('המשימות רוענו', 'success');
+    Utils.showToast('המשימות רוענו', 'success');
   });
 
   // Search input
@@ -197,20 +197,10 @@ async function loadTasks(silent = false) {
   }
 
   try {
-    console.log(`📥 טוען משימות מ-API: ${window.API_URL}/api/tasks`);
+    console.log(`📥 טוען משימות מ-API...`);
 
-    const response = await fetch(`${window.API_URL}/api/tasks`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    // Use API Service instead of raw fetch
+    const data = await window.api.getTasks();
     let tasks = Array.isArray(data) ? data : [];
 
     // Filter tasks based on user role
@@ -237,7 +227,7 @@ async function loadTasks(silent = false) {
     console.log(`✅ נטענו ${allTasks.length} משימות בהצלחה`);
 
     if (!silent) {
-      showNotification(`נטענו ${allTasks.length} משימות`, 'success');
+      Utils.showToast(`נטענו ${allTasks.length} משימות`, 'success');
     }
 
   } catch (error) {
@@ -255,7 +245,7 @@ async function loadTasks(silent = false) {
     `;
 
     if (!silent) {
-      showNotification('שגיאה בטעינת המשימות', 'error');
+      Utils.showToast('שגיאה בטעינת המשימות', 'error');
     }
   }
 }
@@ -560,30 +550,10 @@ function showTaskModal(task) {
 }
 
 // ================================================
-// Notification - Clean & Simple
+// Notification - Using Utils.showToast
 // ================================================
 
-function showNotification(message, type = 'success') {
-  const notification = document.getElementById('notification');
-
-  // Icon based on type
-  const icons = {
-    success: '<i class="fas fa-check-circle"></i>',
-    error: '<i class="fas fa-exclamation-circle"></i>',
-    info: '<i class="fas fa-info-circle"></i>'
-  };
-
-  notification.innerHTML = `
-    ${icons[type] || icons.info}
-    <span>${message}</span>
-  `;
-
-  notification.className = `notification ${type} active`;
-
-  setTimeout(() => {
-    notification.classList.remove('active');
-  }, 3000);
-}
+// Removed Utils.showToast() - now using Utils.showToast() throughout the file
 
 // ================================================
 // Update Task Modal (Secretary Only)
@@ -600,7 +570,7 @@ function openUpdateModal(taskId, event) {
   // Find the task
   const task = allTasks.find(t => t.id === taskId);
   if (!task) {
-    showNotification('משימה לא נמצאה', 'error');
+    Utils.showToast('משימה לא נמצאה', 'error');
     return;
   }
 
@@ -693,7 +663,7 @@ async function saveTaskUpdate() {
   const completionTime = document.getElementById('updateCompletionTime').value;
 
   if (!status) {
-    showNotification('יש לבחור סטטוס', 'error');
+    Utils.showToast('יש לבחור סטטוס', 'error');
     return;
   }
 
@@ -735,20 +705,8 @@ async function saveTaskUpdate() {
 
     console.log('📤 שולח עדכון למשימה:', updateData);
 
-    // Send to API (POST with id triggers update logic)
-    const response = await fetch(`${window.API_URL}/api/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updateData)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const result = await response.json();
+    // Send to API using API Service
+    const result = await window.api.updateTask(taskId, updateData);
     console.log('✅ משימה עודכנה בהצלחה:', result);
 
     // Close modal
@@ -756,7 +714,7 @@ async function saveTaskUpdate() {
     currentTaskBeingUpdated = null;
 
     // Show success message
-    showNotification('המשימה עודכנה בהצלחה', 'success');
+    Utils.showToast('המשימה עודכנה בהצלחה', 'success');
 
     // Reload tasks to show updated data
     setTimeout(() => {
@@ -765,7 +723,7 @@ async function saveTaskUpdate() {
 
   } catch (error) {
     console.error('❌ שגיאה בעדכון המשימה:', error);
-    showNotification(`שגיאה בעדכון המשימה: ${error.message}`, 'error');
+    Utils.showToast(`שגיאה בעדכון המשימה: ${error.message}`, 'error');
   } finally {
     // Restore button state
     saveBtn.innerHTML = originalText;
@@ -789,7 +747,7 @@ function openRespondModal(taskId, event) {
   // Find the task
   const task = allTasks.find(t => t.id === taskId);
   if (!task) {
-    showNotification('משימה לא נמצאה', 'error');
+    Utils.showToast('משימה לא נמצאה', 'error');
     return;
   }
 
@@ -826,7 +784,7 @@ async function saveTaskResponse() {
   const details = document.getElementById('respondDetails').value;
 
   if (!details.trim()) {
-    showNotification('יש להזין פרטים נוספים', 'error');
+    Utils.showToast('יש להזין פרטים נוספים', 'error');
     return;
   }
 
@@ -854,26 +812,15 @@ async function saveTaskResponse() {
     console.log('📤 שולח תגובה למשימה:', updateData);
 
     // Send to API
-    const response = await fetch(`${window.API_URL}/api/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updateData)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const result = await response.json();
+    // Send to API using API Service
+    const result = await window.api.updateTask(taskId, updateData);
     console.log('✅ תגובה נשלחה בהצלחה:', result);
 
     // Close modal
     document.getElementById('respondTaskModal').classList.remove('active');
 
     // Show success message
-    showNotification('התגובה נשלחה בהצלחה והמשימה הוחזרה למנהלת המשרד', 'success');
+    Utils.showToast('התגובה נשלחה בהצלחה והמשימה הוחזרה למנהלת המשרד', 'success');
 
     // Reload tasks to show updated data
     setTimeout(() => {
@@ -882,7 +829,7 @@ async function saveTaskResponse() {
 
   } catch (error) {
     console.error('❌ שגיאה בשליחת התגובה:', error);
-    showNotification(`שגיאה בשליחת התגובה: ${error.message}`, 'error');
+    Utils.showToast(`שגיאה בשליחת התגובה: ${error.message}`, 'error');
   } finally {
     // Restore button state
     saveBtn.innerHTML = originalText;
@@ -938,21 +885,21 @@ async function saveNewTask() {
 
     // Validate required fields
     if (!description) {
-      showNotification('נא למלא את תיאור המשימה', 'error');
+      Utils.showToast('נא למלא את תיאור המשימה', 'error');
       saveBtn.innerHTML = originalText;
       saveBtn.disabled = false;
       return;
     }
 
     if (!category) {
-      showNotification('נא לבחור סיווג משימה', 'error');
+      Utils.showToast('נא לבחור סיווג משימה', 'error');
       saveBtn.innerHTML = originalText;
       saveBtn.disabled = false;
       return;
     }
 
     if (!dueDate) {
-      showNotification('נא לבחור תאריך יעד', 'error');
+      Utils.showToast('נא לבחור תאריך יעד', 'error');
       saveBtn.innerHTML = originalText;
       saveBtn.disabled = false;
       return;
@@ -972,27 +919,15 @@ async function saveNewTask() {
 
     console.log('📤 יוצר משימה חדשה:', taskData);
 
-    // Send to API
-    const response = await fetch(`${window.API_URL}/api/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(taskData)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const result = await response.json();
+    // Send to API using API Service
+    const result = await window.api.createTask(taskData);
     console.log('✅ משימה נוצרה בהצלחה:', result);
 
     // Close modal
     document.getElementById('createTaskModal').classList.remove('active');
 
     // Show success message
-    showNotification('המשימה נשלחה בהצלחה', 'success');
+    Utils.showToast('המשימה נשלחה בהצלחה', 'success');
 
     // Reload tasks to show new task
     setTimeout(() => {
@@ -1001,7 +936,7 @@ async function saveNewTask() {
 
   } catch (error) {
     console.error('❌ שגיאה ביצירת המשימה:', error);
-    showNotification(`שגיאה ביצירת המשימה: ${error.message}`, 'error');
+    Utils.showToast(`שגיאה ביצירת המשימה: ${error.message}`, 'error');
   } finally {
     // Restore button state
     saveBtn.innerHTML = originalText;
