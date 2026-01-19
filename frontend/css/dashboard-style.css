@@ -613,31 +613,116 @@ body:has(.dashboard-card) .container {
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* ================================================
+   Task Detail View - Linear Style
+   ================================================ */
+
 .task-detail-grid {
-  display: grid;
-  gap: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
+/* Task ID at top */
+.task-detail-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-id-label {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.task-id-value {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  background: #f9fafb;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: -0.01em;
+}
+
+/* Title section */
+.task-detail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin: 8px 0;
+}
+
+/* Description section */
+.task-detail-description {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.6;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border-left: 3px solid #e5e7eb;
+}
+
+/* Badge row - status, priority, category */
+.task-detail-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Info grid - two columns */
+.task-detail-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+}
+
+@media (max-width: 640px) {
+  .task-detail-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Individual detail item */
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 4px;
 }
 
 .detail-label {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-medium);
+  font-size: 11px;
+  color: #9ca3af;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-label i {
+  font-size: 10px;
+  opacity: 0.7;
 }
 
 .detail-value {
-  font-size: var(--font-size-base);
-  color: var(--color-text);
-}
-
-.detail-value.large {
-  font-size: var(--font-size-md);
-  font-weight: 600;
+  font-size: 13px;
+  color: #111827;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 /* Responsive */

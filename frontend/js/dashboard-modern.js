@@ -455,64 +455,42 @@ function showTaskModal(task) {
 
   content.innerHTML = `
     <div class="task-detail-grid">
-      <div class="detail-item">
-        <div class="detail-label">מזהה משימה</div>
-        <div class="detail-value" style="font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">
-          ${task.task_id || task.id}
-        </div>
+      <!-- Task ID at top -->
+      <div class="task-detail-id">
+        <span class="task-id-label">משימה</span>
+        <span class="task-id-value">${task.task_id || task.id}</span>
       </div>
 
-      <div class="detail-item">
-        <div class="detail-label">כותרת</div>
-        <div class="detail-value large">${task.title}</div>
-      </div>
+      <!-- Title -->
+      <div class="task-detail-title">${task.title}</div>
 
+      <!-- Description (if exists) -->
       ${task.description ? `
-        <div class="detail-item">
-          <div class="detail-label">תיאור</div>
-          <div class="detail-value">${task.description}</div>
-        </div>
+        <div class="task-detail-description">${task.description}</div>
       ` : ''}
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
-        <div class="detail-item">
-          <div class="detail-label">סטטוס</div>
-          <div class="detail-value">
-            <span class="badge badge-status status-${task.status}">${task.status}</span>
-          </div>
-        </div>
-
-        <div class="detail-item">
-          <div class="detail-label">עדיפות</div>
-          <div class="detail-value">
-            <span class="badge badge-priority priority-${task.priority}">${task.priority}</span>
-          </div>
-        </div>
-
-        <div class="detail-item">
-          <div class="detail-label">קטגוריה</div>
-          <div class="detail-value">
-            <span class="badge badge-category">${task.category}</span>
-          </div>
-        </div>
+      <!-- Status, Priority, Category badges -->
+      <div class="task-detail-badges">
+        <span class="badge badge-status status-${task.status}">${task.status}</span>
+        <span class="badge badge-priority priority-${task.priority}">${task.priority}</span>
+        <span class="badge badge-category">${task.category}</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+      <!-- Information grid -->
+      <div class="task-detail-info-grid">
         <div class="detail-item">
           <div class="detail-label"><i class="fas fa-user"></i> מוטל על</div>
           <div class="detail-value">${task.assigned_to}</div>
         </div>
 
         <div class="detail-item">
-          <div class="detail-label"><i class="fas fa-envelope"></i> אימייל</div>
-          <div class="detail-value">${task.assigned_to_email || task.assigned_email}</div>
-        </div>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
-        <div class="detail-item">
           <div class="detail-label"><i class="fas fa-user-plus"></i> נוצר על ידי</div>
           <div class="detail-value">${task.created_by}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-envelope"></i> אימייל</div>
+          <div class="detail-value">${task.assigned_to_email || task.assigned_email}</div>
         </div>
 
         <div class="detail-item">
@@ -588,7 +566,7 @@ function openUpdateModal(taskId, event) {
   document.getElementById('updateCompletionDate').value = now.toISOString().split('T')[0];
   document.getElementById('updateCompletionTime').value = now.toTimeString().slice(0, 5);
 
-  // Show/hide completion fields based on status
+  // Show/hide completion fields based on status (initially)
   setupStatusChangeListener();
 
   // Show modal
@@ -621,14 +599,11 @@ function setupStatusChangeListener() {
 
 function toggleCompletionFields(status) {
   const completionDetailsGroup = document.getElementById('completionDetailsGroup');
-  const completionDateTimeGroup = document.getElementById('completionDateTimeGroup');
 
   if (status === 'בוצע') {
     completionDetailsGroup.style.display = 'block';
-    completionDateTimeGroup.style.display = 'grid';
   } else {
     completionDetailsGroup.style.display = 'none';
-    completionDateTimeGroup.style.display = 'none';
   }
 }
 

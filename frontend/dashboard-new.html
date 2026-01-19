@@ -245,11 +245,10 @@
         <form id="updateTaskForm">
           <input type="hidden" id="updateTaskId">
 
+          <!-- Primary actions: Status and Priority -->
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">
-                <i class="form-icon fas fa-info-circle"></i> סטטוס
-              </label>
+              <label class="form-label">סטטוס</label>
               <select id="updateStatus" class="form-control" required>
                 <option value="">בחר סטטוס</option>
                 <option value="ממתינה">ממתינה</option>
@@ -262,9 +261,7 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">
-                <i class="form-icon fas fa-flag"></i> דחיפות
-              </label>
+              <label class="form-label">עדיפות</label>
               <select id="updatePriority" class="form-control">
                 <option value="">ללא שינוי</option>
                 <option value="דחופה">דחופה</option>
@@ -275,52 +272,54 @@
             </div>
           </div>
 
+          <!-- Completion details section (shown only when status = בוצע) -->
+          <div id="completionDetailsGroup" style="display: none;">
+            <div class="form-group">
+              <label class="form-label">
+                פרטי ביצוע
+                <span style="font-size: 11px; color: #9ca3af; font-weight: normal; margin-right: 6px;">(אופציונלי)</span>
+              </label>
+              <textarea
+                id="updateCompletionDetails"
+                class="form-control"
+                rows="2"
+                placeholder="מה בוצע? (אופציונלי)"
+              ></textarea>
+            </div>
+
+            <div id="completionDateTimeGroup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label class="form-label">תאריך השלמה</label>
+                <input
+                  type="date"
+                  id="updateCompletionDate"
+                  class="form-control"
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">שעת השלמה</label>
+                <input
+                  type="time"
+                  id="updateCompletionTime"
+                  class="form-control"
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes section (optional, at bottom) -->
           <div class="form-group">
             <label class="form-label">
-              <i class="form-icon fas fa-sticky-note"></i> הערות מזכירה
+              הערות
+              <span style="font-size: 11px; color: #9ca3af; font-weight: normal; margin-right: 6px;">(אופציונלי)</span>
             </label>
             <textarea
               id="updateNotes"
               class="form-control"
-              rows="3"
-              placeholder="הערות כלליות למבצע..."
+              rows="2"
+              placeholder="הערות נוספות (אופציונלי)"
             ></textarea>
-          </div>
-
-          <div class="form-group" id="completionDetailsGroup" style="display: none;">
-            <label class="form-label">
-              <i class="form-icon fas fa-check-circle"></i> פרטי ביצוע
-            </label>
-            <textarea
-              id="updateCompletionDetails"
-              class="form-control"
-              rows="3"
-              placeholder="פרטי ביצוע המשימה..."
-            ></textarea>
-          </div>
-
-          <div id="completionDateTimeGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
-            <div class="form-group">
-              <label class="form-label">
-                <i class="form-icon fas fa-calendar"></i> תאריך השלמה
-              </label>
-              <input
-                type="date"
-                id="updateCompletionDate"
-                class="form-control"
-              >
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">
-                <i class="form-icon fas fa-clock"></i> שעת השלמה
-              </label>
-              <input
-                type="time"
-                id="updateCompletionTime"
-                class="form-control"
-              >
-            </div>
           </div>
         </form>
       </div>
