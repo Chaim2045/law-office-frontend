@@ -1,6 +1,6 @@
 // ================================================
-// Modern Form Handler - Connected to Rust API
-// Adapted from original secretary interface
+// Modern Form Handler - Refactored with Utils & API Service
+// Using centralized utilities and API calls
 // ================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -9,11 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const stepper = document.querySelector('.stepper');
   const steps = document.querySelectorAll('.step');
   const formSteps = document.querySelectorAll('.form-step');
-  const notification = document.getElementById('notification');
-  const notificationIcon = document.getElementById('notificationIcon');
-  const notificationTitle = document.getElementById('notificationTitle');
-  const notificationMessage = document.getElementById('notificationMessage');
-  const notificationClose = document.getElementById('notificationClose');
   const successModal = document.getElementById('successModal');
   const successCloseBtn = document.getElementById('successCloseBtn');
   const nameChips = document.querySelectorAll('.name-chip');
@@ -39,7 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize user system
   initUserSystem();
 
+  // ================================================
   // פונקציות ניהול משתמשים
+  // ================================================
+
   function initUserSystem() {
     const savedUser = localStorage.getItem('currentUser');
 
@@ -47,55 +45,76 @@ document.addEventListener('DOMContentLoaded', function() {
       const user = JSON.parse(savedUser);
       setCurrentUser(user.name, user.email);
     } else {
-      userSwitchModal.classList.add('active');
+      // No user - show selection modal
+      if (userSwitchModal) {
+        userSwitchModal.classList.add('active');
+      }
     }
 
-    userMenu.addEventListener('click', function(e) {
-      e.stopPropagation();
-      userMenuDropdown.classList.toggle('active');
-    });
-
-    document.addEventListener('click', function() {
-      userMenuDropdown.classList.remove('active');
-    });
-
-    switchUserBtn.addEventListener('click', function() {
-      userSwitchModal.classList.add('active');
-    });
-
-    userSwitchChips.querySelectorAll('.name-chip').forEach(chip => {
-      chip.addEventListener('click', function() {
-        userSwitchChips.querySelectorAll('.name-chip').forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
+    // User menu dropdown toggle
+    if (userMenu && userMenuDropdown) {
+      userMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userMenuDropdown.classList.toggle('active');
       });
-    });
 
-    confirmUserBtn.addEventListener('click', function() {
-      const selectedChip = userSwitchChips.querySelector('.name-chip.selected');
-      if (selectedChip) {
-        const userName = selectedChip.getAttribute('data-name');
-        const userEmail = selectedChip.getAttribute('data-email');
+      document.addEventListener('click', function() {
+        userMenuDropdown.classList.remove('active');
+      });
+    }
 
-        setCurrentUser(userName, userEmail);
-        userSwitchModal.classList.remove('active');
+    // Switch user button
+    if (switchUserBtn && userSwitchModal) {
+      switchUserBtn.addEventListener('click', function() {
+        userSwitchModal.classList.add('active');
+      });
+    }
 
-        nameChips.forEach(chip => {
-          if (chip.getAttribute('data-name') === userName) {
-            chip.click();
-          }
+    // User selection chips
+    if (userSwitchChips) {
+      userSwitchChips.querySelectorAll('.name-chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+          userSwitchChips.querySelectorAll('.name-chip').forEach(c => c.classList.remove('selected'));
+          this.classList.add('selected');
         });
+      });
+    }
 
-        showNotification('המשתמש הוחלף ל-' + userName, 'info');
-      } else {
-        showNotification('נא לבחור משתמש', 'warning');
-      }
-    });
+    // Confirm user selection
+    if (confirmUserBtn && userSwitchChips) {
+      confirmUserBtn.addEventListener('click', function() {
+        const selectedChip = userSwitchChips.querySelector('.name-chip.selected');
+        if (selectedChip) {
+          const userName = selectedChip.getAttribute('data-name');
+          const userEmail = selectedChip.getAttribute('data-email');
+
+          setCurrentUser(userName, userEmail);
+          userSwitchModal.classList.remove('active');
+
+          // Auto-select corresponding chip in main form
+          nameChips.forEach(chip => {
+            if (chip.getAttribute('data-name') === userName) {
+              chip.click();
+            }
+          });
+
+          Utils.showToast(`המשתמש הוחלף ל-${userName}`, 'info');
+        } else {
+          Utils.showToast('נא לבחור משתמש', 'warning');
+        }
+      });
+    }
   }
 
   function setCurrentUser(name, email) {
-    currentUserName.textContent = name;
-    const firstChar = name.trim().charAt(0);
-    userAvatar.textContent = firstChar || '?';
+    if (currentUserName) {
+      currentUserName.textContent = name;
+    }
+
+    if (userAvatar) {
+      const firstChar = name.trim().charAt(0);
+      userAvatar.textContent = firstChar || '?';
+    }
 
     localStorage.setItem('currentUser', JSON.stringify({
       name: name,
@@ -103,28 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }));
   }
 
-  notificationClose.addEventListener('click', function() {
-    notification.style.display = 'none';
-  });
+  // ================================================
+  // ניווט בשלבים (Steps Navigation)
+  // ================================================
 
-  // פונקציה להצגת התראות
-  function showNotification(message, type = 'info') {
-    notificationIcon.className = `notification-icon ${type}`;
-    notificationIcon.innerHTML = type === 'warning' ?
-      '<i class="fas fa-exclamation-triangle"></i>' :
-      '<i class="fas fa-info-circle"></i>';
-
-    notificationTitle.textContent = type === 'warning' ? 'שגיאה' : 'הודעה';
-    notificationMessage.textContent = message;
-
-    notification.style.display = 'flex';
-
-    setTimeout(() => {
-      notification.style.display = 'none';
-    }, 5000);
-  }
-
-  // ניווט בשלבים
   document.getElementById('nextToStep2').addEventListener('click', function() {
     if (validateStep1()) {
       goToStep(2);
@@ -154,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
     goToStep(3);
   });
 
-  // התקדמות אוטומטית
+  // התקדמות אוטומטית אחרי בחירת שם
   requesterName.addEventListener('blur', function() {
     if (this.value.trim() !== '' && customEmailGroup.style.display === 'none') {
       setTimeout(() => {
@@ -163,7 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // פונקציה למעבר בין שלבים
+  /**
+   * מעבר בין שלבים
+   */
   function goToStep(stepNumber) {
     stepper.setAttribute('data-step', stepNumber);
 
@@ -185,39 +188,59 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector(`.form-step[data-step="${stepNumber}"]`).classList.add('active');
   }
 
-  // וולידציות
+  // ================================================
+  // וולידציות (Validations)
+  // ================================================
+
   function validateStep1() {
-    if (!requesterName.value.trim()) {
-      showNotification('יש להזין שם מבקש', 'warning');
+    const nameValidation = Utils.validateRequired(requesterName.value, 'שם המבקש');
+    if (!nameValidation.valid) {
+      Utils.showToast(nameValidation.message, 'warning');
       requesterName.focus();
       return false;
     }
 
-    if (customEmailGroup.style.display !== 'none' && !customEmail.value) {
-      showNotification('יש להזין אימייל עבור משתמש חדש', 'warning');
-      customEmail.focus();
-      return false;
+    // בדיקה אם נדרש אימייל מותאם
+    if (customEmailGroup.style.display !== 'none') {
+      const emailValue = customEmail.value.trim();
+      if (!emailValue) {
+        Utils.showToast('יש להזין אימייל עבור משתמש חדש', 'warning');
+        customEmail.focus();
+        return false;
+      }
+
+      if (!Utils.validateEmail(emailValue)) {
+        Utils.showToast('כתובת האימייל אינה תקינה', 'warning');
+        customEmail.focus();
+        return false;
+      }
     }
 
     return true;
   }
 
   function validateStep2() {
-    if (!document.getElementById('taskDescription').value.trim()) {
-      showNotification('יש להזין תיאור משימה', 'warning');
-      document.getElementById('taskDescription').focus();
+    const descriptionEl = document.getElementById('taskDescription');
+    const descValidation = Utils.validateRequired(descriptionEl.value, 'תיאור המשימה');
+    if (!descValidation.valid) {
+      Utils.showToast(descValidation.message, 'warning');
+      descriptionEl.focus();
       return false;
     }
 
-    if (!document.getElementById('taskCategory').value) {
-      showNotification('יש לבחור סיווג משימה', 'warning');
-      document.getElementById('taskCategory').focus();
+    const categoryEl = document.getElementById('taskCategory');
+    const categoryValidation = Utils.validateRequired(categoryEl.value, 'סיווג המשימה');
+    if (!categoryValidation.valid) {
+      Utils.showToast(categoryValidation.message, 'warning');
+      categoryEl.focus();
       return false;
     }
 
-    if (!document.getElementById('dueDate').value) {
-      showNotification('יש לבחור תאריך יעד', 'warning');
-      document.getElementById('dueDate').focus();
+    const dueDateEl = document.getElementById('dueDate');
+    const dateValidation = Utils.validateRequired(dueDateEl.value, 'תאריך יעד');
+    if (!dateValidation.valid) {
+      Utils.showToast(dateValidation.message, 'warning');
+      dueDateEl.focus();
       return false;
     }
 
@@ -230,28 +253,39 @@ document.addEventListener('DOMContentLoaded', function() {
     return true;
   }
 
-  // עדכון תצוגת אישור
+  // ================================================
+  // עדכון תצוגת אישור (Preview)
+  // ================================================
+
   function updatePreview() {
     document.getElementById('previewName').textContent = requesterName.value;
 
-    if (requesterEmail.value) {
-      document.getElementById('previewEmail').textContent = requesterEmail.value;
-      document.getElementById('previewEmailItem').classList.remove('hidden');
+    const emailValue = requesterEmail.value;
+    const previewEmailItem = document.getElementById('previewEmailItem');
+    if (emailValue) {
+      document.getElementById('previewEmail').textContent = emailValue;
+      previewEmailItem.classList.remove('hidden');
     } else {
-      document.getElementById('previewEmailItem').classList.add('hidden');
+      previewEmailItem.classList.add('hidden');
     }
 
-    document.getElementById('previewDescription').textContent = document.getElementById('taskDescription').value;
-    document.getElementById('previewCategory').textContent = document.getElementById('taskCategory').value;
+    document.getElementById('previewDescription').textContent =
+      document.getElementById('taskDescription').value;
 
-    const dueDate = new Date(document.getElementById('dueDate').value);
-    const formattedDate = dueDate.toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('previewCategory').textContent =
+      document.getElementById('taskCategory').value;
+
+    // Format date using Utils
+    const dueDateValue = document.getElementById('dueDate').value;
+    const formattedDate = Utils.formatDate(new Date(dueDateValue), 'long');
     document.getElementById('previewDueDate').textContent = formattedDate;
 
+    // Priority display
     const priority = document.querySelector('input[name="priority"]:checked').value;
     const priorityElement = document.getElementById('previewPriority');
     priorityElement.textContent = priority;
 
+    // Apply priority classes
     priorityElement.className = 'summary-value priority';
     if (priority === 'רגילה') {
       priorityElement.classList.add('normal');
@@ -262,7 +296,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // טיפול בכפתורי שמות
+  // ================================================
+  // טיפול בכפתורי שמות (Name Chips)
+  // ================================================
+
   nameChips.forEach(button => {
     button.addEventListener('click', function() {
       nameChips.forEach(btn => btn.classList.remove('selected'));
@@ -275,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // בדיקת שם בקלט
+  // בדיקת שם בקלט - auto-match with chips
   requesterName.addEventListener('input', function() {
     const inputValue = this.value.toLowerCase();
     let matchFound = false;
@@ -304,7 +341,10 @@ document.addEventListener('DOMContentLoaded', function() {
     requesterEmail.value = this.value;
   });
 
-  // בדיקת דחיפות גבוהה
+  // ================================================
+  // בדיקת דחיפות גבוהה (Priority Confirmation)
+  // ================================================
+
   priorityHighOption.addEventListener('change', function() {
     if (this.checked) {
       priorityConfirmModal.classList.add('active');
@@ -320,8 +360,11 @@ document.addEventListener('DOMContentLoaded', function() {
     priorityConfirmModal.classList.remove('active');
   });
 
-  // טיפול בטופס - שליחה ל-API Rust
-  taskForm.addEventListener('submit', function(e) {
+  // ================================================
+  // טיפול בטופס - שליחה ל-API
+  // ================================================
+
+  taskForm.addEventListener('submit', async function(e) {
     e.preventDefault();
 
     if (!validateAllFields()) {
@@ -331,75 +374,81 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButton = this.querySelector('button[type="submit"]');
     const originalText = submitButton.innerHTML;
 
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
-    submitButton.disabled = true;
+    // Show loading state
+    Utils.showLoading(submitButton, 'שולח...');
 
-    // Get current user
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{"name":"מערכת","email":"office@ghlawoffice.co.il"}');
+    try {
+      // Get current user from localStorage
+      const currentUser = JSON.parse(
+        localStorage.getItem('currentUser') ||
+        '{"name":"מערכת","email":"office@ghlawoffice.co.il"}'
+      );
 
-    // יצירת אובייקט המשימה עבור Rust API
-    const taskData = {
-      title: requesterName.value + ': ' + document.getElementById('taskDescription').value.substring(0, 100),
-      description: document.getElementById('taskDescription').value,
-      category: document.getElementById('taskCategory').value,
-      assigned_to: "שני",  // כל המשימות מוטלות על שני (המזכירה)
-      assigned_to_email: "office@ghlawoffice.co.il",  // אימייל של שני
-      created_by: requesterName.value,  // שם המבקש (חיים, גיא, רועי וכו')
-      created_by_email: requesterEmail.value || customEmail.value,  // אימייל המבקש
-      due_date: document.getElementById('dueDate').value || null,
-      priority: document.querySelector('input[name="priority"]:checked').value,
-      notes: null
-    };
+      // יצירת אובייקט המשימה
+      const taskData = {
+        title: requesterName.value + ': ' +
+               document.getElementById('taskDescription').value.substring(0, 100),
+        description: document.getElementById('taskDescription').value,
+        category: document.getElementById('taskCategory').value,
+        assigned_to: "שני",  // כל המשימות מוטלות על שני (המזכירה)
+        assigned_to_email: "office@ghlawoffice.co.il",
+        created_by: requesterName.value,  // שם המבקש
+        created_by_email: requesterEmail.value || customEmail.value,
+        due_date: document.getElementById('dueDate').value || null,
+        priority: document.querySelector('input[name="priority"]:checked').value,
+        notes: null
+      };
 
-    // שליחת המשימה ל-Rust API
-    fetch(`${window.API_URL}/api/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(taskData)
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => {
-            throw new Error(err.error || `HTTP error! status: ${response.status}`);
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        // הצגת הודעת הצלחה
-        successModal.classList.add('active');
+      // שליחת המשימה דרך API Service
+      const data = await window.api.createTask(taskData);
 
-        // Display task ID if available
-        if (data.task_id) {
-          document.getElementById('taskIdDisplay').textContent = `מזהה משימה: ${data.task_id}`;
-        }
+      // הצלחה!
+      Utils.showToast('המשימה נשלחה בהצלחה!', 'success');
 
-        // איפוס הטופס
-        taskForm.reset();
-        nameChips.forEach(btn => btn.classList.remove('selected'));
-        customEmailGroup.style.display = 'none';
+      // Show success modal
+      successModal.classList.add('active');
 
-        goToStep(1);
+      // Display task ID if available
+      if (data.task_id) {
+        document.getElementById('taskIdDisplay').textContent =
+          `מזהה משימה: ${data.task_id}`;
+      }
 
-        submitButton.innerHTML = originalText;
-        submitButton.disabled = false;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        showNotification(`אירעה שגיאה בשליחת המשימה: ${error.message}`, 'warning');
-        submitButton.innerHTML = originalText;
-        submitButton.disabled = false;
-      });
+      // Reset form
+      resetForm();
+
+    } catch (error) {
+      console.error('Error creating task:', error);
+      // Error toast is already shown by API Service
+      // But we can add more context if needed
+      Utils.showToast('אירעה שגיאה בשליחת המשימה', 'error');
+    } finally {
+      // Hide loading state
+      Utils.hideLoading(submitButton, originalText);
+    }
   });
+
+  // ================================================
+  // Success Modal - Close Handler
+  // ================================================
 
   successCloseBtn.addEventListener('click', function() {
     successModal.classList.remove('active');
+    resetForm();
+  });
 
+  // ================================================
+  // Helper Functions
+  // ================================================
+
+  /**
+   * Reset form to initial state
+   */
+  function resetForm() {
     taskForm.reset();
     nameChips.forEach(btn => btn.classList.remove('selected'));
     customEmailGroup.style.display = 'none';
     goToStep(1);
-  });
+  }
+
 });
