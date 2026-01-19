@@ -15,6 +15,7 @@ backend/Secrets.dev.toml
 # IDE
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 *~
