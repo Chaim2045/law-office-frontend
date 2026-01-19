@@ -242,17 +242,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- Side-by-Side Layout: Task Details + Update Form -->
+        <!-- Side-by-Side Layout: Update Form + Task Details -->
         <div class="update-modal-grid">
-          <!-- Left: Task Details Preview (GitHub Issue Style) -->
-          <div class="update-modal-preview">
-            <div class="update-preview-header">פרטי משימה</div>
-            <div id="updateTaskPreview" class="task-detail-grid">
-              <!-- Will be populated by JavaScript -->
-            </div>
-          </div>
-
-          <!-- Right: Update Form -->
+          <!-- First Column (appears on right in RTL): Update Form -->
           <div class="update-modal-form">
             <form id="updateTaskForm">
               <input type="hidden" id="updateTaskId">
@@ -332,6 +324,14 @@
                 ></textarea>
               </div>
             </form>
+          </div>
+
+          <!-- Second Column (appears on left in RTL): Task Details Preview (GitHub Issue Style) -->
+          <div class="update-modal-preview">
+            <div class="update-preview-header">פרטי משימה</div>
+            <div id="updateTaskPreview" class="task-detail-grid">
+              <!-- Will be populated by JavaScript -->
+            </div>
           </div>
         </div>
       </div>

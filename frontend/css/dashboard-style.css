@@ -731,9 +731,10 @@ body:has(.dashboard-card) .container {
 /* Update Modal Side-by-Side Layout */
 .update-modal-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr;
   gap: 20px;
   align-items: start;
+  direction: rtl;
 }
 
 .update-modal-preview {
