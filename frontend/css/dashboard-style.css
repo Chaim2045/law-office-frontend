@@ -463,19 +463,40 @@ body:has(.dashboard-card) .container {
   border: 1px solid #c4b5fd;
 }
 
-/* Modal Large */
+/* Modal Large - Enhanced Design */
 .modal-large {
-  max-width: 700px;
+  max-width: 720px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   direction: rtl;
+  border-radius: 16px;
 }
 
 .modal-large .modal-body {
   overflow-y: auto;
-  max-height: calc(90vh - 120px);
+  max-height: calc(90vh - 160px);
   text-align: right;
+  padding: var(--space-7);
+}
+
+/* Custom scrollbar for modal body */
+.modal-large .modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-large .modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal-large .modal-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.modal-large .modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 .modal-large .modal-body .form-control,
@@ -483,6 +504,16 @@ body:has(.dashboard-card) .container {
 .modal-large .modal-body textarea {
   text-align: right;
   direction: rtl;
+  border: 1.5px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.modal-large .modal-body .form-control:focus,
+.modal-large .modal-body select:focus,
+.modal-large .modal-body textarea:focus {
+  border-color: #0049db;
+  box-shadow: 0 0 0 3px rgba(0, 73, 219, 0.1);
+  outline: none;
 }
 
 .modal-large .modal-body .form-label {
@@ -490,14 +521,24 @@ body:has(.dashboard-card) .container {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: var(--space-2);
 }
 
 .modal-large .modal-body .form-label i {
   order: 2;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.modal-large .modal-body .form-group {
+  margin-bottom: var(--space-5);
 }
 
 .modal-large .modal-footer {
   margin-top: auto;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .task-detail-grid {
@@ -635,16 +676,23 @@ body:has(.dashboard-card) .container {
   transform: translateY(0);
 }
 
-/* Alert warning for respond modal */
+/* Alert warning for respond modal - Enhanced */
 .alert-warning {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-2);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1.5px solid #fbbf24;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.15);
 }
 
 .alert-warning i {
   margin-top: 2px;
   flex-shrink: 0;
+  font-size: 18px;
+  color: #d97706;
 }
 
 /* ================================================
