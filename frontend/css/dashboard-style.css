@@ -244,10 +244,23 @@ body:has(.dashboard-card) .container {
   border: 1px solid #e5e7eb;
 }
 
-/* Tasks Container */
+/* Tasks Container - 3 columns grid */
 .tasks-container {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-4);
+}
+
+@media (max-width: 1400px) {
+  .tasks-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .tasks-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 .loading-state,
@@ -465,12 +478,19 @@ body:has(.dashboard-card) .container {
 
 /* Modal Large - Enhanced Design */
 .modal-large {
-  max-width: 720px;
-  max-height: 90vh;
+  max-width: 600px;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
   direction: rtl;
   border-radius: 16px;
+}
+
+@media (max-width: 768px) {
+  .modal-large {
+    max-width: 95%;
+    max-height: 90vh;
+  }
 }
 
 .modal-large .modal-body {
