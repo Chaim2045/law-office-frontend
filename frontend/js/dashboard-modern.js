@@ -557,6 +557,9 @@ function openUpdateModal(taskId, event) {
 
   currentTaskBeingUpdated = task;
 
+  // Populate task preview (GitHub Issue style)
+  populateUpdateTaskPreview(task);
+
   // Populate form
   document.getElementById('updateTaskId').value = taskId;
   document.getElementById('updateStatus').value = mapStatusToOldFormat(task.status);
@@ -574,6 +577,82 @@ function openUpdateModal(taskId, event) {
 
   // Show modal
   document.getElementById('updateTaskModal').classList.add('active');
+}
+
+/**
+ * Populate the task preview section in update modal (GitHub Issue style)
+ */
+function populateUpdateTaskPreview(task) {
+  const preview = document.getElementById('updateTaskPreview');
+
+  const createdDate = new Date(task.created_at).toLocaleString('he-IL', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const deadline = task.due_date || task.deadline;
+  const deadlineText = deadline ? new Date(deadline).toLocaleDateString('he-IL', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) : 'לא הוגדר';
+
+  preview.innerHTML = `
+    <!-- Title bar with icon and task ID -->
+    <div class="task-detail-header">
+      <div class="task-status-icon">
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="#6b7280">
+          <path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+          <path fill-rule="evenodd" d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path>
+        </svg>
+      </div>
+      <div class="task-detail-header-content">
+        <div class="task-detail-title">${task.title}</div>
+        <div class="task-detail-meta">
+          נפתח על ידי <strong>${task.created_by}</strong>
+          <span style="margin: 0 4px;">•</span>
+          ${createdDate}
+        </div>
+      </div>
+      <div class="task-detail-id">#${task.task_id || task.id}</div>
+    </div>
+
+    <!-- Labels row -->
+    <div class="task-detail-labels">
+      <span class="badge badge-status status-${task.status}">${task.status}</span>
+      <span class="badge badge-priority priority-${task.priority}">${task.priority}</span>
+      <span class="badge badge-category">${task.category}</span>
+    </div>
+
+    <!-- Description (if exists) -->
+    ${task.description ? `
+      <div class="task-detail-description">${task.description}</div>
+    ` : ''}
+
+    <!-- Sidebar info panel -->
+    <div class="task-detail-sidebar">
+      <div class="task-sidebar-item">
+        <span class="task-sidebar-label">Assignees</span>
+        <div class="task-sidebar-value" style="display: flex; align-items: center; gap: 6px;">
+          <div class="task-sidebar-avatar">${task.assigned_to.charAt(0)}</div>
+          <span>${task.assigned_to}</span>
+        </div>
+      </div>
+
+      <div class="task-sidebar-item">
+        <span class="task-sidebar-label">Due date</span>
+        <span class="task-sidebar-value">${deadlineText}</span>
+      </div>
+
+      <div class="task-sidebar-item">
+        <span class="task-sidebar-label">Email</span>
+        <span class="task-sidebar-value">${task.assigned_to_email || task.assigned_email}</span>
+      </div>
+    </div>
+  `;
 }
 
 function mapStatusToOldFormat(newStatus) {
