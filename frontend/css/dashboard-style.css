@@ -728,6 +728,55 @@ body:has(.dashboard-card) .container {
   font-weight: 500;
 }
 
+/* Update Modal Side-by-Side Layout */
+.update-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.update-modal-preview {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+  height: 100%;
+}
+
+.update-preview-header {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.update-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Responsive: stack on mobile */
+@media (max-width: 768px) {
+  .update-modal-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .update-modal-preview {
+    order: 1;
+  }
+
+  .update-modal-form {
+    order: 2;
+  }
+}
+
 .task-sidebar-value {
   color: #111827;
   font-weight: 500;
