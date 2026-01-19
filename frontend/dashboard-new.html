@@ -119,27 +119,23 @@
           </div>
         </div>
 
-        <!-- סינון וחיפוש -->
+        <!-- סינון וחיפוש - Linear Style (Single Row) -->
         <div class="filters-section">
-          <div class="form-group">
-            <label class="form-label">
-              <i class="form-icon fas fa-search"></i> חיפוש משימות
-            </label>
-            <input
-              type="text"
-              id="searchInput"
-              class="form-control"
-              placeholder="חפש לפי כותרת, שם מבצע או קטגוריה..."
-            >
-          </div>
-
           <div class="filters-row">
             <div class="form-group">
-              <label class="form-label">
-                <i class="form-icon fas fa-filter"></i> סטטוס
-              </label>
+              <label class="form-label">חיפוש</label>
+              <input
+                type="text"
+                id="searchInput"
+                class="form-control"
+                placeholder="חפש משימות..."
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">סטטוס</label>
               <select id="statusFilter" class="form-control">
-                <option value="all">כל הסטטוסים</option>
+                <option value="all">הכל</option>
                 <option value="חדשה">חדשה</option>
                 <option value="בטיפול">בטיפול</option>
                 <option value="הוחזר להשלמה">הוחזר להשלמה</option>
@@ -149,11 +145,9 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">
-                <i class="form-icon fas fa-flag"></i> עדיפות
-              </label>
+              <label class="form-label">עדיפות</label>
               <select id="priorityFilter" class="form-control">
-                <option value="all">כל העדיפויות</option>
+                <option value="all">הכל</option>
                 <option value="דחופה">דחופה</option>
                 <option value="גבוהה">גבוהה</option>
                 <option value="רגילה">רגילה</option>
@@ -162,11 +156,9 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">
-                <i class="form-icon fas fa-folder"></i> קטגוריה
-              </label>
+              <label class="form-label">קטגוריה</label>
               <select id="categoryFilter" class="form-control">
-                <option value="all">כל הקטגוריות</option>
+                <option value="all">הכל</option>
                 <option value="משפטית">משפטית</option>
                 <option value="טכנית">טכנית</option>
                 <option value="מינהלית">מינהלית</option>
