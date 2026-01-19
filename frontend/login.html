@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>התחברות - משרד עו"ד GH</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/modern-style.css">
+  <style>
+    /* Login page specific styles */
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: var(--space-8);
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .login-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--space-4);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 36px;
+    }
+
+    .login-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: var(--space-2);
+    }
+
+    .login-subtitle {
+      color: var(--color-gray-600);
+      font-size: var(--font-size-sm);
+    }
+
+    .login-form {
+      margin-top: var(--space-6);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: var(--color-gray-700);
+      margin-bottom: var(--space-2);
+      font-size: var(--font-size-sm);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: var(--space-3);
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-base);
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: var(--space-3);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-login:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .divider {
+      text-align: center;
+      margin: var(--space-6) 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--color-gray-300);
+    }
+
+    .divider-text {
+      position: relative;
+      background: white;
+      padding: 0 var(--space-3);
+      color: var(--color-gray-500);
+      font-size: var(--font-size-sm);
+    }
+
+    .quick-login {
+      margin-top: var(--space-4);
+    }
+
+    .quick-login-title {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-gray-700);
+      margin-bottom: var(--space-3);
+      text-align: center;
+    }
+
+    .name-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      justify-content: center;
+    }
+
+    .name-chip {
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .name-chip:hover {
+      background: var(--color-gray-200);
+      border-color: var(--color-gray-400);
+    }
+
+    .name-chip.selected {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+    }
+
+    .error-message {
+      background: #fee;
+      color: #c33;
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-size-sm);
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .footer-links {
+      text-align: center;
+      margin-top: var(--space-6);
+      font-size: var(--font-size-sm);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      margin: 0 var(--space-2);
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">
+          <i class="fas fa-scale-balanced"></i>
+        </div>
+        <h1 class="login-title">ברוכים הבאים</h1>
+        <p class="login-subtitle">משרד עו"ד GH - מערכת ניהול משימות</p>
+      </div>
+
+      <div class="error-message" id="errorMessage"></div>
+
+      <!-- Quick Login with Name Chips -->
+      <div class="quick-login">
+        <div class="quick-login-title">בחר את שמך להתחברות מהירה:</div>
+        <div class="name-chips" id="nameChips">
+          <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
+          <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
+          <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
+          <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
+          <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
+          <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
+          <button type="button" class="name-chip" data-name="שני" data-email="office@ghlawoffice.co.il">שני</button>
+          <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
+          <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
+          <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
+          <button type="button" class="name-chip" data-name="עוז" data-email="Oz@brosh-finance.com">עוז</button>
+          <button type="button" class="name-chip" data-name="לירז" data-email="Liraz@siboni-law.com">לירז</button>
+        </div>
+      </div>
+
+      <div class="divider">
+        <span class="divider-text">או התחבר עם סיסמה</span>
+      </div>
+
+      <!-- Traditional Login Form (for future use) -->
+      <form class="login-form" id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="email">אימייל</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="your-email@ghlawoffice.co.il"
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">סיסמה</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="הכנס סיסמה"
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i>
+          התחבר
+        </button>
+      </form>
+    </div>
+
+    <div class="footer-links">
+      <span>© 2026 משרד עו"ד GH</span>
+      <a href="#">תנאי שימוש</a>
+      <a href="#">פרטיות</a>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/state-manager.js"></script>
+  <script src="js/cache-service.js"></script>
+  <script src="js/auth-service.js"></script>
+  <script src="js/api-service.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>
