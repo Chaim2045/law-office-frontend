@@ -455,52 +455,55 @@ function showTaskModal(task) {
 
   content.innerHTML = `
     <div class="task-detail-grid">
-      <!-- Task ID at top -->
-      <div class="task-detail-id">
-        <span class="task-id-label">משימה</span>
-        <span class="task-id-value">${task.task_id || task.id}</span>
+      <!-- Title bar with icon and task ID -->
+      <div class="task-detail-header">
+        <div class="task-status-icon">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="#6b7280">
+            <path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+            <path fill-rule="evenodd" d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path>
+          </svg>
+        </div>
+        <div class="task-detail-header-content">
+          <div class="task-detail-title">${task.title}</div>
+          <div class="task-detail-meta">
+            נפתח על ידי <strong>${task.created_by}</strong>
+            <span style="margin: 0 4px;">•</span>
+            ${createdDate}
+          </div>
+        </div>
+        <div class="task-detail-id">#${task.task_id || task.id}</div>
       </div>
 
-      <!-- Title -->
-      <div class="task-detail-title">${task.title}</div>
+      <!-- Labels row -->
+      <div class="task-detail-labels">
+        <span class="badge badge-status status-${task.status}">${task.status}</span>
+        <span class="badge badge-priority priority-${task.priority}">${task.priority}</span>
+        <span class="badge badge-category">${task.category}</span>
+      </div>
 
       <!-- Description (if exists) -->
       ${task.description ? `
         <div class="task-detail-description">${task.description}</div>
       ` : ''}
 
-      <!-- Status, Priority, Category badges -->
-      <div class="task-detail-badges">
-        <span class="badge badge-status status-${task.status}">${task.status}</span>
-        <span class="badge badge-priority priority-${task.priority}">${task.priority}</span>
-        <span class="badge badge-category">${task.category}</span>
-      </div>
-
-      <!-- Information grid -->
-      <div class="task-detail-info-grid">
-        <div class="detail-item">
-          <div class="detail-label"><i class="fas fa-user"></i> מוטל על</div>
-          <div class="detail-value">${task.assigned_to}</div>
+      <!-- Sidebar info panel -->
+      <div class="task-detail-sidebar">
+        <div class="task-sidebar-item">
+          <span class="task-sidebar-label">Assignees</span>
+          <div class="task-sidebar-value" style="display: flex; align-items: center; gap: 6px;">
+            <div class="task-sidebar-avatar">${task.assigned_to.charAt(0)}</div>
+            <span>${task.assigned_to}</span>
+          </div>
         </div>
 
-        <div class="detail-item">
-          <div class="detail-label"><i class="fas fa-user-plus"></i> נוצר על ידי</div>
-          <div class="detail-value">${task.created_by}</div>
+        <div class="task-sidebar-item">
+          <span class="task-sidebar-label">Due date</span>
+          <span class="task-sidebar-value">${deadlineText}</span>
         </div>
 
-        <div class="detail-item">
-          <div class="detail-label"><i class="fas fa-envelope"></i> אימייל</div>
-          <div class="detail-value">${task.assigned_to_email || task.assigned_email}</div>
-        </div>
-
-        <div class="detail-item">
-          <div class="detail-label"><i class="fas fa-calendar"></i> תאריך יעד</div>
-          <div class="detail-value">${deadlineText}</div>
-        </div>
-
-        <div class="detail-item">
-          <div class="detail-label"><i class="fas fa-clock"></i> תאריך יצירה</div>
-          <div class="detail-value">${createdDate}</div>
+        <div class="task-sidebar-item">
+          <span class="task-sidebar-label">Email</span>
+          <span class="task-sidebar-value">${task.assigned_to_email || task.assigned_email}</span>
         </div>
       </div>
     </div>

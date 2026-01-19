@@ -614,49 +614,75 @@ body:has(.dashboard-card) .container {
 }
 
 /* ================================================
-   Task Detail View - Linear Style
+   Task Detail View - GitHub Issue Style
    ================================================ */
 
 .task-detail-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
-/* Task ID at top */
-.task-detail-id {
+/* Title bar with icon and task ID */
+.task-detail-header {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 10px;
 }
 
-.task-id-label {
-  font-size: 11px;
-  color: #9ca3af;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.task-status-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
 }
 
-.task-id-value {
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 600;
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-  background: #f9fafb;
-  padding: 4px 10px;
-  border-radius: 4px;
-  letter-spacing: -0.01em;
+.task-status-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: #6b7280;
 }
 
-/* Title section */
+.task-detail-header-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .task-detail-title {
   font-size: 18px;
   font-weight: 600;
   color: #111827;
   line-height: 1.4;
-  letter-spacing: -0.02em;
-  margin: 8px 0;
+  margin-bottom: 4px;
+  word-wrap: break-word;
+}
+
+.task-detail-meta {
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.task-detail-meta strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.task-detail-meta-separator {
+  color: #d1d5db;
+}
+
+.task-detail-id {
+  font-size: 11px;
+  color: #9ca3af;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  background: #f9fafb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
 }
 
 /* Description section */
@@ -667,62 +693,61 @@ body:has(.dashboard-card) .container {
   padding: 12px;
   background: #f9fafb;
   border-radius: 6px;
-  border-left: 3px solid #e5e7eb;
+  border-right: 3px solid #e5e7eb;
 }
 
-/* Badge row - status, priority, category */
-.task-detail-badges {
+/* Labels row (badges) */
+.task-detail-labels {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
-  padding: 12px 0;
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
 }
 
-/* Info grid - two columns */
-.task-detail-info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px 24px;
+/* Sidebar info panel */
+.task-detail-sidebar {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
 }
 
-@media (max-width: 640px) {
-  .task-detail-info-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-}
-
-/* Individual detail item */
-.detail-item {
+.task-sidebar-item {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
 }
 
-.detail-label {
-  font-size: 11px;
-  color: #9ca3af;
+.task-sidebar-item + .task-sidebar-item {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.task-sidebar-label {
+  color: #6b7280;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+}
+
+.task-sidebar-value {
+  color: #111827;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.detail-label i {
-  font-size: 10px;
-  opacity: 0.7;
-}
-
-.detail-value {
-  font-size: 13px;
-  color: #111827;
-  font-weight: 500;
-  line-height: 1.4;
+.task-sidebar-avatar {
+  width: 24px;
+  height: 24px;
+  background: #dbeafe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1e40af;
+  flex-shrink: 0;
 }
 
 /* Responsive */
