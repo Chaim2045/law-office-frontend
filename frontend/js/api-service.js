@@ -77,9 +77,10 @@ class ApiService {
     /**
      * Get all tasks
      * @param {Object} filters - Optional filters (status, assignee, etc.)
+     * @param {boolean} forceRefresh - Force refresh from server (skip cache)
      * @returns {Promise<Array>} Array of tasks
      */
-    async getTasks(filters = {}) {
+    async getTasks(filters = {}, forceRefresh = false) {
         let endpoint = '/api/tasks';
 
         // Add query parameters if filters provided
@@ -93,7 +94,26 @@ class ApiService {
             endpoint += `?${queryString}`;
         }
 
-        return this.request(endpoint);
+        // Try cache first (if no filters and not forcing refresh)
+        const cacheKey = queryString ? `tasks:${queryString}` : 'tasks';
+        if (!forceRefresh && !queryString && window.cache) {
+            const cached = window.cache.get(cacheKey);
+            if (cached) {
+                console.log('📦 Using cached tasks');
+                return cached;
+            }
+        }
+
+        // Fetch from server
+        const tasks = await this.request(endpoint);
+
+        // Cache the result (if no filters)
+        if (!queryString && window.cache && window.cacheStrategies) {
+            const strategy = window.cacheStrategies.tasks;
+            window.cache.set(cacheKey, tasks, strategy.ttl, strategy.tags);
+        }
+
+        return tasks;
     }
 
     /**
@@ -111,10 +131,17 @@ class ApiService {
      * @returns {Promise<Object>} Created task
      */
     async createTask(taskData) {
-        return this.request('/api/tasks', {
+        const result = await this.request('/api/tasks', {
             method: 'POST',
             body: JSON.stringify(taskData)
         });
+
+        // Invalidate tasks cache
+        if (window.invalidateTaskCache) {
+            window.invalidateTaskCache();
+        }
+
+        return result;
     }
 
     /**
@@ -126,10 +153,17 @@ class ApiService {
     async updateTask(id, taskData) {
         // For now, backend still uses POST for updates
         // TODO: Change to PUT when backend is updated
-        return this.request('/api/tasks', {
+        const result = await this.request('/api/tasks', {
             method: 'POST',
             body: JSON.stringify({ id, ...taskData })
         });
+
+        // Invalidate tasks cache
+        if (window.invalidateTaskCache) {
+            window.invalidateTaskCache();
+        }
+
+        return result;
     }
 
     /**
