@@ -347,3 +347,4 @@ if (typeof window.API_URL !== 'undefined') {
 }
 
 console.log('🌐 API Service loaded successfully');
+console.log('✅ window.apiService is available:', typeof window.apiService !== 'undefined');
