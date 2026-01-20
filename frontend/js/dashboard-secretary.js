@@ -136,7 +136,7 @@ async function loadTasks(silent = false) {
       throw new Error('apiService is not defined. Make sure api-service.js is loaded before dashboard-secretary.js');
     }
 
-    const response = await apiService.getAllTasks();
+    const response = await apiService.getTasks();
 
     if (response.success) {
       allTasks = response.data || [];
