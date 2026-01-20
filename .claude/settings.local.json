@@ -15,7 +15,8 @@
       "Bash(where:*)",
       "Bash(npm install:*)",
       "Bash(cargo shuttle:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []
