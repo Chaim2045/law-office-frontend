@@ -337,11 +337,13 @@ class ApiService {
 // Wait for config.js to load and define window.API_URL
 if (typeof window.API_URL !== 'undefined') {
     window.api = new ApiService(window.API_URL);
+    window.apiService = window.api; // Alias for compatibility
     console.log('🌐 API Service initialized with base URL:', window.API_URL);
 } else {
     console.warn('⚠️ window.API_URL not found. Make sure config.js is loaded before api-service.js');
     // Fallback to production URL
     window.api = new ApiService('https://famous-truffle-5a1846.netlify.app');
+    window.apiService = window.api; // Alias for compatibility
 }
 
 console.log('🌐 API Service loaded successfully');
