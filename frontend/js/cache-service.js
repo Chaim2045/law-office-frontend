@@ -363,6 +363,7 @@ window.cache = new CacheService({
   maxSize: 50,                 // 50 entries max
   debug: false                 // Set to true for debugging
 });
+window.cacheService = window.cache; // Alias for compatibility
 
 // ================================================
 // 🎯 Cache Strategies

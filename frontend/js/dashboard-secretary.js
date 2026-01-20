@@ -131,6 +131,11 @@ async function loadTasks(silent = false) {
   }
 
   try {
+    // Check if apiService exists
+    if (typeof apiService === 'undefined') {
+      throw new Error('apiService is not defined. Make sure api-service.js is loaded before dashboard-secretary.js');
+    }
+
     const response = await apiService.getAllTasks();
 
     if (response.success) {
@@ -589,3 +594,17 @@ function showNotification(message, type = 'success') {
     setTimeout(() => notification.remove(), 300);
   }, 3000);
 }
+
+// ================================================
+// Global Dashboard Instance
+// ================================================
+
+window.dashboardSecretary = {
+  loadTasks,
+  allTasks,
+  filteredTasks,
+  currentFilter,
+  searchQuery
+};
+
+console.log('✅ Dashboard Secretary loaded successfully');

@@ -321,6 +321,7 @@ window.appState = new StateManager({
   debug: false, // Set to true for debugging
   enableHistory: false
 });
+window.stateManager = window.appState; // Alias for compatibility
 
 // ================================================
 // 🧮 Computed Properties

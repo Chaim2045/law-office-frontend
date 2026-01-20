@@ -446,6 +446,7 @@ class AuthService {
  * Global authentication service
  */
 window.auth = new AuthService();
+window.authService = window.auth; // Alias for compatibility
 
 // ================================================
 // 🛡️ Route Protection
