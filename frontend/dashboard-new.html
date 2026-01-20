@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/modern-style.css">
-  <link rel="stylesheet" href="css/dashboard-style.css">
+  <link rel="stylesheet" href="css/dashboard-secretary-style.css">
 </head>
-<body style="background: #ffffff;">
+<body>
   <!-- ניווט עליון -->
   <header class="app-header">
     <div class="app-logo">
@@ -23,7 +23,7 @@
       <div class="user-avatar" id="userAvatar">?</div>
       <div class="user-info">
         <div class="user-name" id="currentUserName">משתמש</div>
-        <div class="user-role">עורך דין</div>
+        <div class="user-role">מזכירה</div>
       </div>
       <div class="user-menu-dropdown" id="userMenuDropdown">
         <div class="dropdown-item" id="switchUserBtn">
@@ -39,154 +39,193 @@
     </div>
   </header>
 
-  <div class="container">
-    <!-- כרטיס לוח המשימות -->
-    <div class="card dashboard-card">
-      <div class="card-header-clean">
-        <div class="header-content">
-          <h1 class="card-title-clean" id="dashboardTitle">דשבורד ניהול משימות</h1>
-          <p class="card-subtitle-clean" id="dashboardSubtitle">ניהול משימות יומיומי</p>
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Header Section with Stats and Actions -->
+    <div class="dashboard-header">
+      <div class="dashboard-header-content">
+        <h1 class="dashboard-title" id="dashboardTitle">דשבורד ניהול משימות</h1>
+        <p class="dashboard-subtitle" id="dashboardSubtitle">ניהול משימות יומיומי</p>
+      </div>
+      <div class="dashboard-actions">
+        <button class="btn btn-secondary" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i>
+          <span>רענן</span>
+        </button>
+        <button class="btn btn-primary" id="newTaskBtn">
+          <i class="fas fa-plus"></i>
+          <span>משימה חדשה</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card stat-total">
+        <div class="stat-icon">
+          <i class="fas fa-tasks"></i>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-clean" id="refreshBtn">
-            <i class="fas fa-sync-alt"></i>
-            <span>רענן</span>
-          </button>
-          <button class="btn btn-primary-clean" id="newTaskBtn">
-            <i class="fas fa-plus"></i>
-            <span>משימה חדשה</span>
-          </button>
+        <div class="stat-content">
+          <div class="stat-value" id="totalTasks">0</div>
+          <div class="stat-label">סך הכל</div>
         </div>
       </div>
 
-      <div class="card-body">
-        <!-- סטטיסטיקות -->
-        <div class="stats-grid">
-          <div class="stat-card stat-total">
-            <div class="stat-icon">
-              <i class="fas fa-tasks"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value" id="totalTasks">0</div>
-              <div class="stat-label">סך הכל משימות</div>
-            </div>
-          </div>
-
-          <div class="stat-card stat-new">
-            <div class="stat-icon">
-              <i class="fas fa-plus-circle"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value" id="newTasks">0</div>
-              <div class="stat-label">משימות חדשות</div>
-            </div>
-          </div>
-
-          <div class="stat-card stat-progress">
-            <div class="stat-icon">
-              <i class="fas fa-spinner"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value" id="inProgressTasks">0</div>
-              <div class="stat-label">בטיפול</div>
-            </div>
-          </div>
-
-          <div class="stat-card stat-completed">
-            <div class="stat-icon">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value" id="completedTasks">0</div>
-              <div class="stat-label">הושלמו</div>
-            </div>
-          </div>
+      <div class="stat-card stat-new">
+        <div class="stat-icon">
+          <i class="fas fa-inbox"></i>
         </div>
-
-        <!-- טאבים: פעילות vs הושלמו -->
-        <div class="tabs-container" style="margin-bottom: var(--space-5);">
-          <div class="tabs">
-            <button class="tab active" data-tab="active" id="activeTab">
-              <i class="fas fa-tasks"></i>
-              <span>משימות פעילות</span>
-              <span class="tab-badge" id="activeCount">0</span>
-            </button>
-            <button class="tab" data-tab="completed" id="completedTab">
-              <i class="fas fa-check-circle"></i>
-              <span>הושלמו</span>
-              <span class="tab-badge" id="completedCount">0</span>
-            </button>
-          </div>
+        <div class="stat-content">
+          <div class="stat-value" id="newTasks">0</div>
+          <div class="stat-label">חדשות</div>
         </div>
+      </div>
 
-        <!-- סינון וחיפוש - Linear Style (Single Row) -->
-        <div class="filters-section">
-          <div class="filters-row">
-            <div class="form-group">
-              <label class="form-label">חיפוש</label>
-              <input
-                type="text"
-                id="searchInput"
-                class="form-control"
-                placeholder="חפש משימות..."
-              >
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">סטטוס</label>
-              <select id="statusFilter" class="form-control">
-                <option value="all">הכל</option>
-                <option value="חדשה">חדשה</option>
-                <option value="בטיפול">בטיפול</option>
-                <option value="הוחזר להשלמה">הוחזר להשלמה</option>
-                <option value="הושלמה">הושלמה</option>
-                <option value="בוטלה">בוטלה</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">עדיפות</label>
-              <select id="priorityFilter" class="form-control">
-                <option value="all">הכל</option>
-                <option value="דחופה">דחופה</option>
-                <option value="גבוהה">גבוהה</option>
-                <option value="רגילה">רגילה</option>
-                <option value="נמוכה">נמוכה</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">קטגוריה</label>
-              <select id="categoryFilter" class="form-control">
-                <option value="all">הכל</option>
-                <option value="משפטית">משפטית</option>
-                <option value="טכנית">טכנית</option>
-                <option value="מינהלית">מינהלית</option>
-                <option value="פיננסית">פיננסית</option>
-              </select>
-            </div>
-          </div>
+      <div class="stat-card stat-progress">
+        <div class="stat-icon">
+          <i class="fas fa-spinner"></i>
         </div>
-
-        <!-- תוצאות -->
-        <div class="results-info">
-          <span id="resultsCount">טוען משימות...</span>
+        <div class="stat-content">
+          <div class="stat-value" id="inProgressTasks">0</div>
+          <div class="stat-label">בטיפול</div>
         </div>
+      </div>
 
-        <!-- רשימת משימות -->
-        <div class="tasks-container" id="tasksContainer">
-          <!-- משימות יוצגו כאן דינמית -->
-          <div class="loading-state">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>טוען משימות...</p>
-          </div>
+      <div class="stat-card stat-completed">
+        <div class="stat-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value" id="completedTasks">0</div>
+          <div class="stat-label">הושלמו</div>
         </div>
       </div>
     </div>
+
+    <!-- Main Content: Sidebar + List -->
+    <div class="content-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">תצוגות</div>
+          <div class="sidebar-item active" data-filter="all">
+            <i class="fas fa-inbox"></i>
+            <span>כל המשימות</span>
+            <span class="sidebar-badge" id="allCount">0</span>
+          </div>
+          <div class="sidebar-item" data-filter="starred">
+            <i class="fas fa-star"></i>
+            <span>מסומנות</span>
+            <span class="sidebar-badge" id="starredCount">0</span>
+          </div>
+          <div class="sidebar-item" data-filter="today">
+            <i class="fas fa-calendar-day"></i>
+            <span>היום</span>
+            <span class="sidebar-badge" id="todayCount">0</span>
+          </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">לפי סטטוס</div>
+          <div class="sidebar-item" data-filter="status:חדשה">
+            <i class="fas fa-circle status-dot-new"></i>
+            <span>חדשה</span>
+            <span class="sidebar-badge" id="statusNewCount">0</span>
+          </div>
+          <div class="sidebar-item" data-filter="status:בטיפול">
+            <i class="fas fa-circle status-dot-progress"></i>
+            <span>בטיפול</span>
+            <span class="sidebar-badge" id="statusProgressCount">0</span>
+          </div>
+          <div class="sidebar-item" data-filter="status:ממתין">
+            <i class="fas fa-circle status-dot-waiting"></i>
+            <span>ממתין</span>
+            <span class="sidebar-badge" id="statusWaitingCount">0</span>
+          </div>
+          <div class="sidebar-item" data-filter="status:הושלמה">
+            <i class="fas fa-circle status-dot-completed"></i>
+            <span>הושלמה</span>
+            <span class="sidebar-badge" id="statusCompletedCount">0</span>
+          </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">לפי עדיפות</div>
+          <div class="sidebar-item" data-filter="priority:דחופה">
+            <i class="fas fa-exclamation-circle priority-urgent"></i>
+            <span>דחופה</span>
+            <span class="sidebar-badge" id="priorityUrgentCount">0</span>
+          </div>
+          <div class="sidebar-item" data-filter="priority:גבוהה">
+            <i class="fas fa-exclamation-circle priority-high"></i>
+            <span>גבוהה</span>
+            <span class="sidebar-badge" id="priorityHighCount">0</span>
+          </div>
+          <div class="sidebar-item" data-filter="priority:רגילה">
+            <i class="fas fa-minus-circle priority-normal"></i>
+            <span>רגילה</span>
+            <span class="sidebar-badge" id="priorityNormalCount">0</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main List Area -->
+      <main class="main-content">
+        <!-- Search and Filters -->
+        <div class="list-header">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="חפש משימות..." class="search-input">
+          </div>
+          <div class="list-filters">
+            <select id="categoryFilter" class="filter-select">
+              <option value="all">כל הקטגוריות</option>
+              <option value="משפטית">משפטית</option>
+              <option value="טכנית">טכנית</option>
+              <option value="מינהלית">מינהלית</option>
+              <option value="פיננסית">פיננסית</option>
+            </select>
+            <select id="sortBy" class="filter-select">
+              <option value="date-desc">תאריך (חדש לישן)</option>
+              <option value="date-asc">תאריך (ישן לחדש)</option>
+              <option value="priority">עדיפות</option>
+              <option value="assignee">אחראי</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Current Filter Title -->
+        <div class="list-title-section">
+          <h2 class="list-title" id="currentFilterTitle">כל המשימות</h2>
+          <div class="list-count" id="listCount">0 משימות</div>
+        </div>
+
+        <!-- Tasks List -->
+        <div class="tasks-list" id="tasksList">
+          <!-- Loading State -->
+          <div class="list-loading" id="listLoading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>טוען משימות...</p>
+          </div>
+
+          <!-- Empty State -->
+          <div class="list-empty" id="listEmpty" style="display: none;">
+            <i class="fas fa-inbox"></i>
+            <p>אין משימות להצגה</p>
+          </div>
+
+          <!-- Tasks will be rendered here -->
+        </div>
+      </main>
+    </div>
   </div>
 
-  <!-- מודל צפייה במשימה -->
-  <div class="modal-overlay" id="taskModal">
+  <!-- Modal: View Task Details (User View - GitHub Style) -->
+  <div class="modal-overlay" id="taskModalOverlay">
     <div class="modal modal-large">
       <div class="modal-header">
         <h3 class="modal-title">פרטי משימה</h3>
@@ -194,46 +233,19 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <div class="modal-body" id="taskModalContent">
-        <!-- תוכן המשימה יוצג כאן -->
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- מודל החלפת משתמש -->
-  <div class="modal-overlay" id="userSwitchModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title">בחירת משתמש</h3>
-        <button class="modal-close" onclick="document.getElementById('userSwitchModal').classList.remove('active')">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">בחר את המשתמש שלך</label>
-          <div class="name-chips" id="userSwitchChips">
-            <button type="button" class="name-chip" data-name="חיים" data-email="HAIM@ghlawoffice.co.il">חיים</button>
-            <button type="button" class="name-chip" data-name="גיא" data-email="guy@ghlawoffice.co.il">גיא</button>
-            <button type="button" class="name-chip" data-name="רועי" data-email="roi@ghlawoffice.co.il">רועי</button>
-            <button type="button" class="name-chip" data-name="שחר" data-email="shahar@ghlawoffice.co.il">שחר</button>
-            <button type="button" class="name-chip" data-name="עוזי" data-email="uzi@ghlawoffice.co.il">עוזי</button>
-            <button type="button" class="name-chip" data-name="אורי" data-email="ori@ghlawoffice.co.il">אורי</button>
-            <button type="button" class="name-chip" data-name="שני" data-email="office@ghlawoffice.co.il">שני</button>
-            <button type="button" class="name-chip" data-name="ראיד" data-email="reed@ghlawoffice.co.il">ראיד</button>
-            <button type="button" class="name-chip" data-name="מרווה" data-email="Marva@ghlawoffice.co.il">מרווה</button>
-            <button type="button" class="name-chip" data-name="מירי" data-email="miri@ghlawoffice.co.il">מירי</button>
-          </div>
+        <div id="taskDetailsContent" class="task-detail-grid">
+          <!-- Will be populated by JavaScript with GitHub Issue style -->
         </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="closeTaskModalBtn">סגור</button>
+      </div>
     </div>
   </div>
 
-  <!-- מודל עדכון משימה (למזכירה בלבד) -->
-  <div class="modal-overlay" id="updateTaskModal">
+  <!-- Modal: Update Task (Secretary - Side by Side) -->
+  <div class="modal-overlay" id="updateTaskModalOverlay">
     <div class="modal modal-large">
       <div class="modal-header">
         <h3 class="modal-title">עדכון משימה</h3>
@@ -274,7 +286,7 @@
                 </select>
               </div>
 
-              <!-- Completion details section (shown only when status = בוצע) -->
+              <!-- Completion details section -->
               <div id="completionDetailsGroup" style="display: none;">
                 <div class="form-group">
                   <label class="form-label">
@@ -289,28 +301,19 @@
                   ></textarea>
                 </div>
 
-                <div id="completionDateTimeGroup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                   <div class="form-group">
                     <label class="form-label">תאריך השלמה</label>
-                    <input
-                      type="date"
-                      id="updateCompletionDate"
-                      class="form-control"
-                    >
+                    <input type="date" id="updateCompletionDate" class="form-control">
                   </div>
-
                   <div class="form-group">
                     <label class="form-label">שעת השלמה</label>
-                    <input
-                      type="time"
-                      id="updateCompletionTime"
-                      class="form-control"
-                    >
+                    <input type="time" id="updateCompletionTime" class="form-control">
                   </div>
                 </div>
               </div>
 
-              <!-- Notes section (optional, at bottom) -->
+              <!-- Notes section -->
               <div class="form-group">
                 <label class="form-label">
                   הערות
@@ -326,7 +329,7 @@
             </form>
           </div>
 
-          <!-- Second Column (appears on left in RTL): Task Details Preview (GitHub Issue Style) -->
+          <!-- Second Column (appears on left in RTL): Task Details Preview -->
           <div class="update-modal-preview">
             <div class="update-preview-header">פרטי משימה</div>
             <div id="updateTaskPreview" class="task-detail-grid">
@@ -337,7 +340,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="cancelUpdateBtn">ביטול</button>
-        <button type="button" class="btn btn-primary-clean" id="saveUpdateBtn">
+        <button type="button" class="btn btn-primary" id="saveUpdateBtn">
           <i class="fas fa-save"></i>
           שמור עדכון
         </button>
@@ -345,48 +348,7 @@
     </div>
   </div>
 
-  <!-- מודל תגובה למשימה שהוחזרה -->
-  <div class="modal-overlay" id="respondTaskModal">
-    <div class="modal modal-large">
-      <div class="modal-header">
-        <h3 class="modal-title">הוסף פרטים נוספים למשימה</h3>
-        <button class="modal-close" id="closeRespondModal">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-warning" style="margin-bottom: var(--space-4); padding: var(--space-3); background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px;">
-          <i class="fas fa-info-circle" style="color: #d97706;"></i>
-          <span style="color: #92400e;">המשימה הוחזרה אליך להשלמת פרטים. אנא הוסף את המידע החסר והמשימה תועבר חזרה למנהלת המשרד.</span>
-        </div>
-        <form id="respondTaskForm">
-          <input type="hidden" id="respondTaskId">
-
-          <div class="form-group">
-            <label class="form-label">
-              <i class="form-icon fas fa-comment"></i> פרטים נוספים *
-            </label>
-            <textarea
-              id="respondDetails"
-              class="form-control"
-              rows="6"
-              placeholder="הוסף את המידע החסר או הפרטים הנוספים שהתבקשו..."
-              required
-            ></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="cancelRespondBtn">ביטול</button>
-        <button type="button" class="btn btn-primary-clean" id="saveRespondBtn">
-          <i class="fas fa-paper-plane"></i>
-          שלח תגובה
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- מודל הוספת משימה חדשה -->
+  <!-- Modal: Create New Task -->
   <div class="modal-overlay" id="createTaskModal">
     <div class="modal modal-large">
       <div class="modal-header">
@@ -399,7 +361,7 @@
         <form id="createTaskForm">
           <div class="form-group">
             <label class="form-label">
-              <i class="form-icon fas fa-tasks"></i> תיאור המשימה *
+              <i class="fas fa-tasks"></i> תיאור המשימה *
             </label>
             <textarea
               id="createTaskDescription"
@@ -408,13 +370,13 @@
               placeholder="תאר את המשימה בפירוט..."
               required
             ></textarea>
-            <p class="form-hint">פרט ככל האפשר את דרישות המשימה והמטרות הנדרשות</p>
+            <p style="margin-top: 6px; font-size: 12px; color: #6b7280;">פרט ככל האפשר את דרישות המשימה והמטרות הנדרשות</p>
           </div>
 
-          <div class="form-row">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div class="form-group">
               <label class="form-label">
-                <i class="form-icon fas fa-tag"></i> סיווג משימה *
+                <i class="fas fa-tag"></i> סיווג משימה *
               </label>
               <select id="createTaskCategory" class="form-control" required>
                 <option value="">-- בחר סיווג --</option>
@@ -427,7 +389,7 @@
 
             <div class="form-group">
               <label class="form-label">
-                <i class="form-icon fas fa-calendar-alt"></i> תאריך יעד *
+                <i class="fas fa-calendar-alt"></i> תאריך יעד *
               </label>
               <input
                 type="date"
@@ -440,29 +402,50 @@
 
           <div class="form-group">
             <label class="form-label">
-              <i class="form-icon fas fa-flag"></i> דחיפות המשימה *
+              <i class="fas fa-flag"></i> דחיפות המשימה *
             </label>
 
-            <div class="priority-options-compact">
-              <label class="priority-radio">
-                <input type="radio" name="createPriority" value="רגילה" checked>
-                <span class="priority-label">רגילה</span>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <label style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 2px solid #e5e7eb; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                <input type="radio" name="createPriority" value="רגילה" checked style="margin: 0;">
+                <span style="font-size: 13px; font-weight: 500;">רגילה</span>
               </label>
-              <label class="priority-radio">
-                <input type="radio" name="createPriority" value="גבוהה">
-                <span class="priority-label">גבוהה</span>
+              <label style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 2px solid #e5e7eb; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                <input type="radio" name="createPriority" value="גבוהה" style="margin: 0;">
+                <span style="font-size: 13px; font-weight: 500;">גבוהה</span>
               </label>
-              <label class="priority-radio">
-                <input type="radio" name="createPriority" value="דחופה">
-                <span class="priority-label">דחופה</span>
+              <label style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 2px solid #e5e7eb; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                <input type="radio" name="createPriority" value="דחופה" style="margin: 0;">
+                <span style="font-size: 13px; font-weight: 500;">דחופה</span>
               </label>
             </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-user"></i> מוטל על
+            </label>
+            <select id="createTaskAssignee" class="form-control">
+              <option value="">-- בחר אחראי --</option>
+              <option value="חיים">חיים</option>
+              <option value="גיא">גיא</option>
+              <option value="רועי">רועי</option>
+              <option value="שחר">שחר</option>
+              <option value="עוזי">עוזי</option>
+              <option value="אורי">אורי</option>
+              <option value="שני">שני</option>
+              <option value="ראיד">ראיד</option>
+              <option value="מרווה">מרווה</option>
+              <option value="מירי">מירי</option>
+              <option value="עוז">עוז</option>
+              <option value="לירז">לירז</option>
+            </select>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="cancelCreateBtn">ביטול</button>
-        <button type="button" class="btn btn-primary-clean" id="saveCreateBtn">
+        <button type="button" class="btn btn-primary" id="saveCreateBtn">
           <i class="fas fa-paper-plane"></i>
           שלח משימה
         </button>
@@ -470,9 +453,7 @@
     </div>
   </div>
 
-  <!-- הודעות הצלחה/שגיאה -->
-  <div class="notification" id="notification"></div>
-
+  <!-- Scripts -->
   <script src="js/config.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/state-manager.js"></script>
@@ -483,7 +464,6 @@
     // Protect dashboard route (optional)
     // protectRoute(false); // Set to true to require login
   </script>
-  <script src="js/dashboard-tabs.js"></script>
-  <script src="js/dashboard-modern.js"></script>
+  <script src="js/dashboard-secretary.js"></script>
 </body>
 </html>
