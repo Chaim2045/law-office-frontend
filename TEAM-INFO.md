@@ -17,8 +17,8 @@
 10. **שני** - office@ghlawoffice.co.il (מנהלת משרד/מזכירה)
 
 ### 💰 רואות חשבון:
-11. **נטליה** - acc1@ghlawoffice.co.il
-12. **מריה** - acc2@ghlawoffice.co.il
+11. **נטליה** - Natanikboyko@gmail.com
+12. **מריה** - ACC20@ACCOUNTER.ONE
 
 ---
 
