@@ -400,15 +400,13 @@ document.addEventListener('DOMContentLoaded', function() {
       };
 
       // שליחת המשימה דרך Google Apps Script
+      // הסקריפט מצפה לשדות בעברית כפי שהוגדר בקוד המקורי
       const formData = new FormData();
-      formData.append('title', taskData.title);
-      formData.append('description', taskData.description);
-      formData.append('category', taskData.category);
-      formData.append('assigned_to', taskData.assigned_to);
-      formData.append('assigned_to_email', taskData.assigned_to_email);
-      formData.append('created_by', taskData.created_by);
-      formData.append('created_by_email', taskData.created_by_email);
-      formData.append('due_date', taskData.due_date || '');
+      formData.append('requesterName', taskData.created_by);
+      formData.append('requesterEmail', taskData.created_by_email);
+      formData.append('taskDescription', taskData.description);
+      formData.append('taskCategory', taskData.category);
+      formData.append('dueDate', taskData.due_date || '');
       formData.append('priority', taskData.priority);
 
       const response = await fetch(GOOGLE_SCRIPT_URL, {

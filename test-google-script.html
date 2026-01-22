@@ -173,17 +173,13 @@
       testBtn.disabled = true;
 
       try {
-        // ניסיון לשלוח בקשה פשוטה
+        // ניסיון לשלוח בקשה פשוטה עם השדות שהסקריפט מצפה להם
         const formData = new FormData();
-        formData.append('action', 'test');
-        formData.append('title', 'בדיקת חיבור');
-        formData.append('description', 'זוהי בקשת בדיקה אוטומטית');
-        formData.append('category', 'טכנית');
-        formData.append('assigned_to', 'שני');
-        formData.append('assigned_to_email', 'office@ghlawoffice.co.il');
-        formData.append('created_by', 'מערכת בדיקה');
-        formData.append('created_by_email', 'test@test.com');
-        formData.append('due_date', new Date().toISOString().split('T')[0]);
+        formData.append('requesterName', 'מערכת בדיקה');
+        formData.append('requesterEmail', 'test@ghlawoffice.co.il');
+        formData.append('taskDescription', 'זוהי בדיקת חיבור אוטומטית - ניתן להתעלם');
+        formData.append('taskCategory', 'טכנית');
+        formData.append('dueDate', new Date().toISOString().split('T')[0]);
         formData.append('priority', 'רגילה');
 
         const response = await fetch(GOOGLE_SCRIPT_URL, {
