@@ -399,19 +399,41 @@ document.addEventListener('DOMContentLoaded', function() {
         notes: null
       };
 
-      // שליחת המשימה דרך API Service
-      const data = await window.api.createTask(taskData);
+      // שליחת המשימה דרך Google Apps Script
+      const formData = new FormData();
+      formData.append('title', taskData.title);
+      formData.append('description', taskData.description);
+      formData.append('category', taskData.category);
+      formData.append('assigned_to', taskData.assigned_to);
+      formData.append('assigned_to_email', taskData.assigned_to_email);
+      formData.append('created_by', taskData.created_by);
+      formData.append('created_by_email', taskData.created_by_email);
+      formData.append('due_date', taskData.due_date || '');
+      formData.append('priority', taskData.priority);
+
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!data.status || data.status !== 'success') {
+        throw new Error(data.message || 'שגיאה בשליחת המשימה');
+      }
 
       // הצלחה!
-      Utils.showToast('המשימה נשלחה בהצלחה!', 'success');
+      if (window.Utils && typeof window.Utils.showToast === 'function') {
+        Utils.showToast('המשימה נשלחה בהצלחה!', 'success');
+      }
 
       // Show success modal
       successModal.classList.add('active');
 
       // Display task ID if available
-      if (data.task_id) {
+      if (data.taskId || data.task_id) {
         document.getElementById('taskIdDisplay').textContent =
-          `מזהה משימה: ${data.task_id}`;
+          `מזהה משימה: ${data.taskId || data.task_id}`;
       }
 
       // Reset form
