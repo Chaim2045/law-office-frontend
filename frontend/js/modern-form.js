@@ -1,7 +1,50 @@
 // ================================================
-// Modern Form Handler - Refactored with Utils & API Service
-// Using centralized utilities and API calls
+// Modern Form Handler - Google Apps Script Integration
 // ================================================
+
+// Utility Functions
+const Utils = {
+  validateRequired: function(value, fieldName) {
+    if (!value || value.trim() === '') {
+      return {
+        valid: false,
+        message: `יש למלא את השדה: ${fieldName}`
+      };
+    }
+    return { valid: true };
+  },
+
+  validateEmail: function(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  },
+
+  formatDate: function(date, format = 'short') {
+    const options = format === 'long'
+      ? { year: 'numeric', month: 'long', day: 'numeric' }
+      : { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Intl.DateTimeFormat('he-IL', options).format(date);
+  },
+
+  showToast: function(message, type = 'info') {
+    // Simple alert for now - can be enhanced later
+    if (type === 'error' || type === 'warning') {
+      alert(message);
+    } else {
+      console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+  },
+
+  showLoading: function(button, text) {
+    button.disabled = true;
+    button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${text}`;
+  },
+
+  hideLoading: function(button, originalText) {
+    button.disabled = false;
+    button.innerHTML = originalText;
+  }
+};
 
 document.addEventListener('DOMContentLoaded', function() {
   // קבלת רכיבים

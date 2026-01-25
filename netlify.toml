@@ -1,29 +1,11 @@
-# Netlify Configuration for Law Office Frontend + Backend
+# Netlify Configuration for Law Office Frontend
+# Using Google Apps Script for backend
 [build]
   # הספרייה עם הקבצים לפרסום
   publish = "frontend"
 
-  # Install dependencies for Netlify Functions
-  command = "npm install"
-
-  # Netlify Functions directory
-  functions = "netlify/functions"
-
-# Redirects API calls to Netlify Functions
-[[redirects]]
-  from = "/api/tasks/*"
-  to = "/.netlify/functions/tasks/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/api/tasks"
-  to = "/.netlify/functions/tasks"
-  status = 200
-
-[[redirects]]
-  from = "/api/health"
-  to = "/.netlify/functions/health"
-  status = 200
+  # No build command needed - static site
+  command = ""
 
 # Custom headers for security
 [[headers]]
