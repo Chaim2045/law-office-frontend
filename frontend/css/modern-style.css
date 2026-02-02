@@ -146,7 +146,7 @@ html, body {
 .user-menu-dropdown {
   position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   margin-top: var(--space-2);
   background-color: white;
   border-radius: var(--radius-md);
