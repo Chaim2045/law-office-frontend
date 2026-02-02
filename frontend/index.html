@@ -5,10 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מערכת משימות - משרד עו"ד GH</title>
 
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="shortcut icon" type="image/png" href="images/favicon.png">
-  <link rel="apple-touch-icon" href="images/favicon.png">
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="images/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="images/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="images/icon-512.png">
+
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="משימות GH">
+
+  <!-- MS Tile -->
+  <meta name="msapplication-TileColor" content="#1a1a1a">
+  <meta name="msapplication-TileImage" content="images/icon-512.png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -377,6 +394,21 @@
     // Google Apps Script Integration
     // ===================================================
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4_TYPbCtA8KPKdANLBCFLDWyIIiBQMTzq6c02SyI9ZT7Xg2nMFUF3fV3msBecr8cI/exec';
+
+    // ===================================================
+    // Service Worker Registration for PWA
+    // ===================================================
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully:', registration.scope);
+          })
+          .catch(error => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
   </script>
   <script src="js/modern-form.js"></script>
 </body>
