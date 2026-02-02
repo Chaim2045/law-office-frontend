@@ -918,6 +918,18 @@ textarea.form-control {
   text-align: right;
   background: #ffffff;
   min-height: 200px;
+  color: var(--color-text);
+}
+
+.modal-body .form-label {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.modal-body .name-chip {
+  color: var(--color-text-medium);
+  background: white;
+  border: 2px solid var(--color-border);
 }
 
 .modal-footer {
