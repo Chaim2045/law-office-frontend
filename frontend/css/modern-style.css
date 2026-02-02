@@ -209,24 +209,46 @@ html, body {
 
 .card-header {
   background: linear-gradient(135deg, #0049db, #2979ff);
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-4);
   color: white;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-.header-content {
+.user-menu-bar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.user-menu-icon {
+  position: relative;
+  cursor: pointer;
 }
 
 .header-text {
-  flex: 1;
-  min-width: 200px;
+  text-align: center;
+}
+
+.user-avatar-small {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background-color: rgba(255, 255, 255, 0.25);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: all var(--transition);
+}
+
+.user-menu-icon:hover .user-avatar-small {
+  background-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .card-title {
@@ -234,12 +256,6 @@ html, body {
   font-weight: 700;
   margin-bottom: var(--space-1);
   text-align: center;
-}
-
-@media (min-width: 768px) {
-  .card-title {
-    text-align: right;
-  }
 }
 
 .card-subtitle {
