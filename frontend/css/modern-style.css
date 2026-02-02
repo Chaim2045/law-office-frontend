@@ -167,16 +167,24 @@ html, body {
   align-items: center;
   gap: var(--space-2);
   cursor: pointer;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
 }
 
 .dropdown-item:hover {
   background-color: rgba(0, 73, 219, 0.05);
+  color: var(--color-primary);
 }
 
 .dropdown-item i {
   color: var(--color-primary);
   width: 16px;
   text-align: center;
+}
+
+.dropdown-item span {
+  color: inherit;
 }
 
 .dropdown-divider {
