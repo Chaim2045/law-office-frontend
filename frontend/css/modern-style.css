@@ -94,38 +94,7 @@ html, body {
   }
 }
 
-/* ניווט עליון - רקע לבן נקי */
-.app-header {
-  position: sticky;
-  top: 0;
-  background-color: #ffffff;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--nav-height);
-  padding: 0 var(--space-4);
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.app-logo {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.app-logo img { height: 32px; }
-
-.app-logo span {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  background: linear-gradient(45deg, #0049db, #2979ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* יוזר מניו */
+/* יוזר מניו - בתוך ההדר הכחול */
 .user-menu {
   position: relative;
   display: flex;
@@ -136,19 +105,20 @@ html, body {
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
   transition: all var(--transition);
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .user-menu:hover {
-  background-color: rgba(0, 73, 219, 0.05);
-  border-color: var(--color-border);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .user-avatar {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-full);
-  background-color: var(--color-primary-light);
+  background-color: rgba(255, 255, 255, 0.3);
   color: white;
   display: flex;
   align-items: center;
@@ -162,10 +132,15 @@ html, body {
   flex-direction: column;
 }
 
-.user-name { font-weight: 500; }
+.user-name {
+  font-weight: 500;
+  color: white;
+}
+
 .user-role {
   font-size: var(--font-size-xs);
-  opacity: 0.8;
+  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .user-menu-dropdown {
@@ -213,26 +188,59 @@ html, body {
 /* כרטיס ראשי */
 .card {
   background: white;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
   width: 100%;
   overflow: hidden;
   transition: all var(--transition);
-  margin-bottom: var(--space-8);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-8);
+  }
 }
 
 .card-header {
   background: linear-gradient(135deg, #0049db, #2979ff);
   padding: var(--space-6) var(--space-4);
   color: white;
-  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.header-text {
+  flex: 1;
+  min-width: 200px;
 }
 
 .card-title {
   font-size: var(--font-size-xl);
   font-weight: 700;
   margin-bottom: var(--space-1);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .card-title {
+    text-align: right;
+  }
 }
 
 .card-subtitle {
