@@ -45,6 +45,12 @@ function doPost(e) {
       case 'returnTask':
         return createResponse(handleReturnTask(e.parameter));
 
+      case 'getTask':
+        return createResponse(getTaskForResubmit(e.parameter));
+
+      case 'resubmitTask':
+        return createResponse(handleTaskResubmit(e.parameter));
+
       default:
         // ברירת מחדל - משימה חדשה (תואם לטופס שליחת משימות)
         return handleNewTask(e);
@@ -175,7 +181,7 @@ function handleReturnTask(params) {
       const description = sheet.getRange(rowIndex, colMap['תיאור המשימה']).getValue();
 
       if (email) {
-        sendTaskReturnEmail(email, name, taskId, description, reason);
+        sendTaskReturnEmail(email, name, taskId, description, reason, rowIndex);
       }
     } catch (emailError) {
       console.error('Error sending return email:', emailError);
@@ -204,9 +210,12 @@ function handleReturnTask(params) {
  * שליחת מייל החזרת משימה למבקש - פונקציה חדשה!
  * זו הפונקציה שהייתה חסרה ולכן המשתמשים לא קיבלו מייל
  */
-function sendTaskReturnEmail(email, name, taskId, description, reason) {
+function sendTaskReturnEmail(email, name, taskId, description, reason, row) {
   try {
     var subject = '🔄 המשימה שלך הוחזרה להשלמה - ' + taskId;
+
+    var resubmitUrl = 'https://taskmangenet.netlify.app/task-response.html?taskId='
+      + encodeURIComponent(taskId) + '&row=' + row;
 
     var htmlBody = '<div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
       + '<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">'
@@ -223,7 +232,11 @@ function sendTaskReturnEmail(email, name, taskId, description, reason) {
       + '<p style="margin: 0;"><strong>סיבת ההחזרה:</strong></p>'
       + '<p style="margin: 5px 0 0 0; white-space: pre-wrap;">' + reason + '</p>'
       + '</div>'
-      + '<p style="font-size: 14px; color: #666; margin-top: 30px;">אנא השלם את הנדרש ושלח מחדש, או פנה למזכירה לבירורים במייל: ' + CONFIG.email.secretary + '</p>'
+      + '<div style="text-align: center; margin: 30px 0 20px;">'
+      + '<a href="' + resubmitUrl + '" style="display: inline-block; background: linear-gradient(135deg, #0049db, #2979ff); color: white; text-decoration: none; padding: 14px 40px; border-radius: 25px; font-size: 16px; font-weight: 600;">השלם ושלח מחדש</a>'
+      + '</div>'
+      + '<p style="font-size: 13px; color: #888; text-align: center;">לחץ על הכפתור למעלה כדי להשלים ולשלוח את המשימה מחדש</p>'
+      + '<p style="font-size: 13px; color: #888; text-align: center;">או פנה למזכירה לבירורים במייל: ' + CONFIG.email.secretary + '</p>'
       + '<div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">'
       + '<p style="font-size: 12px; color: #999;">מערכת ניהול משימות<br>' + new Date().toLocaleString('he-IL') + '</p>'
       + '</div>'
@@ -369,6 +382,164 @@ function sendTaskCompletionEmail(email, name, taskId, description, completionDet
   }
 }
 
+// ========== פונקציות שליחה מחדש של משימה שהוחזרה: ==========
+
+/**
+ * טעינת פרטי משימה לדף השלמה
+ * נקרא כש-action=getTask
+ */
+function getTaskForResubmit(params) {
+  try {
+    const sheet = getOrCreateSheet(CONFIG.sheets.tasks);
+    const colMap = getColumnMap(sheet);
+    const rowIndex = parseInt(params.row);
+    const taskId = params.taskId;
+
+    if (!rowIndex || rowIndex < 2 || rowIndex > sheet.getLastRow()) {
+      return { status: 'error', message: 'שורה לא תקינה' };
+    }
+
+    // קריאת נתוני המשימה
+    const task = {
+      id: String(sheet.getRange(rowIndex, colMap['מזהה משימה']).getValue()),
+      date: sheet.getRange(rowIndex, colMap['תאריך']).getValue(),
+      requester: sheet.getRange(rowIndex, colMap['שם המבקש']).getValue(),
+      description: String(sheet.getRange(rowIndex, colMap['תיאור המשימה']).getValue() || ''),
+      category: sheet.getRange(rowIndex, colMap['סיווג משימה']).getValue(),
+      priority: sheet.getRange(rowIndex, colMap['דחיפות']).getValue(),
+      status: sheet.getRange(rowIndex, colMap['סטטוס']).getValue(),
+      secretaryNotes: String(sheet.getRange(rowIndex, colMap['הערות מזכירה']).getValue() || ''),
+      dueDate: sheet.getRange(rowIndex, colMap['תאריך לביצוע']).getValue()
+    };
+
+    // וידוא תואם
+    if (String(task.id) !== String(taskId)) {
+      return { status: 'error', message: 'מזהה משימה לא תואם את השורה' };
+    }
+
+    // חילוץ סיבת ההחזרה האחרונה מהערות מזכירה
+    var notes = task.secretaryNotes;
+    var returnReason = '';
+    var matches = notes.match(/\[הוחזר [^\]]+\] ([^\n]+)/g);
+    if (matches && matches.length > 0) {
+      var lastMatch = matches[matches.length - 1];
+      returnReason = lastMatch.replace(/\[הוחזר [^\]]+\] /, '');
+    }
+    task.returnReason = returnReason;
+
+    return { status: 'success', task: task };
+
+  } catch (error) {
+    console.error('Error in getTaskForResubmit:', error);
+    return { status: 'error', message: 'שגיאה בטעינת המשימה: ' + error.toString() };
+  }
+}
+
+/**
+ * טיפול בשליחה מחדש של משימה שהוחזרה
+ * נקרא כש-action=resubmitTask
+ */
+function handleTaskResubmit(params) {
+  try {
+    const sheet = getOrCreateSheet(CONFIG.sheets.tasks);
+    const colMap = getColumnMap(sheet);
+    const rowIndex = parseInt(params.row);
+    const taskId = params.taskId;
+    const responseText = params.response || '';
+
+    if (!rowIndex || rowIndex < 2 || rowIndex > sheet.getLastRow()) {
+      return { status: 'error', message: 'מספר שורה לא תקין: ' + rowIndex };
+    }
+
+    // וידוא מזהה משימה תואם
+    const actualTaskId = String(sheet.getRange(rowIndex, colMap['מזהה משימה']).getValue());
+    if (actualTaskId !== String(taskId)) {
+      return { status: 'error', message: 'מזהה משימה לא תואם את השורה' };
+    }
+
+    // החזרת סטטוס לממתינה
+    sheet.getRange(rowIndex, colMap['סטטוס']).setValue('ממתינה');
+
+    // הוספת תשובת המבקש להערות מזכירה
+    if (colMap['הערות מזכירה']) {
+      const currentNotes = sheet.getRange(rowIndex, colMap['הערות מזכירה']).getValue() || '';
+      const timestamp = Utilities.formatDate(new Date(), CONFIG.system.timezone, "dd/MM/yyyy HH:mm");
+      const newNote = '[תשובת מבקש ' + timestamp + '] ' + responseText;
+      const updatedNotes = currentNotes ? currentNotes + '\n' + newNote : newNote;
+      sheet.getRange(rowIndex, colMap['הערות מזכירה']).setValue(updatedNotes);
+    }
+
+    SpreadsheetApp.flush();
+
+    // שליחת הודעה למזכירה
+    try {
+      const requesterName = sheet.getRange(rowIndex, colMap['שם המבקש']).getValue();
+      const description = sheet.getRange(rowIndex, colMap['תיאור המשימה']).getValue();
+      sendResubmitNotificationToSecretary(taskId, requesterName, String(description || ''), responseText);
+    } catch (emailError) {
+      console.error('Error sending resubmit notification:', emailError);
+      logSystemEvent('שגיאה בשליחת הודעת שליחה מחדש: ' + emailError.toString(), 'WARNING');
+    }
+
+    logSystemEvent('משימה ' + taskId + ' נשלחה מחדש ע"י המבקש', 'INFO');
+
+    return {
+      status: 'success',
+      message: 'המשימה נשלחה מחדש בהצלחה',
+      taskId: taskId
+    };
+
+  } catch (error) {
+    console.error('Error in handleTaskResubmit:', error);
+    logSystemEvent('שגיאה בשליחה מחדש של משימה: ' + error.toString(), 'ERROR');
+    return {
+      status: 'error',
+      message: 'שגיאה בשליחת המשימה מחדש: ' + error.toString()
+    };
+  }
+}
+
+/**
+ * שליחת הודעה למזכירה על שליחה מחדש של משימה
+ */
+function sendResubmitNotificationToSecretary(taskId, requesterName, description, responseText) {
+  try {
+    var subject = '📩 משימה נשלחה מחדש: ' + taskId + ' - ' + requesterName;
+
+    var htmlBody = '<div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
+      + '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">'
+      + '<h2 style="margin: 0;">📩 משימה נשלחה מחדש</h2>'
+      + '</div>'
+      + '<div style="padding: 30px; background-color: #f9f9f9; border-radius: 0 0 10px 10px;">'
+      + '<p style="font-size: 16px;"><strong>' + requesterName + '</strong> השלים/ה את המשימה ושלח/ה אותה מחדש.</p>'
+      + '<div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #667eea;">'
+      + '<p><strong>מזהה משימה:</strong> ' + taskId + '</p>'
+      + '<p><strong>תיאור:</strong> ' + description + '</p>'
+      + '</div>'
+      + '<div style="background: #e8f5e9; padding: 15px; border-radius: 8px; border-right: 4px solid #28a745;">'
+      + '<p style="margin: 0;"><strong>תשובת המבקש:</strong></p>'
+      + '<p style="margin: 5px 0 0 0; white-space: pre-wrap;">' + responseText + '</p>'
+      + '</div>'
+      + '<div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">'
+      + '<p style="font-size: 12px; color: #999;">מערכת ניהול משימות<br>' + new Date().toLocaleString('he-IL') + '</p>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+
+    GmailApp.sendEmail(CONFIG.email.secretary, subject, '', {
+      htmlBody: htmlBody,
+      name: "מערכת ניהול משימות",
+      charset: "UTF-8"
+    });
+
+    logSystemEvent('נשלחה הודעה למזכירה על שליחה מחדש של משימה ' + taskId, 'INFO');
+
+  } catch (error) {
+    console.error('Error sending resubmit notification:', error);
+    logSystemEvent('שגיאה בשליחת הודעת שליחה מחדש: ' + error.toString(), 'ERROR');
+  }
+}
+
 // ================================================
 // הוראות עדכון ב-Google Apps Script:
 // ================================================
@@ -383,7 +554,10 @@ function sendTaskCompletionEmail(email, name, taskId, description, completionDet
 //    העתק והדבק:
 //    - handleMarkCompleted()
 //    - handleReturnTask()
-//    - sendTaskReturnEmail()
+//    - sendTaskReturnEmail() (עם פרמטר row חדש + קישור לדף השלמה)
+//    - getTaskForResubmit() (חדש - טעינת משימה לדף השלמה)
+//    - handleTaskResubmit() (חדש - שליחה מחדש של משימה שהוחזרה)
+//    - sendResubmitNotificationToSecretary() (חדש - הודעה למזכירה על שליחה מחדש)
 //
 // 4. ===== עדכן פונקציות מייל =====
 //    החלף את 3 פונקציות המייל הקיימות בגרסאות המעודכנות

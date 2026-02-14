@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>השלמת משימה - משרד עו"ד GH</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="images/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="images/icon-192.png">
+
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="השלמת משימה">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/modern-style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="header-text">
+          <h1 class="card-title">השלמת משימה</h1>
+          <p class="card-subtitle">מערכת ניהול משימות - משרד עו"ד GH</p>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- LOADING STATE -->
+        <div id="loadingState">
+          <div style="text-align:center; padding:40px 20px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:2rem; color:var(--color-primary);"></i>
+            <p style="margin-top:16px; color:var(--color-text-medium);">טוען פרטי משימה...</p>
+          </div>
+        </div>
+
+        <!-- ERROR STATE -->
+        <div id="errorState" style="display:none;">
+          <div style="text-align:center; padding:40px 20px;">
+            <i class="fas fa-exclamation-triangle" style="font-size:2.5rem; color:var(--color-danger); display:block; margin-bottom:16px;"></i>
+            <p id="errorMessage" style="color:var(--color-text-medium); font-size:1.05rem;"></p>
+            <a href="index.html" class="btn" style="margin-top:20px;"><i class="fas fa-home"></i> חזרה לעמוד הראשי</a>
+          </div>
+        </div>
+
+        <!-- TASK DATA + FORM -->
+        <div id="taskContent" style="display:none;">
+
+          <!-- Task Details (read-only) -->
+          <div class="summary-section">
+            <h3 class="summary-title"><i class="fas fa-tasks" style="color:var(--color-primary); margin-left:6px;"></i> פרטי המשימה</h3>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-hashtag"></i><span>מזהה משימה</span></div>
+                <div class="summary-value" id="taskIdDisplay"></div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i><span>תאריך יצירה</span></div>
+                <div class="summary-value" id="taskDateDisplay"></div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-flag"></i><span>דחיפות</span></div>
+                <div class="summary-value" id="taskPriorityDisplay"></div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-tag"></i><span>סיווג</span></div>
+                <div class="summary-value" id="taskCategoryDisplay"></div>
+              </div>
+            </div>
+            <div class="summary-item" style="margin-top:var(--space-4);">
+              <div class="summary-label"><i class="fas fa-file-alt"></i><span>תיאור המשימה</span></div>
+              <div class="summary-value" id="taskDescriptionDisplay" style="white-space:pre-wrap; line-height:1.6;"></div>
+            </div>
+          </div>
+
+          <!-- Return Reason (highlighted) -->
+          <div style="background:#fff3cd; padding:20px; border-radius:var(--radius-md); border-right:4px solid var(--color-warning); margin:var(--space-6) 0;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+              <i class="fas fa-exclamation-triangle" style="color:#b45309; font-size:1.1rem;"></i>
+              <strong style="color:#92400e; font-size:1rem;">סיבת ההחזרה מהמזכירה</strong>
+            </div>
+            <p id="returnReasonDisplay" style="white-space:pre-wrap; color:#78350f; line-height:1.6;"></p>
+          </div>
+
+          <!-- Response Form -->
+          <form id="resubmitForm">
+            <div class="form-group">
+              <label class="form-label" for="responseText">
+                <i class="form-icon fas fa-reply"></i> התשובה / ההשלמה שלך
+              </label>
+              <textarea id="responseText" class="form-control" rows="6"
+                placeholder="פרט מה השלמת, מה התשובה לסיבת ההחזרה..." required></textarea>
+              <p class="form-hint">אנא פרט את התשובה או ההשלמה שביצעת כדי שהמזכירה תוכל להמשיך בטיפול</p>
+            </div>
+
+            <div class="nav-buttons">
+              <div></div>
+              <button type="submit" class="btn btn-lg" id="submitBtn">
+                שלח תשובה <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div id="successState" style="display:none;">
+          <div style="text-align:center; padding:40px 20px;">
+            <div class="success-icon" style="margin:0 auto var(--space-4);">
+              <i class="fas fa-check"></i>
+            </div>
+            <h3 class="modal-heading">התשובה נשלחה בהצלחה!</h3>
+            <p class="modal-message">המשימה הועברה חזרה לטיפול המזכירה.</p>
+            <p class="modal-message" style="font-size:var(--font-size-sm);">ניתן לסגור חלון זה.</p>
+            <a href="index.html" class="btn btn-secondary" style="margin-top:var(--space-4);"><i class="fas fa-home"></i> חזרה לעמוד הראשי</a>
+          </div>
+        </div>
+
+        <!-- ALREADY HANDLED STATE -->
+        <div id="alreadyHandledState" style="display:none;">
+          <div style="text-align:center; padding:40px 20px;">
+            <i class="fas fa-info-circle" style="font-size:2.5rem; color:var(--color-info); display:block; margin-bottom:16px;"></i>
+            <h3 style="margin-bottom:8px; color:var(--color-text);">המשימה כבר טופלה</h3>
+            <p style="color:var(--color-text-medium); margin-bottom:4px;">סטטוס נוכחי: <strong id="currentStatusDisplay"></strong></p>
+            <p style="color:var(--color-text-light); font-size:var(--font-size-sm);">אם אתה סבור שזו שגיאה, פנה למזכירה</p>
+            <a href="index.html" class="btn btn-secondary" style="margin-top:var(--space-6);"><i class="fas fa-home"></i> חזרה לעמוד הראשי</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4_TYPbCtA8KPKdANLBCFLDWyIIiBQMTzq6c02SyI9ZT7Xg2nMFUF3fV3msBecr8cI/exec';
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const taskId = params.get('taskId');
+      const row = params.get('row');
+
+      if (!taskId || !row) {
+        showError('קישור לא תקין. חסרים פרטי משימה.');
+        return;
+      }
+
+      loadTaskData(taskId, row);
+
+      document.getElementById('resubmitForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitResponse(taskId, row);
+      });
+    });
+
+    async function loadTaskData(taskId, row) {
+      try {
+        // Use POST to avoid CORS issues with Google Apps Script GET redirects
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `action=getTask&taskId=${encodeURIComponent(taskId)}&row=${row}`
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'error') {
+          showError(data.message || 'שגיאה בטעינת המשימה');
+          return;
+        }
+
+        const task = data.task;
+        if (!task) {
+          showError('לא נמצאו נתונים למשימה זו');
+          return;
+        }
+
+        // Check if task is still in "returned" status
+        if (task.status && task.status !== 'הוחזר להשלמה') {
+          showAlreadyHandled(task.status);
+          return;
+        }
+
+        populateTaskDetails(task);
+
+      } catch (error) {
+        console.error('Error loading task:', error);
+        showError('שגיאה בטעינת פרטי המשימה. נסה שוב מאוחר יותר.');
+      }
+    }
+
+    function populateTaskDetails(task) {
+      document.getElementById('taskIdDisplay').textContent = task.id || '';
+      document.getElementById('taskDateDisplay').textContent = formatDate(task.date);
+      document.getElementById('taskPriorityDisplay').textContent = task.priority || '';
+      document.getElementById('taskCategoryDisplay').textContent = task.category || '';
+      document.getElementById('taskDescriptionDisplay').textContent = String(task.description || '');
+      document.getElementById('returnReasonDisplay').textContent = task.returnReason || task.secretaryNotes || '';
+
+      // Style priority
+      const priorityEl = document.getElementById('taskPriorityDisplay');
+      if (task.priority === 'דחופה מאוד') {
+        priorityEl.style.color = 'var(--color-danger)';
+        priorityEl.style.fontWeight = '600';
+      } else if (task.priority === 'דחופה') {
+        priorityEl.style.color = 'var(--color-warning)';
+        priorityEl.style.fontWeight = '600';
+      }
+
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('taskContent').style.display = 'block';
+    }
+
+    async function submitResponse(taskId, row) {
+      const responseText = document.getElementById('responseText').value.trim();
+      if (!responseText) {
+        document.getElementById('responseText').focus();
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `action=resubmitTask&taskId=${encodeURIComponent(taskId)}&row=${row}&response=${encodeURIComponent(responseText)}`
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          document.getElementById('taskContent').style.display = 'none';
+          document.getElementById('successState').style.display = 'block';
+        } else {
+          throw new Error(data.message || 'שגיאה לא ידועה');
+        }
+      } catch (error) {
+        console.error('Error submitting response:', error);
+        alert('שגיאה בשליחת התשובה: ' + error.message);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return dateStr;
+        return date.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      } catch (e) { return dateStr; }
+    }
+
+    function showError(message) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorMessage').textContent = message;
+      document.getElementById('errorState').style.display = 'block';
+    }
+
+    function showAlreadyHandled(status) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('currentStatusDisplay').textContent = status;
+      document.getElementById('alreadyHandledState').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

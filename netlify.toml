@@ -38,6 +38,12 @@
   to = "/dashboard-secretary.html"
   status = 200
 
+# Task response page route
+[[redirects]]
+  from = "/task-response"
+  to = "/task-response.html"
+  status = 200
+
 # SPA fallback - redirect all non-file requests to index.html
 [[redirects]]
   from = "/*"
