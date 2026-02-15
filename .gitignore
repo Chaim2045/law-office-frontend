@@ -30,3 +30,7 @@ Thumbs.db
 
 # Logs
 *.log
+node_modules
+
+# Local Netlify folder
+.netlify

@@ -212,14 +212,14 @@ function handleReturnTask(params) {
  */
 function sendTaskReturnEmail(email, name, taskId, description, reason, row) {
   try {
-    var subject = '🔄 המשימה שלך הוחזרה להשלמה - ' + taskId;
+    var subject = 'המשימה שלך הוחזרה להשלמה - ' + taskId;
 
     var resubmitUrl = 'https://taskmangenet.netlify.app/task-response.html?taskId='
       + encodeURIComponent(taskId) + '&row=' + row;
 
     var htmlBody = '<div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
       + '<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">'
-      + '<h2 style="margin: 0;">🔄 המשימה הוחזרה להשלמה</h2>'
+      + '<h2 style="margin: 0;">המשימה הוחזרה להשלמה</h2>'
       + '</div>'
       + '<div style="padding: 30px; background-color: #f9f9f9; border-radius: 0 0 10px 10px;">'
       + '<p style="font-size: 16px;">שלום <strong>' + name + '</strong>,</p>'
@@ -265,14 +265,14 @@ function sendTaskReturnEmail(email, name, taskId, description, reason, row) {
  */
 function sendNewTaskEmailToSecretary(taskData, attachments) {
   try {
-    var urgencyIcon = taskData['דחיפות'] === 'דחופה מאוד' ? '🚨' :
-                      taskData['דחיפות'] === 'דחופה' ? '⚡' : '📋';
+    var urgencyLabel = taskData['דחיפות'] === 'דחופה מאוד' ? '[דחוף!]' :
+                       taskData['דחיפות'] === 'דחופה' ? '[דחוף]' : '';
 
-    var subject = urgencyIcon + ' משימה חדשה: ' + taskData['שם המבקש'] + ' - ' + taskData['דחיפות'];
+    var subject = (urgencyLabel ? urgencyLabel + ' ' : '') + 'משימה חדשה: ' + taskData['שם המבקש'] + ' - ' + taskData['דחיפות'];
 
     var htmlBody = '<div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
       + '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">'
-      + '<h2 style="margin: 0;">' + urgencyIcon + ' משימה חדשה התקבלה</h2>'
+      + '<h2 style="margin: 0;">משימה חדשה התקבלה</h2>'
       + '</div>'
       + '<div style="padding: 20px; background-color: #f8f9fa; border-radius: 0 0 10px 10px;">'
       + '<div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-right: 4px solid ' + getPriorityColor(taskData['דחיפות']) + ';">'
@@ -321,7 +321,7 @@ function sendTaskConfirmationEmail(taskData) {
 
     var htmlBody = '<div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
       + '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">'
-      + '<h2 style="margin: 0;">✅ המשימה התקבלה בהצלחה</h2></div>'
+      + '<h2 style="margin: 0;">המשימה התקבלה בהצלחה</h2></div>'
       + '<div style="padding: 30px; background-color: #f9f9f9; border-radius: 0 0 10px 10px;">'
       + '<p style="font-size: 16px;">שלום <strong>' + taskData['שם המבקש'] + '</strong>,</p>'
       + '<p style="font-size: 16px;">משימתך התקבלה במערכת ותטופל בהקדם.</p>'
@@ -351,11 +351,11 @@ function sendTaskConfirmationEmail(taskData) {
  */
 function sendTaskCompletionEmail(email, name, taskId, description, completionDetails) {
   try {
-    var subject = '✅ המשימה שלך הושלמה - ' + taskId;
+    var subject = 'המשימה שלך הושלמה - ' + taskId;
 
     var htmlBody = '<div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
       + '<div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">'
-      + '<h2 style="margin: 0;">✅ המשימה הושלמה בהצלחה!</h2></div>'
+      + '<h2 style="margin: 0;">המשימה הושלמה בהצלחה!</h2></div>'
       + '<div style="padding: 30px; background-color: #f9f9f9; border-radius: 0 0 10px 10px;">'
       + '<p style="font-size: 16px;">שלום <strong>' + name + '</strong>,</p>'
       + '<p style="font-size: 16px;">שמחים לעדכן שהמשימה שלך הושלמה.</p>'
@@ -504,11 +504,11 @@ function handleTaskResubmit(params) {
  */
 function sendResubmitNotificationToSecretary(taskId, requesterName, description, responseText) {
   try {
-    var subject = '📩 משימה נשלחה מחדש: ' + taskId + ' - ' + requesterName;
+    var subject = 'משימה נשלחה מחדש: ' + taskId + ' - ' + requesterName;
 
     var htmlBody = '<div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
       + '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">'
-      + '<h2 style="margin: 0;">📩 משימה נשלחה מחדש</h2>'
+      + '<h2 style="margin: 0;">משימה נשלחה מחדש</h2>'
       + '</div>'
       + '<div style="padding: 30px; background-color: #f9f9f9; border-radius: 0 0 10px 10px;">'
       + '<p style="font-size: 16px;"><strong>' + requesterName + '</strong> השלים/ה את המשימה ושלח/ה אותה מחדש.</p>'
