@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דמו סיידבר - השוואת עיצובים</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Grayscale foundation — same as cards */
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-150: #efefef;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+
+      /* Semantic status — same as cards */
+      --status-urgent: #dc2626;
+      --status-urgent-bg: #fef2f2;
+      --status-warning: #d97706;
+      --status-warning-bg: #fffbeb;
+      --status-success: #16a34a;
+      --status-success-bg: #f0fdf4;
+      --status-info: #2563eb;
+      --status-info-bg: #eff6ff;
+
+      /* Stripe shadows — same as cards */
+      --shadow-sm: 0 1px 3px rgba(18, 42, 66, 0.04);
+      --shadow-md: 0 4px 12px rgba(18, 42, 66, 0.06);
+      --shadow-lg: 0 8px 24px rgba(18, 42, 66, 0.08);
+
+      --font-family: 'IBM Plex Sans Hebrew', 'Rubik', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--gray-100);
+      color: var(--gray-900);
+      padding: 32px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================
+       Page header
+    ============================================ */
+    .page-header {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+    }
+    .page-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      letter-spacing: -0.01em;
+    }
+    .page-header p {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    /* ============================================
+       Section labels
+    ============================================ */
+    .section-label {
+      max-width: 1100px;
+      margin: 0 auto 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+    .label-tag {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .label-current { background: var(--gray-150); color: var(--gray-600); }
+    .label-new { background: var(--gray-900); color: white; }
+
+    /* ============================================
+       Demo layout — sidebars side by side
+    ============================================ */
+    .demo-row {
+      max-width: 1100px;
+      margin: 0 auto 48px;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .divider {
+      max-width: 1100px;
+      margin: 48px auto;
+      height: 1px;
+      background: var(--gray-200);
+    }
+
+    /* ============================================
+       OLD SIDEBAR — Current style (preserved)
+    ============================================ */
+    .old-sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    .old-sidebar .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .old-sidebar .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .old-sidebar .stat-row:hover { background: #f1f5f9; }
+    .old-sidebar .stat-row.active { background: #f1f5f9; border-color: #3b82f6; }
+
+    .old-sidebar .stat-info { display: flex; align-items: center; gap: 8px; }
+    .old-sidebar .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .old-sidebar .stat-label { font-size: 0.82rem; font-weight: 500; color: #1e293b; }
+    .old-sidebar .stat-value {
+      font-size: 0.9rem; font-weight: 700;
+      min-width: 28px; text-align: center;
+      padding: 2px 8px; border-radius: 12px;
+      background: #f1f5f9;
+    }
+
+    .old-sidebar .search-input {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      background: #f8fafc;
+      font-family: inherit;
+    }
+    .old-sidebar .search-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1); }
+
+    .old-sidebar .filter-sel {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      background: #f8fafc;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .old-sidebar .btn-old {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #f1f5f9;
+      color: #475569;
+      transition: all 0.15s;
+    }
+    .old-sidebar .btn-old:hover { background: #e2e8f0; }
+
+    .old-sidebar .btn-export {
+      background: #22c55e;
+      color: white;
+      border: none;
+    }
+    .old-sidebar .btn-export:hover { background: #16a34a; }
+
+    .old-sidebar .chart-placeholder {
+      height: 120px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* ============================================
+       NEW SIDEBAR — Premium Stripe-style
+    ============================================ */
+    .new-sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(18, 42, 66, 0.04), 0 0 0 1px rgba(18, 42, 66, 0.02);
+    }
+
+    /* Section */
+    .ns-section {
+      padding: 16px 16px 12px;
+    }
+    .ns-section + .ns-section {
+      border-top: 1px solid var(--gray-150);
+    }
+
+    .ns-section-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gray-400);
+      margin-bottom: 10px;
+    }
+
+    /* Stat counters — clean rows */
+    .ns-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ns-stat {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .ns-stat:hover {
+      background: var(--gray-50);
+    }
+    .ns-stat.active {
+      background: var(--gray-50);
+    }
+    .ns-stat.active .ns-stat-label {
+      font-weight: 600;
+    }
+
+    .ns-stat-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ns-stat-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .ns-stat-label {
+      font-size: 0.8rem;
+      font-weight: 450;
+      color: var(--gray-700);
+    }
+
+    .ns-stat-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Dot colors — using semantic vars */
+    .dot-total { background: var(--gray-800); }
+    .dot-pending { background: var(--status-info); }
+    .dot-progress { background: #8b5cf6; }
+    .dot-done { background: var(--status-success); }
+    .dot-returned { background: var(--status-warning); }
+    .dot-overdue { background: var(--status-urgent); }
+    .dot-urgent { background: var(--status-warning); }
+
+    /* Search & Filters */
+    .ns-search {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: var(--font-family);
+      background: #fff;
+      color: var(--gray-900);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      margin-bottom: 8px;
+    }
+    .ns-search::placeholder { color: var(--gray-400); }
+    .ns-search:focus {
+      outline: none;
+      border-color: var(--gray-400);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+    }
+
+    .ns-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ns-select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: var(--font-family);
+      background: #fff;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: border-color 0.15s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a3a3a3' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 10px center;
+    }
+    .ns-select:focus {
+      outline: none;
+      border-color: var(--gray-400);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+    }
+
+    .ns-date-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ns-date-row label {
+      font-size: 0.72rem;
+      color: var(--gray-500);
+      white-space: nowrap;
+    }
+    .ns-date-row input[type="date"] {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: var(--font-family);
+      color: var(--gray-700);
+      background: #fff;
+    }
+
+    /* Buttons */
+    .ns-btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .ns-btn {
+      width: 100%;
+      padding: 7px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      font-family: var(--font-family);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #fff;
+      color: var(--gray-600);
+      transition: all 0.15s ease;
+    }
+    .ns-btn:hover {
+      background: var(--gray-50);
+      border-color: var(--gray-300);
+    }
+
+    .ns-btn--primary {
+      background: var(--gray-900);
+      color: #fff;
+      border-color: var(--gray-900);
+    }
+    .ns-btn--primary:hover {
+      background: var(--gray-800);
+      border-color: var(--gray-800);
+    }
+
+    /* Chart placeholder */
+    .ns-chart {
+      height: 110px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-150);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mini bar chart mockup */
+    .ns-mini-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 80px;
+      padding: 0 12px;
+    }
+    .ns-mini-bar {
+      width: 24px;
+      border-radius: 3px 3px 0 0;
+      transition: opacity 0.15s;
+    }
+    .ns-mini-bar:hover { opacity: 0.8; }
+
+    /* Footer section */
+    .ns-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--gray-150);
+      background: var(--gray-50);
+    }
+
+    .ns-btn--export {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      color: var(--gray-700);
+    }
+    .ns-btn--export:hover {
+      background: var(--status-success-bg);
+      border-color: var(--status-success);
+      color: var(--status-success);
+    }
+
+    /* ============================================
+       Annotations
+    ============================================ */
+    .anno {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .anno-box {
+      width: 280px;
+      flex-shrink: 0;
+    }
+    .anno-box h3 {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+    .anno-box ul {
+      list-style: none;
+      padding: 0;
+    }
+    .anno-box li {
+      font-size: 0.72rem;
+      color: var(--gray-500);
+      padding: 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .anno-box li::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gray-300);
+      flex-shrink: 0;
+    }
+    .anno-box li.diff::before { background: var(--status-info); }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>השוואת עיצוב סיידבר</h1>
+    <p>הסיידבר הנוכחי לצד הגרסה החדשה — בסגנון Stripe שתואם לכרטיסיות</p>
+  </div>
+
+  <!-- =============================================
+       Side by side
+  ============================================= -->
+  <div class="section-label">
+    נוכחי
+    <span class="label-tag label-current">הסגנון הקיים</span>
+  </div>
+
+  <div class="demo-row">
+
+    <!-- OLD SIDEBAR -->
+    <div class="old-sidebar">
+      <div>
+        <div class="section-title">סטטיסטיקות</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div class="stat-row active">
+            <div class="stat-info">
+              <span class="stat-dot" style="background:#3b82f6"></span>
+              <span class="stat-label">סה"כ משימות</span>
+            </div>
+            <span class="stat-value">24</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-info">
+              <span class="stat-dot" style="background:#3b82f6"></span>
+              <span class="stat-label">ממתינות</span>
+            </div>
+            <span class="stat-value">12</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-info">
+              <span class="stat-dot" style="background:#10b981"></span>
+              <span class="stat-label">בביצוע</span>
+            </div>
+            <span class="stat-value">5</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-info">
+              <span class="stat-dot" style="background:#22c55e"></span>
+              <span class="stat-label">הושלמו</span>
+            </div>
+            <span class="stat-value">4</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-info">
+              <span class="stat-dot" style="background:#f59e0b"></span>
+              <span class="stat-label">הוחזרו</span>
+            </div>
+            <span class="stat-value">2</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-info">
+              <span class="stat-dot" style="background:#ef4444"></span>
+              <span class="stat-label">באיחור</span>
+            </div>
+            <span class="stat-value">3</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-info">
+              <span class="stat-dot" style="background:#f59e0b"></span>
+              <span class="stat-label">דחופות</span>
+            </div>
+            <span class="stat-value">6</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">סינון</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <input type="text" class="search-input" placeholder="&#xf002;  חיפוש חופשי..." style="font-family: 'Font Awesome 6 Free', 'Rubik', sans-serif;">
+          <select class="filter-sel">
+            <option>כל המשתמשים</option>
+          </select>
+          <select class="filter-sel">
+            <option>כל הדחיפויות</option>
+          </select>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <label style="font-size:0.78rem; color:#64748b; white-space:nowrap;">מתאריך:</label>
+            <input type="date" class="filter-sel" value="2026-01-01" style="flex:1;">
+          </div>
+          <button class="btn-old"><i class="fas fa-times"></i> נקה סינונים</button>
+          <button class="btn-old" style="font-size:0.75rem;"><i class="fas fa-history"></i> הצג הכל</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">התפלגות סטטוס</div>
+        <div class="chart-placeholder"><i class="fas fa-chart-pie" style="font-size:1.5rem; opacity:0.4;"></i></div>
+      </div>
+
+      <div style="margin-top:auto;">
+        <button class="btn-old btn-export"><i class="fas fa-download"></i> ייצא לאקסל</button>
+      </div>
+    </div>
+
+    <!-- NEW SIDEBAR -->
+    <div class="new-sidebar">
+      <!-- Stats -->
+      <div class="ns-section">
+        <div class="ns-section-title">סטטיסטיקות</div>
+        <div class="ns-stats">
+          <div class="ns-stat active">
+            <div class="ns-stat-right">
+              <span class="ns-stat-dot dot-total"></span>
+              <span class="ns-stat-label">סה"כ משימות</span>
+            </div>
+            <span class="ns-stat-count">24</span>
+          </div>
+          <div class="ns-stat">
+            <div class="ns-stat-right">
+              <span class="ns-stat-dot dot-pending"></span>
+              <span class="ns-stat-label">ממתינות</span>
+            </div>
+            <span class="ns-stat-count">12</span>
+          </div>
+          <div class="ns-stat">
+            <div class="ns-stat-right">
+              <span class="ns-stat-dot dot-progress"></span>
+              <span class="ns-stat-label">בביצוע</span>
+            </div>
+            <span class="ns-stat-count">5</span>
+          </div>
+          <div class="ns-stat">
+            <div class="ns-stat-right">
+              <span class="ns-stat-dot dot-done"></span>
+              <span class="ns-stat-label">הושלמו</span>
+            </div>
+            <span class="ns-stat-count">4</span>
+          </div>
+          <div class="ns-stat">
+            <div class="ns-stat-right">
+              <span class="ns-stat-dot dot-returned"></span>
+              <span class="ns-stat-label">הוחזרו</span>
+            </div>
+            <span class="ns-stat-count">2</span>
+          </div>
+          <div class="ns-stat">
+            <div class="ns-stat-right">
+              <span class="ns-stat-dot dot-overdue"></span>
+              <span class="ns-stat-label">באיחור</span>
+            </div>
+            <span class="ns-stat-count">3</span>
+          </div>
+          <div class="ns-stat">
+            <div class="ns-stat-right">
+              <span class="ns-stat-dot dot-urgent"></span>
+              <span class="ns-stat-label">דחופות</span>
+            </div>
+            <span class="ns-stat-count">6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="ns-section">
+        <div class="ns-section-title">סינון</div>
+        <div class="ns-filters">
+          <input type="text" class="ns-search" placeholder="חיפוש חופשי...">
+          <select class="ns-select">
+            <option>כל המשתמשים</option>
+          </select>
+          <select class="ns-select">
+            <option>כל הדחיפויות</option>
+            <option>רגילה</option>
+            <option>דחופה</option>
+            <option>דחופה מאוד</option>
+          </select>
+          <div class="ns-date-row">
+            <label>מתאריך:</label>
+            <input type="date" value="2026-01-01">
+          </div>
+          <div class="ns-btn-row">
+            <button class="ns-btn"><i class="fas fa-times"></i> נקה סינונים</button>
+            <button class="ns-btn"><i class="fas fa-history"></i> הצג הכל</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="ns-section">
+        <div class="ns-section-title">התפלגות סטטוס</div>
+        <div class="ns-chart">
+          <div class="ns-mini-bars">
+            <div class="ns-mini-bar" style="height:80px; background: var(--status-info);"></div>
+            <div class="ns-mini-bar" style="height:42px; background: #8b5cf6;"></div>
+            <div class="ns-mini-bar" style="height:34px; background: var(--status-success);"></div>
+            <div class="ns-mini-bar" style="height:17px; background: var(--status-warning);"></div>
+            <div class="ns-mini-bar" style="height:25px; background: var(--status-urgent);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export — footer with gray bg -->
+      <div class="ns-footer">
+        <button class="ns-btn ns-btn--export"><i class="fas fa-download"></i> ייצא לאקסל</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       Annotations — what changed
+  ============================================= -->
+  <div class="divider"></div>
+
+  <div class="section-label">
+    מה השתנה
+    <span class="label-tag label-new">הבדלים</span>
+  </div>
+
+  <div class="anno">
+    <div class="anno-box">
+      <h3>נוכחי</h3>
+      <ul>
+        <li>רקע #f8fafc (תכלת-אפור)</li>
+        <li>border-radius: 12px</li>
+        <li>נקודות סטטוס 8px</li>
+        <li>מונים עם רקע pill</li>
+        <li>כפתור ייצוא ירוק בולט</li>
+        <li>Focus ring כחול (#3b82f6)</li>
+        <li>Font Awesome בתוך search</li>
+      </ul>
+    </div>
+    <div class="anno-box">
+      <h3>חדש (Stripe-style)</h3>
+      <ul>
+        <li class="diff">רקע #fff — תואם לכרטיסיות</li>
+        <li class="diff">border-radius: 10px — כמו card-v4</li>
+        <li class="diff">double shadow — כמו הכרטיסיות</li>
+        <li class="diff">נקודות סטטוס 6px (קטנות יותר, עדינות)</li>
+        <li class="diff">מונים כטקסט בלבד (ללא pill)</li>
+        <li class="diff">sections מופרדים ב-border-top</li>
+        <li class="diff">footer עם רקע gray-50 — כמו card-v4 footer</li>
+        <li class="diff">כפתור ייצוא ניטרלי (hover ירוק)</li>
+        <li class="diff">Focus ring אפור רך (לא כחול)</li>
+        <li class="diff">Custom dropdown arrow (SVG)</li>
+        <li class="diff">Bar chart mockup במקום placeholder</li>
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>
