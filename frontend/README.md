@@ -140,7 +140,7 @@ API_URL = 'https://law-office-api.shuttleapp.rs'
 4. `Publish directory`: `frontend`
 5. Deploy!
 
-ראה [NETLIFY-DEPLOY.md](../NETLIFY-DEPLOY.md) למדריך מפורט.
+ראה [NETLIFY-DEPLOY.md](../docs/NETLIFY-DEPLOY.md) למדריך מפורט.
 
 ### Vercel
 ```bash

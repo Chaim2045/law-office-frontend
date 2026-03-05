@@ -156,9 +156,9 @@ A: לא! הכל מוגדר אוטומטית. כל push ל-GitHub יעדכן את
 
 ## 📚 קבצי עזרה
 
-- **[NETLIFY-DEPLOY.md](NETLIFY-DEPLOY.md)** - מדריך מפורט לפריסה
-- **[frontend/README.md](frontend/README.md)** - תיעוד הפרונטאנד
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - מדריך ה-backend
+- **[NETLIFY-DEPLOY.md](./NETLIFY-DEPLOY.md)** - מדריך מפורט לפריסה
+- **[frontend/README.md](../frontend/README.md)** - תיעוד הפרונטאנד
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - מדריך ה-backend
 
 ---
 
@@ -166,7 +166,7 @@ A: לא! הכל מוגדר אוטומטית. כל push ל-GitHub יעדכן את
 
 1. פתח F12 בדפדפן וחפש שגיאות
 2. בדוק את הקונסול
-3. תסתכל על [frontend/README.md](frontend/README.md)
+3. תסתכל על [frontend/README.md](../frontend/README.md)
 
 ---
 

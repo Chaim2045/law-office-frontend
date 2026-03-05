@@ -1121,3 +1121,131 @@ textarea.form-control {
     width: 100%;
   }
 }
+
+/* העלאת קבצים */
+.file-upload-area {
+  position: relative;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: var(--color-surface);
+}
+
+.file-upload-area:hover,
+.file-upload-area.drag-over {
+  border-color: var(--color-primary);
+  background: rgba(0, 73, 219, 0.03);
+}
+
+.file-upload-area.drag-over {
+  transform: scale(1.01);
+}
+
+.file-input-hidden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-upload-icon {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-2);
+}
+
+.file-upload-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-medium);
+  margin-bottom: var(--space-1);
+}
+
+.file-upload-link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.file-upload-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+}
+
+.file-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+}
+
+.file-item-icon.pdf { background: rgba(255, 60, 95, 0.1); color: var(--color-danger); }
+.file-item-icon.doc { background: rgba(0, 73, 219, 0.1); color: var(--color-primary); }
+.file-item-icon.xls { background: rgba(0, 208, 108, 0.1); color: var(--color-success); }
+.file-item-icon.img { background: rgba(0, 188, 212, 0.1); color: var(--color-info); }
+.file-item-icon.other { background: rgba(158, 164, 189, 0.1); color: var(--color-text-light); }
+
+.file-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-item-name {
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-item-size {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
+
+.file-item-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.file-item-remove:hover {
+  background: rgba(255, 60, 95, 0.1);
+  color: var(--color-danger);
+}

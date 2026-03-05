@@ -198,10 +198,10 @@ Invoke-WebRequest http://localhost:8000/health
 
 ## 📚 תיעוד נוסף
 
-- **[README.md](./README.md)** - מבוא כללי
-- **[docs/GETTING-STARTED.md](./docs/GETTING-STARTED.md)** - מדריך מפורט עם דוגמאות
-- **[docs/QUICK-REFERENCE.md](./docs/QUICK-REFERENCE.md)** - כל הפקודות בקצרה
-- **[docs/PROJECT-SUMMARY.md](./docs/PROJECT-SUMMARY.md)** - סיכום הפרויקט
+- **[README.md](../README.md)** - מבוא כללי
+- **[GETTING-STARTED.md](./GETTING-STARTED.md)** - מדריך מפורט עם דוגמאות
+- **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)** - כל הפקודות בקצרה
+- **[PROJECT-SUMMARY.md](./PROJECT-SUMMARY.md)** - סיכום הפרויקט
 
 ---
 

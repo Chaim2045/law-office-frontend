@@ -158,6 +158,22 @@
               <p class="form-hint">מתי המשימה צריכה להסתיים?</p>
             </div>
 
+            <div class="form-group">
+              <label class="form-label">
+                <i class="form-icon fas fa-paperclip"></i> קבצים מצורפים
+              </label>
+              <div class="file-upload-area" id="fileUploadArea">
+                <div class="file-upload-content">
+                  <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                  <p class="file-upload-text">גרור קבצים לכאן או <span class="file-upload-link">לחץ לבחירה</span></p>
+                  <p class="file-upload-hint">עד 5 קבצים, 10MB כל קובץ</p>
+                </div>
+                <input type="file" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.rtf" class="file-input-hidden">
+              </div>
+              <div class="file-list" id="fileList"></div>
+              <p class="form-hint">ניתן לצרף מסמכים, תמונות וקבצי אופיס (אופציונלי)</p>
+            </div>
+
             <div class="nav-buttons">
               <button type="button" class="btn btn-secondary" id="backToStep1">
                 <i class="fas fa-arrow-right"></i> חזרה
@@ -281,6 +297,14 @@
                   <span>תיאור המשימה</span>
                 </div>
                 <div class="summary-value" id="previewDescription"></div>
+              </div>
+
+              <div class="summary-item" id="previewFilesItem" style="margin-top: var(--space-4); display: none;">
+                <div class="summary-label">
+                  <i class="fas fa-paperclip"></i>
+                  <span>קבצים מצורפים</span>
+                </div>
+                <div class="summary-value" id="previewFiles"></div>
               </div>
             </div>
 

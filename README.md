@@ -43,11 +43,11 @@ law-office-backend-rust/
 ├── .github/workflows/        # 🔄 CI/CD
 │   ├── ci.yml               # Build, test, deploy
 │   └── security.yml         # Security audit
-├── docs/                     # 📚 תיעוד
+├── docs/                     # 📚 תיעוד (כל המסמכים)
+├── google-apps-script/       # 📜 Google Apps Script
 ├── Dockerfile               # 🐳 Production container
 ├── docker-compose.yml       # 🐳 Multi-service setup
 ├── nginx.conf               # 🌐 Reverse proxy
-├── DEPLOYMENT.md            # 🚀 מדריך deployment
 └── README.md                # 📖 המסמך הזה
 ```
 
@@ -116,8 +116,8 @@ cargo shuttle run
 
 ## 📚 תיעוד מלא
 
-- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - 🚀 מדריך deployment מפורט (חובה לקרוא!)
-- **[START-HERE.md](./START-HERE.md)** - 🎯 התחל כאן
+- **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - 🚀 מדריך deployment מפורט (חובה לקרוא!)
+- **[START-HERE.md](./docs/START-HERE.md)** - 🎯 התחל כאן
 - **[docs/GETTING-STARTED.md](./docs/GETTING-STARTED.md)** - מדריך מפורט
 - **[docs/QUICK-REFERENCE.md](./docs/QUICK-REFERENCE.md)** - פקודות מהירות
 - **[docs/PROJECT-SUMMARY.md](./docs/PROJECT-SUMMARY.md)** - סיכום הפרויקט
@@ -394,7 +394,7 @@ MIT License - ראה [LICENSE](LICENSE) לפרטים
 ## ❓ שאלות נפוצות (FAQ)
 
 **Q: איך מקבלים App Password ב-Gmail?**
-A: ראה [DEPLOYMENT.md](./DEPLOYMENT.md#יצירת-app-password-ב-gmail)
+A: ראה [DEPLOYMENT.md](./docs/DEPLOYMENT.md#יצירת-app-password-ב-gmail)
 
 **Q: איך לשנות את הפורט?**
 A: Shuttle מנהל את זה אוטומטית. במקומי: `PORT=3000 cargo shuttle run`

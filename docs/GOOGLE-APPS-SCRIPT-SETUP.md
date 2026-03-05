@@ -9,7 +9,7 @@
 1. פתח את Google Sheets שלך
 2. עבור ל: **Extensions → Apps Script**
 3. מחק את הקוד הקיים
-4. העתק את הקוד מהקובץ: `old-interfaces/ממשק משימות למזכירה/skript-OPTIMIZED.js`
+4. העתק את הקוד מהקובץ: `google-apps-script/google-apps-script-COMPLETE.js`
 5. הדבק בעורך
 6. שמור (Ctrl+S)
 
@@ -55,7 +55,7 @@
 ## 🔍 קוד Google Apps Script:
 
 הקוד המלא נמצא ב:
-`old-interfaces/ממשק משימות למזכירה/skript-OPTIMIZED.js`
+`google-apps-script/google-apps-script-COMPLETE.js`
 
 זהו הקוד שצריך להעלות ל-Apps Script Editor.
 

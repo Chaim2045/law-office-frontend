@@ -64,6 +64,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const priorityConfirmOk = document.getElementById('priorityConfirmOk');
   const priorityHighOption = document.getElementById('priority3');
 
+  // קבצים מצורפים
+  const fileUploadArea = document.getElementById('fileUploadArea');
+  const fileInput = document.getElementById('fileInput');
+  const fileList = document.getElementById('fileList');
+  const MAX_FILES = 5;
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  let selectedFiles = [];
+
   // ניהול משתמש
   const userMenu = document.getElementById('userMenu');
   const userMenuDropdown = document.getElementById('userMenuDropdown');
@@ -337,6 +345,21 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (priority === 'דחופה') {
       priorityElement.classList.add('high');
     }
+
+    // Files preview
+    var previewFilesItem = document.getElementById('previewFilesItem');
+    var previewFiles = document.getElementById('previewFiles');
+    if (previewFilesItem && previewFiles) {
+      if (selectedFiles.length > 0) {
+        previewFilesItem.style.display = '';
+        previewFiles.innerHTML = '<i class="fas fa-paperclip"></i> ' +
+          selectedFiles.length + ' קבצים: ' +
+          selectedFiles.map(function(f) { return f.name; }).join(', ');
+        previewFiles.className = 'summary-value files';
+      } else {
+        previewFilesItem.style.display = 'none';
+      }
+    }
   }
 
   // ================================================
@@ -404,6 +427,125 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ================================================
+  // טיפול בקבצים מצורפים
+  // ================================================
+
+  if (fileUploadArea && fileInput) {
+    // Drag and drop
+    fileUploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('drag-over');
+    });
+
+    fileUploadArea.addEventListener('dragleave', function() {
+      this.classList.remove('drag-over');
+    });
+
+    fileUploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    // Click to select
+    fileInput.addEventListener('change', function() {
+      handleFiles(this.files);
+      this.value = ''; // allow re-selecting same file
+    });
+  }
+
+  function handleFiles(files) {
+    for (var i = 0; i < files.length; i++) {
+      if (selectedFiles.length >= MAX_FILES) {
+        Utils.showToast('ניתן לצרף עד ' + MAX_FILES + ' קבצים', 'warning');
+        break;
+      }
+      if (files[i].size > MAX_FILE_SIZE) {
+        Utils.showToast('הקובץ "' + files[i].name + '" גדול מ-10MB', 'warning');
+        continue;
+      }
+      selectedFiles.push(files[i]);
+    }
+    renderFileList();
+  }
+
+  function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    renderFileList();
+  }
+
+  function getFileIcon(fileName) {
+    var ext = fileName.split('.').pop().toLowerCase();
+    if (ext === 'pdf') return { icon: 'fa-file-pdf', cls: 'pdf' };
+    if (['doc', 'docx', 'rtf'].indexOf(ext) !== -1) return { icon: 'fa-file-word', cls: 'doc' };
+    if (['xls', 'xlsx'].indexOf(ext) !== -1) return { icon: 'fa-file-excel', cls: 'xls' };
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].indexOf(ext) !== -1) return { icon: 'fa-file-image', cls: 'img' };
+    return { icon: 'fa-file', cls: 'other' };
+  }
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function renderFileList() {
+    if (!fileList) return;
+    fileList.innerHTML = '';
+    selectedFiles.forEach(function(file, index) {
+      var fi = getFileIcon(file.name);
+      var item = document.createElement('div');
+      item.className = 'file-item';
+
+      var iconDiv = document.createElement('div');
+      iconDiv.className = 'file-item-icon ' + fi.cls;
+      iconDiv.innerHTML = '<i class="fas ' + fi.icon + '"></i>';
+
+      var infoDiv = document.createElement('div');
+      infoDiv.className = 'file-item-info';
+      var nameDiv = document.createElement('div');
+      nameDiv.className = 'file-item-name';
+      nameDiv.textContent = file.name;
+      var sizeDiv = document.createElement('div');
+      sizeDiv.className = 'file-item-size';
+      sizeDiv.textContent = formatFileSize(file.size);
+      infoDiv.appendChild(nameDiv);
+      infoDiv.appendChild(sizeDiv);
+
+      var removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'file-item-remove';
+      removeBtn.setAttribute('data-index', index);
+      removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+
+      item.appendChild(iconDiv);
+      item.appendChild(infoDiv);
+      item.appendChild(removeBtn);
+      fileList.appendChild(item);
+    });
+
+    // Attach remove handlers
+    fileList.querySelectorAll('.file-item-remove').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        removeFile(parseInt(this.getAttribute('data-index')));
+      });
+    });
+  }
+
+  function fileToBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        // Remove the data:...;base64, prefix
+        var base64 = reader.result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ================================================
   // טיפול בטופס - שליחה ל-API
   // ================================================
 
@@ -451,6 +593,17 @@ document.addEventListener('DOMContentLoaded', function() {
       formData.append('taskCategory', taskData.category);
       formData.append('dueDate', taskData.due_date || '');
       formData.append('priority', taskData.priority);
+
+      // צירוף קבצים כ-base64
+      if (selectedFiles.length > 0) {
+        formData.append('numFiles', selectedFiles.length);
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const base64 = await fileToBase64(selectedFiles[i]);
+          formData.append('fileName' + i, selectedFiles[i].name);
+          formData.append('fileType' + i, selectedFiles[i].type);
+          formData.append('fileContent' + i, base64);
+        }
+      }
 
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
@@ -511,6 +664,8 @@ document.addEventListener('DOMContentLoaded', function() {
     taskForm.reset();
     nameChips.forEach(btn => btn.classList.remove('selected'));
     customEmailGroup.style.display = 'none';
+    selectedFiles = [];
+    renderFileList();
     goToStep(1);
   }
 
