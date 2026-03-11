@@ -157,14 +157,20 @@ class AuthService {
    * @returns {string} Role
    */
   determineRole(email) {
+    const adminEmails = [
+      'haim@ghlawoffice.co.il',
+      'guy@ghlawoffice.co.il'
+    ];
+
     const officeManagerEmails = [
       'office@ghlawoffice.co.il',
       'miri@ghlawoffice.co.il'
     ];
 
-    return officeManagerEmails.includes(email.toLowerCase())
-      ? 'office_manager'
-      : 'lawyer';
+    const lowerEmail = email.toLowerCase();
+    if (adminEmails.includes(lowerEmail)) return 'admin';
+    if (officeManagerEmails.includes(lowerEmail)) return 'office_manager';
+    return 'lawyer';
   }
 
   /**
@@ -304,6 +310,14 @@ class AuthService {
   }
 
   /**
+   * Check if user is admin
+   * @returns {boolean}
+   */
+  isAdmin() {
+    return this.hasRole('admin');
+  }
+
+  /**
    * Start token auto-refresh
    */
   startTokenRefresh() {
@@ -420,8 +434,8 @@ class AuthService {
   canAccess(resource, action) {
     if (!this.isAuthenticated()) return false;
 
-    // Office managers can do everything
-    if (this.isOfficeManager()) return true;
+    // Admins and office managers can do everything
+    if (this.isAdmin() || this.isOfficeManager()) return true;
 
     // Define permissions
     const permissions = {

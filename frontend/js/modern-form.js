@@ -47,6 +47,12 @@ const Utils = {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
+  // בדיקת חיבור -- redirect ללוגין אם לא מחובר
+  if (window.auth && !window.auth.isAuthenticated()) {
+    window.location.href = 'login.html';
+    return;
+  }
+
   // קבלת רכיבים
   const taskForm = document.getElementById('taskForm');
   const stepper = document.querySelector('.stepper');
@@ -90,15 +96,31 @@ document.addEventListener('DOMContentLoaded', function() {
   // ================================================
 
   function initUserSystem() {
-    const savedUser = localStorage.getItem('currentUser');
+    // אם מחובר דרך auth -- נעילת זהות
+    if (window.auth && window.auth.isAuthenticated()) {
+      const authUser = window.auth.getCurrentUser();
+      setCurrentUser(authUser.name, authUser.email);
 
-    if (savedUser) {
-      const user = JSON.parse(savedUser);
-      setCurrentUser(user.name, user.email);
+      // מילוי אוטומטי ונעילת שלב 1
+      requesterName.value = authUser.name;
+      requesterEmail.value = authUser.email;
+      requesterName.readOnly = true;
+      requesterName.style.background = '#f5f5f5';
+
+      // הסתרת name chips בטופס
+      const formChips = document.querySelector('.form-step[data-step="1"] .name-chips');
+      if (formChips) formChips.style.display = 'none';
+
+      // הסתרת hint ושדה אימייל מותאם
+      const hint = document.querySelector('.form-step[data-step="1"] .form-hint');
+      if (hint) hint.style.display = 'none';
+      if (customEmailGroup) customEmailGroup.style.display = 'none';
     } else {
-      // No user - show selection modal
-      if (userSwitchModal) {
-        userSwitchModal.classList.add('active');
+      // fallback -- משתמש לא מחובר, טוען מ-localStorage
+      const savedUser = localStorage.getItem('currentUser');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        setCurrentUser(user.name, user.email);
       }
     }
 
@@ -114,44 +136,14 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    // Switch user button
-    if (switchUserBtn && userSwitchModal) {
+    // Switch user button -> logout and redirect to login
+    if (switchUserBtn) {
       switchUserBtn.addEventListener('click', function() {
-        userSwitchModal.classList.add('active');
-      });
-    }
-
-    // User selection chips
-    if (userSwitchChips) {
-      userSwitchChips.querySelectorAll('.name-chip').forEach(chip => {
-        chip.addEventListener('click', function() {
-          userSwitchChips.querySelectorAll('.name-chip').forEach(c => c.classList.remove('selected'));
-          this.classList.add('selected');
-        });
-      });
-    }
-
-    // Confirm user selection
-    if (confirmUserBtn && userSwitchChips) {
-      confirmUserBtn.addEventListener('click', function() {
-        const selectedChip = userSwitchChips.querySelector('.name-chip.selected');
-        if (selectedChip) {
-          const userName = selectedChip.getAttribute('data-name');
-          const userEmail = selectedChip.getAttribute('data-email');
-
-          setCurrentUser(userName, userEmail);
-          userSwitchModal.classList.remove('active');
-
-          // Auto-select corresponding chip in main form
-          nameChips.forEach(chip => {
-            if (chip.getAttribute('data-name') === userName) {
-              chip.click();
-            }
-          });
-
-          Utils.showToast(`המשתמש הוחלף ל-${userName}`, 'info');
+        if (window.auth) {
+          window.auth.logout();
         } else {
-          Utils.showToast('נא לבחור משתמש', 'warning');
+          localStorage.removeItem('currentUser');
+          window.location.href = 'login.html';
         }
       });
     }
@@ -206,8 +198,9 @@ document.addEventListener('DOMContentLoaded', function() {
     goToStep(3);
   });
 
-  // התקדמות אוטומטית אחרי בחירת שם
+  // התקדמות אוטומטית אחרי בחירת שם (רק אם השדה לא נעול)
   requesterName.addEventListener('blur', function() {
+    if (this.readOnly) return;
     if (this.value.trim() !== '' && customEmailGroup.style.display === 'none') {
       setTimeout(() => {
         document.getElementById('nextToStep2').click();
