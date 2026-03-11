@@ -1,10 +1,12 @@
 // Service Worker for Law Office Task Management PWA
-const CACHE_NAME = 'gh-tasks-v1';
+const CACHE_NAME = 'gh-tasks-v2';
 const urlsToCache = [
   '/',
   '/index.html',
   '/css/modern-style.css',
   '/js/modern-form.js',
+  '/js/auth-service.js',
+  '/js/my-tasks.js',
   '/images/favicon.png',
   '/images/icon-192.png',
   '/images/icon-512.png'
@@ -12,6 +14,7 @@ const urlsToCache = [
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -24,21 +27,28 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        // Cache hit - return response
-        if (response) {
-          return response;
+        // Update cache with fresh response
+        if (response.ok) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
         }
-        return fetch(event.request);
+        return response;
+      })
+      .catch(() => {
+        // Network failed - try cache
+        return caches.match(event.request);
       })
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches and take control immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -50,6 +60,8 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      return self.clients.claim();
     })
   );
 });
