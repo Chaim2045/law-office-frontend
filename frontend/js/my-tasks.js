@@ -102,7 +102,7 @@
   // Tab Switching
   // ================================================
 
-  document.addEventListener('DOMContentLoaded', function() {
+  function initMyTasks() {
     var navItems = document.querySelectorAll('.bottom-nav-item');
     var formCard = document.getElementById('newTaskCard');
     var myTasksSection = document.getElementById('myTasksSection');
@@ -146,7 +146,14 @@
         }
       }
     });
-  });
+  }
+
+  // Run immediately if DOM is ready, otherwise wait
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMyTasks);
+  } else {
+    initMyTasks();
+  }
 
   // ================================================
   // Load Tasks

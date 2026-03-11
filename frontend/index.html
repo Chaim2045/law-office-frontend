@@ -81,6 +81,51 @@
     /* Spacer so content doesn't hide behind bottom nav */
     body { padding-bottom: 70px; }
 
+    /* ====== Update Banner ====== */
+    .update-banner {
+      position: fixed;
+      bottom: 60px;
+      left: 16px;
+      right: 16px;
+      background: var(--color-primary, #0049db);
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,73,219,0.3);
+      animation: slideUp 0.3s ease-out;
+      margin-bottom: env(safe-area-inset-bottom, 0);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .update-banner-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .update-banner-content i {
+      font-size: 1.1rem;
+    }
+    .update-banner-btn {
+      background: #fff;
+      color: var(--color-primary, #0049db);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-family: 'Rubik', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
     /* ====== My Tasks Section ====== */
     #myTasksSection {
       padding: 16px;
@@ -871,39 +916,85 @@
     window.GOOGLE_SCRIPT_URL = GOOGLE_SCRIPT_URL;
 
     // ===================================================
-    // Service Worker: force update and clear old caches
+    // Service Worker: registration + in-app update banner
     // ===================================================
     if ('serviceWorker' in navigator) {
-      // Clear ALL caches immediately on every page load
+      // Clear old caches on every page load
       if ('caches' in window) {
         caches.keys().then(function(names) {
           names.forEach(function(name) {
-            if (name !== 'gh-tasks-v3') {
+            if (name !== 'gh-tasks-v4') {
               caches.delete(name);
             }
           });
         });
       }
 
-      // Unregister old SW and register fresh
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        registrations.forEach(function(registration) {
-          registration.update();
-        });
-      });
+      // Show update banner when new SW is waiting
+      function showUpdateBanner(worker) {
+        var banner = document.getElementById('updateBanner');
+        if (banner) {
+          banner.style.display = 'flex';
+          document.getElementById('updateBtn').addEventListener('click', function() {
+            banner.style.display = 'none';
+            worker.postMessage({ type: 'SKIP_WAITING' });
+          });
+        }
+      }
 
-      window.addEventListener('load', () => {
+      window.addEventListener('load', function() {
         navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
+          .then(function(registration) {
             console.log('SW registered:', registration.scope);
-            registration.update();
+
+            // Check if there's already a waiting worker
+            if (registration.waiting) {
+              showUpdateBanner(registration.waiting);
+              return;
+            }
+
+            // Listen for new SW installing
+            registration.addEventListener('updatefound', function() {
+              var newWorker = registration.installing;
+              if (!newWorker) return;
+
+              newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New SW installed but old one still controls - show banner
+                  showUpdateBanner(newWorker);
+                }
+              });
+            });
+
+            // Check for updates every 30 minutes
+            setInterval(function() {
+              registration.update();
+            }, 30 * 60 * 1000);
           })
-          .catch(error => {
+          .catch(function(error) {
             console.log('SW registration failed:', error);
           });
+
+        // Reload when new SW takes control
+        var refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+          if (!refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
       });
     }
   </script>
+  <!-- Update Banner -->
+  <div class="update-banner" id="updateBanner" style="display:none;">
+    <div class="update-banner-content">
+      <i class="fas fa-arrow-up-from-bracket"></i>
+      <span>גרסה חדשה זמינה</span>
+    </div>
+    <button class="update-banner-btn" id="updateBtn">עדכן עכשיו</button>
+  </div>
+
   <!-- Bottom Navigation -->
   <nav class="bottom-nav" id="bottomNav">
     <button class="bottom-nav-item active" data-tab="newTask">

@@ -1,5 +1,5 @@
-// Service Worker v3 - Nuclear cache clear + network-first
-const CACHE_NAME = 'gh-tasks-v3';
+// Service Worker v4 - Network-first + update banner support
+const CACHE_NAME = 'gh-tasks-v4';
 
 // Install: clear ALL old caches, skip waiting
 self.addEventListener('install', (event) => {
@@ -28,6 +28,13 @@ self.addEventListener('activate', (event) => {
       return self.clients.claim();
     })
   );
+});
+
+// Listen for SKIP_WAITING message from the page
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Fetch: ALWAYS network first, cache as fallback only
