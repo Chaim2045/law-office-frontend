@@ -103,15 +103,15 @@
   // ================================================
 
   document.addEventListener('DOMContentLoaded', function() {
-    var tabs = document.querySelectorAll('.page-tab');
+    var navItems = document.querySelectorAll('.bottom-nav-item');
     var formCard = document.getElementById('newTaskCard');
     var myTasksSection = document.getElementById('myTasksSection');
 
-    if (!tabs.length || !formCard || !myTasksSection) return;
+    if (!navItems.length || !formCard || !myTasksSection) return;
 
-    tabs.forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        tabs.forEach(function(t) { t.classList.remove('active'); });
+    navItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        navItems.forEach(function(n) { n.classList.remove('active'); });
         this.classList.add('active');
 
         if (this.dataset.tab === 'newTask') {
@@ -300,7 +300,7 @@
 
     var html =
       '<div class="tv-detail-row"><div class="tv-detail-label">מבקש:</div><div class="tv-detail-value">' + escapeHtml(task.requester || '-') + '</div></div>' +
-      (taskEmail ? '<div class="tv-detail-row"><div class="tv-detail-label">אימייל:</div><div class="tv-detail-value"><a href="mailto:' + escapeHtml(taskEmail) + '" style="color:#6366f1;">' + escapeHtml(taskEmail) + '</a></div></div>' : '') +
+      (taskEmail ? '<div class="tv-detail-row"><div class="tv-detail-label">אימייל:</div><div class="tv-detail-value"><a href="mailto:' + escapeHtml(taskEmail) + '" style="color:#0049db;">' + escapeHtml(taskEmail) + '</a></div></div>' : '') +
       '<div class="tv-detail-row"><div class="tv-detail-label">קטגוריה:</div><div class="tv-detail-value">' + escapeHtml(task.category || '-') + '</div></div>' +
       '<div class="tv-detail-row"><div class="tv-detail-label">דחיפות:</div><div class="tv-detail-value">' + getPriorityBadge(task.priority) + '</div></div>' +
       '<div class="tv-detail-row"><div class="tv-detail-label">תאריך יעד:</div><div class="tv-detail-value">' + formatDate(task.dueDate) + '</div></div>' +
