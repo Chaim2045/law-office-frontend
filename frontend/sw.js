@@ -1,67 +1,57 @@
-// Service Worker for Law Office Task Management PWA
-const CACHE_NAME = 'gh-tasks-v2';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/modern-style.css',
-  '/js/modern-form.js',
-  '/js/auth-service.js',
-  '/js/my-tasks.js',
-  '/images/favicon.png',
-  '/images/icon-192.png',
-  '/images/icon-512.png'
-];
+// Service Worker v3 - Nuclear cache clear + network-first
+const CACHE_NAME = 'gh-tasks-v3';
 
-// Install event - cache resources
+// Install: clear ALL old caches, skip waiting
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-      .catch((error) => {
-        console.log('Cache failed:', error);
-      })
+    caches.keys().then((names) => {
+      return Promise.all(
+        names.map((name) => {
+          console.log('SW: Deleting cache:', name);
+          return caches.delete(name);
+        })
+      );
+    })
   );
 });
 
-// Fetch event - network first, fallback to cache
+// Activate: take control immediately, clear caches again
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((names) => {
+      return Promise.all(
+        names.filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
+      );
+    }).then(() => {
+      return self.clients.claim();
+    })
+  );
+});
+
+// Fetch: ALWAYS network first, cache as fallback only
 self.addEventListener('fetch', (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+
+  // Skip API/external requests - only cache our own files
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Update cache with fresh response
         if (response.ok) {
-          const responseClone = response.clone();
+          const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
+            cache.put(event.request, clone);
           });
         }
         return response;
       })
       .catch(() => {
-        // Network failed - try cache
         return caches.match(event.request);
       })
-  );
-});
-
-// Activate event - clean up old caches and take control immediately
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      return self.clients.claim();
-    })
   );
 });

@@ -874,27 +874,32 @@
     // Service Worker: force update and clear old caches
     // ===================================================
     if ('serviceWorker' in navigator) {
-      // Clear old caches immediately
+      // Clear ALL caches immediately on every page load
       if ('caches' in window) {
         caches.keys().then(function(names) {
           names.forEach(function(name) {
-            if (name !== 'gh-tasks-v2') {
+            if (name !== 'gh-tasks-v3') {
               caches.delete(name);
-              console.log('Deleted old cache:', name);
             }
           });
         });
       }
 
+      // Unregister old SW and register fresh
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        registrations.forEach(function(registration) {
+          registration.update();
+        });
+      });
+
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
           .then(registration => {
-            console.log('Service Worker registered:', registration.scope);
-            // Force check for updates
+            console.log('SW registered:', registration.scope);
             registration.update();
           })
           .catch(error => {
-            console.log('Service Worker registration failed:', error);
+            console.log('SW registration failed:', error);
           });
       });
     }
