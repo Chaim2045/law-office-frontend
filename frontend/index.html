@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/modern-style.css?v=3">
+  <link rel="stylesheet" href="css/modern-style.css?v=4">
   <style>
     /* ====== Bottom Navigation ====== */
     .bottom-nav {
@@ -124,6 +124,70 @@
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
+    }
+
+    /* ====== Push Notification Prompt ====== */
+    .push-prompt-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .push-prompt-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .push-prompt-icon {
+      width: 60px; height: 60px;
+      margin: 0 auto 16px;
+      background: #eef2ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--color-primary, #0049db);
+    }
+    .push-prompt-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a1a2e;
+    }
+    .push-prompt-text {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .push-prompt-buttons { display: flex; flex-direction: column; gap: 10px; }
+    .push-prompt-btn {
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'Rubik', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .push-prompt-enable {
+      background: var(--color-primary, #0049db);
+      color: #fff;
+    }
+    .push-prompt-later {
+      background: transparent;
+      color: #999;
     }
 
     /* ====== My Tasks Section ====== */
@@ -1005,8 +1069,9 @@
     </button>
   </nav>
 
-  <script src="js/auth-service.js?v=3"></script>
-  <script src="js/my-tasks.js?v=3"></script>
-  <script src="js/modern-form.js?v=3"></script>
+  <script src="js/auth-service.js?v=4"></script>
+  <script src="js/my-tasks.js?v=4"></script>
+  <script src="js/modern-form.js?v=4"></script>
+  <script src="js/push-notifications.js?v=4"></script>
 </body>
 </html>
