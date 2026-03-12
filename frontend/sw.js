@@ -1,14 +1,14 @@
-// Service Worker v4 - Network-first + update banner support
-const CACHE_NAME = 'gh-tasks-v4';
+// Service Worker v5 - No caching, just PWA support
+// This SW exists only to enable PWA install. No caching at all.
 
-// Install: clear ALL old caches, skip waiting
+// Install: clear ALL caches, skip waiting immediately
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.keys().then((names) => {
       return Promise.all(
         names.map((name) => {
-          console.log('SW: Deleting cache:', name);
+          console.log('SW v5: Deleting cache:', name);
           return caches.delete(name);
         })
       );
@@ -16,18 +16,14 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate: take control immediately, clear caches, force reload all tabs
+// Activate: clear any remaining caches, take control, reload tabs
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((names) => {
-      return Promise.all(
-        names.filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
+      return Promise.all(names.map((name) => caches.delete(name)));
     }).then(() => {
       return self.clients.claim();
     }).then(() => {
-      // Force reload all open tabs/windows to get fresh content
       return self.clients.matchAll({ type: 'window' }).then((clients) => {
         clients.forEach((client) => {
           client.navigate(client.url);
@@ -44,28 +40,8 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Fetch: ALWAYS network first, cache as fallback only
+// Fetch: pass through to network, NO caching at all
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-
-  // Skip API/external requests - only cache our own files
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, clone);
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
-  );
+  // Do nothing - let the browser handle all requests normally
+  return;
 });

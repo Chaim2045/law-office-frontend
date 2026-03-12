@@ -919,13 +919,11 @@
     // Service Worker: registration + in-app update banner
     // ===================================================
     if ('serviceWorker' in navigator) {
-      // Clear old caches on every page load
+      // Clear ALL caches on every page load
       if ('caches' in window) {
         caches.keys().then(function(names) {
           names.forEach(function(name) {
-            if (name !== 'gh-tasks-v4') {
-              caches.delete(name);
-            }
+            caches.delete(name);
           });
         });
       }
