@@ -49,10 +49,14 @@ const Utils = {
 function initModernForm() {
   // DEBUG - temporary
   var _d = document.createElement('div');
-  _d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:4px 8px;font-size:12px;z-index:99999;text-align:center;';
+  _d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:4px 8px;font-size:11px;z-index:99999;text-align:center;direction:ltr;';
   var _auth = window.auth ? window.auth.isAuthenticated() : 'NO_AUTH';
   var _usr = (window.auth && window.auth.getCurrentUser()) ? window.auth.getCurrentUser().name : 'null';
-  _d.textContent = 'v2.1 | auth=' + _auth + ' | user=' + _usr;
+  var _chips = document.querySelector('.form-step[data-step="1"] .name-chips');
+  var _nav = document.querySelectorAll('.bottom-nav-item').length;
+  var _card = document.getElementById('newTaskCard') ? 'Y' : 'N';
+  var _sect = document.getElementById('myTasksSection') ? 'Y' : 'N';
+  _d.textContent = 'v2.2 | nav=' + _nav + ' | card=' + _card + ' | sect=' + _sect + ' | chips=' + (_chips ? 'FOUND' : 'NULL');
   document.body.appendChild(_d);
 
   // בדיקת חיבור -- redirect ללוגין אם לא מחובר
