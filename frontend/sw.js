@@ -16,7 +16,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate: take control immediately, clear caches again
+// Activate: take control immediately, clear caches, force reload all tabs
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((names) => {
@@ -26,6 +26,13 @@ self.addEventListener('activate', (event) => {
       );
     }).then(() => {
       return self.clients.claim();
+    }).then(() => {
+      // Force reload all open tabs/windows to get fresh content
+      return self.clients.matchAll({ type: 'window' }).then((clients) => {
+        clients.forEach((client) => {
+          client.navigate(client.url);
+        });
+      });
     })
   );
 });
