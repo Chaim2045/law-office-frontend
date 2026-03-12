@@ -47,6 +47,14 @@ const Utils = {
 };
 
 function initModernForm() {
+  // DEBUG - temporary
+  var _d = document.createElement('div');
+  _d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:4px 8px;font-size:12px;z-index:99999;text-align:center;';
+  var _auth = window.auth ? window.auth.isAuthenticated() : 'NO_AUTH';
+  var _usr = (window.auth && window.auth.getCurrentUser()) ? window.auth.getCurrentUser().name : 'null';
+  _d.textContent = 'v2.1 | auth=' + _auth + ' | user=' + _usr;
+  document.body.appendChild(_d);
+
   // בדיקת חיבור -- redirect ללוגין אם לא מחובר
   if (window.auth && !window.auth.isAuthenticated()) {
     window.location.href = 'login.html';
