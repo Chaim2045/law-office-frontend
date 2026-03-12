@@ -34,17 +34,17 @@
   [headers.values]
     Cache-Control = "no-cache, must-revalidate"
 
-# JS files - short cache with revalidation
+# JS files - no cache
 [[headers]]
   for = "/js/*"
   [headers.values]
-    Cache-Control = "public, max-age=300, must-revalidate"
+    Cache-Control = "no-cache, must-revalidate"
 
-# CSS files - short cache with revalidation
+# CSS files - no cache
 [[headers]]
   for = "/css/*"
   [headers.values]
-    Cache-Control = "public, max-age=300, must-revalidate"
+    Cache-Control = "no-cache, must-revalidate"
 
 # Images - long cache (they rarely change)
 [[headers]]
