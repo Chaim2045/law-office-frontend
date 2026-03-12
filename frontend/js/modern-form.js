@@ -46,7 +46,7 @@ const Utils = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+function initModernForm() {
   // בדיקת חיבור -- redirect ללוגין אם לא מחובר
   if (window.auth && !window.auth.isAuthenticated()) {
     window.location.href = 'login.html';
@@ -662,4 +662,11 @@ document.addEventListener('DOMContentLoaded', function() {
     goToStep(1);
   }
 
-});
+}
+
+// Run immediately if DOM is ready, otherwise wait
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initModernForm);
+} else {
+  initModernForm();
+}

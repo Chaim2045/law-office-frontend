@@ -2,7 +2,7 @@
 // 🔐 Login Page Logic
 // ================================================
 
-document.addEventListener('DOMContentLoaded', () => {
+function initLoginPage() {
   console.log('🔐 Login page loaded');
 
   // If already logged in, redirect to dashboard or return URL
@@ -168,4 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   console.log('✅ Login page ready');
-});
+}
+
+// Run immediately if DOM is ready, otherwise wait
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLoginPage);
+} else {
+  initLoginPage();
+}
